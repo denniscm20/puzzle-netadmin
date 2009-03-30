@@ -1,7 +1,7 @@
 #summary Listado de cambios efectuados entre cada nueva versión de la aplicación Puzzle que halla sido lanzada.
 #labels Featured
 
-<h1>Changelog</h1>
+<h1>Introducción</h1>
 
 <p align="justify">A continuación se listarán las características y mejoras de cada nueva versión de la aplicación Puzzle - netadmin que halla sido lanzada.</p>
 
