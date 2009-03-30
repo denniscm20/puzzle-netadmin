@@ -1,4 +1,5 @@
 #summary Listado de cambios efectuados entre cada nueva versión de la aplicación Puzzle que halla sido lanzada.
+#labels Featured
 
 <h1>Changelog</h1>
 
