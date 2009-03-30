@@ -1,0 +1,36 @@
+.tab { 
+	width: 120px;
+	white-space: nowrap;
+	text-align: center;
+	border-style: solid;
+	border-color: #003300;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-top-width: 1px;
+	border-bottom-width: 0px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	cursor: pointer;
+}
+
+.tabhold { 
+	background-color: #003300;
+	color: white;
+}
+
+.tabfocus { 
+	background-color: #669966;
+	color: white;
+}
+
+.tabcontent { 
+	width: 570px;
+	/*height: 275px;*/
+	background-color: #669966;
+	border-style: solid;
+	border-color: #003300;
+	border-width: 1px;
+	padding-top: 15px;
+	padding-left: 10px;
+	padding-right: 10px;
+}

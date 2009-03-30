@@ -1,0 +1,26 @@
+table#my_table tr th {
+	background-color: #003300;
+	color: white;
+	font-size: small;
+}
+
+table#my_table tr td {
+	border-color:#003300; 
+	border-style:solid; 
+	color:#003300; 
+	border-width:thin;
+	background-color:#e6ffcc;
+}
+
+table#my_table tr td a {
+	display:inline;
+ 	padding: 0;
+}
+
+table#my_table tbody.scroll {
+	height:200px;
+	overflow-x: hidden; 
+	overflow-y: scroll
+	/*overflow: auto;	*/
+	
+}

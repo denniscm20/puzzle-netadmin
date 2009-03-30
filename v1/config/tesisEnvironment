@@ -1,0 +1,27 @@
+groupadd puzzle
+useradd -g puzzle puzzle
+usermod -G puzzle,apache puzzle
+
+cp /usr/bin/php-cgi /var/www/cgi-bin/
+chown puzzle.puzzle /var/www/cgi-bin/php-cgi
+
+mkdir /var/www/puzzle
+chown root.puzzle /var/www/puzzle
+chmod 775 /var/www/puzzle
+
+cp puzzle.conf /etc/httpd/conf.d/
+
+touch /etc/squid/allow
+chown root.apache /etc/squid/allow
+chmod 660  /etc/squid/allow
+touch /etc/squid/deny
+chown root.apache /etc/squid/deny
+chmod 660  /etc/squid/deny
+
+User_Alias PUZZLE = apache
+Cmnd_Alias SEGURIDAD = /bin/cat, /sbin/iptables-save, /sbin/iptables-restore, /usr/sbin/squid, /usr/sbin/snort, /sbin/sysctl, /usr/bin/tee, /usr/bin/grep, /proc/sys/net/ipv4/ip_forward
+
+vim /etc/rsyslog
+kern.warning                                            /var/log/iptables/iptables.log
+
+cat /var/log/iptables/iptables.log | grep -C 2 Iptables | cut -d' ' -f6,7,8,9,10,18,19 
