@@ -49,6 +49,57 @@ class Helper {
         return TRUE;
     }
 
+    public static function getView ($pieceName, $fileName)
+    {
+        $file = sprintf(PATH_VIEW, $pieceName);
+        $file .= $fileName.VIEW_SUFFIX.".php";
+        if (file_exists($file)) {
+            require_once($file);
+            $class = sprintf(PIECE_PREFFIX, ucfirst($pieceName),"View");
+            $class .= $fileName.VIEW_SUFFIX;
+            return $class;
+        }
+        return false;
+    }
+
+    public static function getController ($pieceName, $fileName)
+    {
+        $file = sprintf(PATH_CONTROLLER, $pieceName);
+        $file .= $fileName.CONTROLLER_SUFFIX.".php";
+        if (file_exists($file)) {
+            require_once($file);
+            $class = sprintf(PIECE_PREFFIX, $pieceName,"Controller");
+            $class .= $fileName.CONTROLLER_SUFFIX;
+            return $class;
+        }
+        return false;
+    }
+
+    public static function getClass ($pieceName, $fileName)
+    {
+        $file = sprintf(PATH_CLASS, $pieceName);
+        $file .= $fileName.CLASS_SUFFIX.".php";
+        if (file_exists($file)) {
+            require_once($file);
+            $class = sprintf(PIECE_PREFFIX, $pieceName,"Model_Class");
+            $class .= $fileName.CLASS_SUFFIX;
+            return $class;
+        }
+        return false;
+    }
+
+    public static function getDao ($pieceName, $fileName)
+    {
+        $file = sprintf(PATH_DAO, $pieceName);
+        $file .= $fileName.DAO_SUFFIX.".php";
+        if (file_exists($file)) {
+            require_once($file);
+            $class = sprintf(PIECE_PREFFIX, $pieceName,"Model_Dao");
+            $class .= $fileName.DAO_SUFFIX;
+            return $class;
+        }
+        return false;
+    }
     
     public static function maskToShortMask ($pMascara) {
         $lValues = explode(".",$pMascara);
@@ -80,8 +131,8 @@ class Helper {
         return $lMaskNumber;
     }
     
-    public static function cambiarFormatoFecha($pFecha, $pFormatoFinal) {
-        return date($pFormatoFinal,strtotime($pFecha));
+    public static function changeDateFormat($date, $newFormat) {
+        return date($newFormat,strtotime($date));
     }
 
     public static function getRemoteIP ()
