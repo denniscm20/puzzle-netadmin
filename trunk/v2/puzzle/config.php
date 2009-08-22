@@ -15,7 +15,7 @@
     define ("ROOT",$_SERVER['DOCUMENT_ROOT']);
     define ("PATH_BASE", ROOT."/Base/");
     define ("PATH_DATABASE", ROOT."/DataBase/");
-    define ("PATH_LIB", ROOT."/Piece/");
+    define ("PATH_LIB", ROOT."/Lib/");
     define ("PATH_PIECE", ROOT."/Piece/");
     define ("PATH_THEME", ROOT."/Theme/");
     define ("PATH_TRANSLATION", ROOT."/Translation/");
@@ -30,7 +30,14 @@
 
     define ("PATH_CSS", PATH_THEME."%s/css/");
     define ("PATH_IMAGES", PATH_THEME."%s/images/");
-    
+
+    //X-Fixes
+    define ("VIEW_SUFFIX", "View");
+    define ("CONTROLLER_SUFFIX", "Controller");
+    define ("DAO_SUFFIX", "DAO");
+    define ("CLASS_SUFFIX", "");
+    define ("PIECE_PREFFIX", "Piece_%s_%s_");
+
     // Default values
     define ("DEFAULT_THEME", "default");
     define ("DEFAULT_LANGUAGE", "EN");

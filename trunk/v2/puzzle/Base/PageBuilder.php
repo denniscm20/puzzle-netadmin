@@ -18,11 +18,19 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once PATH_LIB.'Helper.php';
 
+/**
+ * This class contains the methods for building the page structure.
+ * @package Base
+ * @author Dennis Stephen Cohn Muroy
+ * @version 1.0
+ * @since 2009
+ * @copyright Copyright (c) 2009, Dennis Cohn
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 class PageBuilder
 {
-    private $viewFile;
-    private $controllerFile;
     private $view;
     private $controller;
     private $piece;
@@ -31,13 +39,9 @@ class PageBuilder
     public function  __construct($page, $piece, $event) {
         $this->page = $page;
         $this->piece = $piece;
-        $viewFile = $this->getViewPath($piece).$page.VIEW_SUFFIX.".php";
-        $controllerFile = $this->getViewPath($piece).$page.CONTROLLER_SUFFIX.".php";
-        if (file_exists($viewFile) && file_exists($controllerFile)) {
-            require_once($viewFile);
-            require_once($controllerFile);
-            $viewClass = VIEW_PREFIX.$page.VIEW_SUFFIX;
-            $controllerClass = CONTROLLER_PREFIX.$page.CONTROLLER_SUFFIX;
+        $viewClass = Helper::getView($piece, $page);
+        $controllerClass = Helper::getController($piece, $page);
+        if (($viewClass !== false) && ($controllerClass !== false)) {
             eval('$this->controller = '.$controllerClass.'::getInstance();');
             $this->controller->execute ($event);
             $this->view = new $viewClass($this->controller);
@@ -47,7 +51,7 @@ class PageBuilder
 	    }
     }
 
-    private function printAditionalCss ($template) 
+    private function printAditionalCss ($template)
     {
         $cssList = $this->view->getCss();
         foreach ($cssList as $css) {
