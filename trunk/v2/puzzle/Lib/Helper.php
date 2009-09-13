@@ -5,12 +5,12 @@
  *
  * This file is part of puzzle.
  *
- * tiny-weblog is free software: you can redistribute it and/or modify
+ * puzzle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * tiny-weblog is distributed in the hope that it will be useful,
+ * puzzle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -68,7 +68,7 @@ class Helper {
         $file .= $fileName.CONTROLLER_SUFFIX.".php";
         if (file_exists($file)) {
             require_once($file);
-            $class = sprintf(PIECE_PREFFIX, $pieceName,"Controller");
+            $class = sprintf(PIECE_PREFFIX, ucfirst($pieceName),"Controller");
             $class .= $fileName.CONTROLLER_SUFFIX;
             return $class;
         }
@@ -97,6 +97,17 @@ class Helper {
             $class = sprintf(PIECE_PREFFIX, $pieceName,"Model_Dao");
             $class .= $fileName.DAO_SUFFIX;
             return $class;
+        }
+        return false;
+    }
+
+    public static function getTranslation ($pieceName, $language)
+    {
+        $file = sprintf(PATH_TRANSLATION, $pieceName);
+        $file .= $language.".php";
+        if (file_exists($file)) {
+            require_once($file);
+            return $language;
         }
         return false;
     }

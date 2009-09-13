@@ -4,12 +4,12 @@
  *
  * This file is part of puzzle.
  *
- * tiny-weblog is free software: you can redistribute it and/or modify
+ * puzzle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * tiny-weblog is distributed in the hope that it will be useful,
+ * puzzle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -19,6 +19,7 @@
  */
 
 require_once PATH_LIB.'Helper.php';
+require_once PATH_LIB.'MessageHandler.php';
 
 /**
  * This class contains the methods for building the page structure.
@@ -35,14 +36,17 @@ class PageBuilder
     private $controller;
     private $piece;
     private $page;
+    private $language;
     
     public function  __construct($page, $piece, $event) {
         $this->page = $page;
         $this->piece = $piece;
+        $this->language = $_SESSION["Language"];
+        $this->language = Helper::getTranslation($piece, $this->language);
         $viewClass = Helper::getView($piece, $page);
         $controllerClass = Helper::getController($piece, $page);
         if (($viewClass !== false) && ($controllerClass !== false)) {
-            eval('$this->controller = '.$controllerClass.'::getInstance();');
+            eval("\$this->controller = ".$controllerClass."::getInstance('".$this->piece."', '".$this->page."');");
             $this->controller->execute ($event);
             $this->view = new $viewClass($this->controller);
         } else {
@@ -73,14 +77,12 @@ class PageBuilder
 
     public function show()
     {
-        $template = $this->view->getTheme();
-        $language = $_SESSION["Language"];
-        $languageFile = TRANSLATION_PATH.$language.'.php';
-        require_once($languageFile);
+        echo '<?xml version="1.0" encoding="utf-8"?>';
+        $template = DEFAULT_THEME;
     ?>
-        <?php echo '<?xml version="1.0" encoding="utf-8"?>','\n'; ?>
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo $language; ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $language; ?>">
+           
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo $this->language; ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $this->language; ?>">
         <head>
             <title><?php echo DEFAULT_TITLE," - ",$this->view->getTitle(); ?></title>
             <meta name="AUTHOR" content="Dennis Cohn Muroy" />
@@ -110,7 +112,13 @@ class PageBuilder
                     </ul>
                 </div>
                 <?php } ?>
-                <div>
+                <div id="message">
+                    <?php
+                        $messageHandler = Lib_MessagesHandler::getInstance();
+                        $messageHandler->showMessages();
+                    ?>
+                </div>
+                <div id="content">
                     <?php $this->view->show(); ?>
                 </div>
             </div>

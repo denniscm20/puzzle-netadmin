@@ -5,12 +5,12 @@
  *
  * This file is part of puzzle.
  *
- * tiny-weblog is free software: you can redistribute it and/or modify
+ * puzzle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * tiny-weblog is distributed in the hope that it will be useful,
+ * puzzle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -33,6 +33,8 @@ abstract class Lib_Html_Html {
     protected $accessKey = '';
     protected $tooltip = "";
     protected $tabindex = "";
+    protected $label = "";
+    protected $value = "";
 
     protected $class = "";
     protected $style = "";
@@ -46,14 +48,14 @@ abstract class Lib_Html_Html {
     protected $keypressFunction = "";
     protected $selectFunction = "";
 
-    protected function __construct($id, $tabindex = 0, $class = "", $style = "")
+    protected function __construct($id, $value, $label = "", $tabindex = 0, $accessKey = "")
     {
         $this->id = $id;
         $this->name = $id;
+        $this->value = $value;
         $this->label = $label;
         $this->tabindex = $tabindex;
-        $this->class = $class;
-        $this->style = $style;
+        $this->accessKey = $accessKey;
     }
 
     public function __destruct()
@@ -61,56 +63,43 @@ abstract class Lib_Html_Html {
 
     }
     
-    public function __get($name) 
+    protected function show ()
     {
-        $function = "get".$name;
-        if (method_exists($this, $function)) {
-            return $this->{$function}();
-        } else {
-            throw new Exception($name ." is not a valid property");
-        }
-    }
-    
-    public function __set($name, $value) 
-    {
-        $function = "set".$name;
-        if (method_exists($this, $function)) {
-            $this->{$function}($value);
-        } else {
-            throw new Exception($name ." is not a valid property");
-        }
+        $html = "id=\"".$this->id."\" name=\"".$this->name."\" %s %s %s ";
+        return $html;
     }
 
-    public function getId () 
+    protected function showLabel ()
     {
-        return $this->id;
+        $label = "<label for=\"".$this->id."\" ";
+        $label .= trim($this->accessKey) != ""?"accesskey=\"".$this->accessKey."\" ":"";
+        $label .= ">".$this->label."</label>";
+        return $label;
     }
-    
-    public function setId ($id)
+
+    protected function showExtra ()
     {
-        $this->id = $id;
+        $element = "";
+        $element .= trim($this->tooltip) != ""?"tooltip = \"".$this->tooltip."\" ":"";
+        $element .= trim($this->tabindex) != ""?"tabindex = \"".$this->tabindex."\" ":"";
+        $element .= trim($this->class) != ""?"class = \"".$this->class."\" ":"";
+        $element .= trim($this->style) != ""?"style = \"".$this->style."\" ":"";
+        return $element;
     }
-    
-    public function getName ()
-    { 
-        return $this->name;
-    }
-    
-    public function setName ($name)
-    { 
-        $this->name = $name;
-    }
-    
-    public function getAccessKey ()
+
+    protected function showEvents ()
     {
-        return $this->accessKey;
+        $element = "";
+        $element .= trim($this->blurFunction) != ""?"onblur = \".$this->blurFunction.\" ":"";
+        $element .= trim($this->changeFunction) != ""?"onchange = \".$this->changeFunction.\" ":"";
+        $element .= trim($this->focusFunction) != ""?"onfocus = \".$this->focusFunction.\" ":"";
+        $element .= trim($this->mouseoutFunction) != ""?"onmouseout = \".$this->mouseoutFunction.\" ":"";
+        $element .= trim($this->mouseoverFunction) != ""?"onmouseover = \".$this->mouseoverFunction.\" ":"";
+        $element .= trim($this->keypressFunction) != ""?"onkeypress = \".$this->keypressFunction.\" ":"";
+        $element .= trim($this->selectFunction) != ""?"onselect = \".$this->selectFunction.\" ":"";
+        return $element;
     }
-    
-    public function setAccessKey ($accessKey)
-    {
-        $this->accessKey = $accessKey;
-    }
-    
+
     public function getTooltip ()
     {
         return $this->tooltip;
@@ -119,36 +108,6 @@ abstract class Lib_Html_Html {
     public function setTooltip ($tooltip) 
     {
         $this->tooltip = $tooltip;
-    }
-    
-    public function getTabindex ()
-    {
-        return $this->tabindex;
-    }
-    
-    public function setTabindex ($tabindex)
-    {
-        $this->tabindex = $tabindex;
-    }
-
-    public function getClass () 
-    {
-        return $this->class;
-    }
-    
-    public function setClass ($class)
-    {
-        $this->class = $class;
-    }
-    
-    public function getStyle ()
-    {
-        return $this->style;
-    }
-    
-    public function setStyle ($style)
-    {
-        $this->style = $style;
     }
 
     public function onBlur($code)
@@ -190,8 +149,6 @@ abstract class Lib_Html_Html {
     {
         $this->selectFunction = $code;
     }
-
-    protected abstract function show();
     
 }
 

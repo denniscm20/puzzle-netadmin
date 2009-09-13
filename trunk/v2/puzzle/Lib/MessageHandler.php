@@ -4,12 +4,12 @@
  *
  * This file is part of puzzle.
  *
- * tiny-weblog is free software: you can redistribute it and/or modify
+ * puzzle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * tiny-weblog is distributed in the hope that it will be useful,
+ * puzzle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -144,12 +144,13 @@ class Lib_MessagesHandler {
      */
     public function showMessages()
     {
-        $error = unserialize($_SESSION[self::ERROR]);
-        $warning = unserialize($_SESSION[self::WARNING]);
-        $info = unserialize($_SESSION[self::INFORMATION]);
-        $this->messageArea($error, self::ERROR);
-        $this->messageArea($warning, self::WARNING);
-        $this->messageArea($info, self::INFORMATION);
+        $messageType = array(self::ERROR, self::WARNING, self::INFORMATION);
+        foreach ($messageType as $type) {
+            if (isset($_SESSION[$type])) {
+                $msg = unserialize($_SESSION[$type]);
+                $this->messageArea($msg, $type);
+            }
+        }
         $this->clear();
     }
 }

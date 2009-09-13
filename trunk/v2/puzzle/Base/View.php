@@ -4,12 +4,12 @@
  *
  * This file is part of puzzle.
  *
- * tiny-weblog is free software: you can redistribute it and/or modify
+ * puzzle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * tiny-weblog is distributed in the hope that it will be useful,
+ * puzzle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+require_once PATH_LIB.'MessageHandler.php';
 
 /**
  * Abstract class that implements the basic methods of the view class.
@@ -36,7 +38,6 @@ abstract class Base_View
     // --- ATTRIBUTES ---
 
     protected $title = "";
-    protected $theme = "";
     protected $javascript = array();
     protected $css = array();
     
@@ -47,14 +48,14 @@ abstract class Base_View
      *
      * @access protected
      * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @param  Controller controller
+     * @param  Controller controller Page controller
+     * @param  String title Page title
      * @return void
      */
-    protected function __construct($controller)
+    protected function __construct($controller, $title = DEFAULT_TITLE)
     {
         $this->controller = $controller;
-        $this->theme = DEFAULT_THEME;
-        $this->title = DEFAULT_TITLE;
+        $this->title = $title;
         $this->javascript = array();
         $this->css = array();
     }
@@ -72,18 +73,6 @@ abstract class Base_View
     }
 
     /**
-     * Returns the theme of the displayed page.
-     *
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @return string
-     */
-    public function getTheme()
-    {
-        return (DEFAULT_PAGE === true)?DEFAULT_THEME:$this->theme;
-    }
-
-    /**
      * Returns the title of the displayed page.
      *
      * @access public
@@ -92,7 +81,7 @@ abstract class Base_View
      */
     public function getTitle()
     {
-        return (DEFAULT_PAGE === true)?DEFAULT_TITLE:$this->title;
+        return $this->title;
     }
     
     /**
