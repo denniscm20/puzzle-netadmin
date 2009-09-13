@@ -4,12 +4,12 @@
  *
  * This file is part of puzzle.
  *
- * tiny-weblog is free software: you can redistribute it and/or modify
+ * puzzle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * tiny-weblog is distributed in the hope that it will be useful,
+ * puzzle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+require_once PATH_LIB.'MessageHandler.php';
 
 /**
  * Abstract class that implements the basic methods of the controller class.
@@ -85,16 +87,12 @@ abstract class Base_Controller
      * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
      * @return Base_Controller
      */
-    public static function getInstance()
+    public static function getInstance($piece = "", $page = "")
     {
         if(!isset(self::$controller)) {
             $controllerName = "";
             if (!function_exists('get_called_class')) {
-                $bt = debug_backtrace();
-                $line = serialize($bt[3]['object']);
-                $startPos = strpos($line,"Controller_");
-                $endPos = strpos($line,"\"",$startPos);
-                $controllerName = substr($line, $startPos, $endPos - $startPos);
+                $controllerName = sprintf(PIECE_PREFFIX, $piece, "Controller").$page."Controller";
             } else {
                 $controllerName = get_called_class();
             }

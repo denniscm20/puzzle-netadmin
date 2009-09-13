@@ -17,16 +17,16 @@
     define ("PATH_DATABASE", ROOT."/DataBase/");
     define ("PATH_LIB", ROOT."/Lib/");
     define ("PATH_PIECE", ROOT."/Piece/");
-    define ("PATH_THEME", ROOT."/Theme/");
-    define ("PATH_TRANSLATION", ROOT."/Translation/");
+    define ("PATH_THEME", "/Theme/");
     define ("PATH_TMP", ROOT."/tmp/");
 
     define ("PATH_VIEW", PATH_PIECE."%s/View/");
-    define ("PATH_JS", PATH_VIEW."js/");
+    define ("PATH_JS", "/Piece/%s/View/js/");
     define ("PATH_CONTROLLER", PATH_PIECE."%s/Controller/");
     define ("PATH_MODEL", PATH_PIECE."%s/Model/");
     define ("PATH_CLASS", PATH_MODEL."Class/");
     define ("PATH_DAO", PATH_MODEL."Dao/");
+    define ("PATH_TRANSLATION", PATH_PIECE."%s/Translation/");
 
     define ("PATH_CSS", PATH_THEME."%s/css/");
     define ("PATH_IMAGES", PATH_THEME."%s/images/");
@@ -36,7 +36,7 @@
     define ("CONTROLLER_SUFFIX", "Controller");
     define ("DAO_SUFFIX", "DAO");
     define ("CLASS_SUFFIX", "");
-    define ("PIECE_PREFFIX", "Piece_%s_%s_");
+    define ("PIECE_PREFFIX", "%s_%s_");
 
     // Default values
     define ("DEFAULT_THEME", "default");

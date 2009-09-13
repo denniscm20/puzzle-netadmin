@@ -8,10 +8,12 @@
 
 
 /* All */
+
 html, body {
     margin-left:auto;
     margin-right:auto;
     min-width: 800px;
+    max-width:1024px;
     width: 90%;
     height: 100%;
     font-family:sans-serif;
@@ -19,10 +21,12 @@ html, body {
     color: black;
 }
 
-#container {
-    min-height: 100%;
-    margin-bottom: -200px;
-    position: relative;
+#message {
+}
+
+#content {
+    min-height: 200px;
+    padding-top:20px;
 }
 
 a {
@@ -36,10 +40,11 @@ a:hover {
 /* Banner */
 #banner {
     text-align: center;
-    height: 130px;
+    height: 120px;
     border-style:solid;
-    border-color:teal;
-    padding-top: 20px;
+    border-width:thin;
+    border-color:#003300;
+    padding-top: 10px;
 }
 
 /* Nav */
@@ -57,107 +62,50 @@ a:hover {
 
 /* Footer */
 #footer {
-    height: 200px;
+    height: 30px;
     position: relative;
-    background-color:gray;
-    border-style:solid;
-    border-color:teal;
+    background-color:#66FF66;
+    border-style:dotted;
+    border-width: thin;
+    border-color: black;
 }
 
-.clearfooter {
-    height: 200px;
-    clear: both;
-}
+/* Forms */
 
-/* Article */
-
-
-
-/* Item */
-.item {
+form {
     width: 100%;
 }
 
-.item h2 {
-    font-style: italic;
-    font-family: script;
+div.header {
+    margin-left:auto;
+    margin-right:auto;
+    width: 430px;
+    text-align: center;
+    height: 30px;
 }
 
-.item h2 a {
-    color: green;
+div.row {
+    margin-left:auto;
+    margin-right:auto;
+    width: 430px;
 }
 
-.itemTop {
-    width: 100%;
-    height: 25px;
-    display: block;
-    background-color: gray;
-    padding-top: 5px;
-}
-
-.author {
-    float: left;
-    padding-left: 5px;
-    font-style: italic;
-}
-
-.date {
-    float: right;
-    padding-right: 5px;
-}
-
-.itemBody {
-    text-align:justify;
-}
-
-.readmore {
+span.label {
     font-weight: bold;
-    font-style: italic;
-    font-family: serif;
-    color: teal;
-}
-
-.itemBottom {
-    width: 100%;
-    height: 25px;
-    display: block;
-    background-color: gray;
-    padding-top: 5px;
-}
-
-.topic {
     float: left;
-    padding-left: 5px;
+    width: 120px;
+    text-align: right;
+    height:30px;
 }
 
-.views {
+span.field {
     float: right;
-    padding-right: 5px;
+    width: 300px;
+    text-align: left;
+    height:30px;
 }
 
-#items {
-    border-style:solid;
-    border-color:teal;
-    float: left;
-    width: 60%;
-}
-
-#random_blogs {
-    border-style:solid;
-    border-color:teal;
-    float: right;
-    width: 38%;
-    height: 200px;
-}
-
-#latest_blogs {
-    border-style:solid;
-    border-color:teal;
-    float: right;
-    width: 38%;
-    height: 200px;
-}
-
-#search {
-    float: right;
+label:after {
+    text-transform: uppercase;
+    content: " [" attr(accesskey) "] : ";
 }
