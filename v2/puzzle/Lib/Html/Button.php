@@ -31,99 +31,54 @@ require_once PATH_LIB.'Html/Html.php';
 class Lib_Html_Button extends Lib_Html_Html
 {
 
+    private $type = "";
 
-
-
-    /**
-     * Retorna un componente html del tipo submit button
-     *
-     * @param string $pName Nombre del componente.
-     * @param mixed $pValue Valor que almacenara el componente.
-     * @param integer $pTabIndex Indica el indice de tab asignado al componente.
-     * @param string $pStyle Estilo css que utilizará el componente.
-     * @return string cadena html para formar el submit button.
-     */
-    public static function SubmitButton($pName, $pValue, $pTabIndex = 0, $pStyle = "") {
-        $lButton = "<input type=\"submit\"";
-        $lButton .= " name = \"".$pName."\"";
-        $lButton .= " value = \"".$pValue."\"";
-        $lButton .= " tabindex = \"".$pTabIndex."\"";
-        $lButton .= " class = \"".$pStyle."\"";
-        $lButton .= " />";
-
-        return $lButton;
-    }
-
-    /**
-     * Retorna un componente html del tipo reset button
-     *
-     * @param string $pName Nombre del componente.
-     * @param mixed $pValue Valor que almacenara el componente.
-     * @param integer $pTabIndex Indica el indice de tab asignado al componente.
-     * @param string $pStyle Estilo css que utilizará el componente.
-     * @return string cadena html para formar el reset button.
-     */
-    public static function ResetButton($pName, $pValue, $pTabIndex = 0, $pStyle = "") {
-        $lButton = "<input type=\"reset\"";
-        $lButton .= " name = \"".$pName."\"";
-        $lButton .= " value = \"".$pValue."\"";
-        $lButton .= " tabindex = \"".$pTabIndex."\"";
-        $lButton .= " class = \"".$pStyle."\"";
-        $lButton .= " />";
-
-        return $lButton;
-    }
-
-    /**
-     * Retorna un componente html del tipo image button
-     *
-     * @param string $pName Nombre del componente.
-     * @param mixed $pValue Valor que almacenara el componente.
-     * @param string $pSrc Ruta de la imagen.
-     * @param integer $pTabIndex Indica el indice de tab asignado al componente.
-     * @param string $pStyle Estilo css que utilizará el componente.
-     * @param string $pEvent Evento a ejecutarse al presionar el componente
-     * @return string cadena html para formar el image button.
-     */
-    public static function ImageButton($pName, $pValue, $pSrc = "", $pTabIndex = 0, $pStyle = "", $pEvent = "") {
-        $lButton = "<input type=\"image\"";
-        $lButton .= " name = \"".$pName."\"";
-        $lButton .= " src = \"".$pSrc."\"";
-        $lButton .= " value = \"".$pValue."\"";
-        $lButton .= " title = \"".$pValue."\"";
-        $lButton .= " tabindex = \"".$pTabIndex."\"";
-        $lButton .= " class = \"".$pStyle."\"";
-        $lButton .= " onclick = \"".$pEvent."\"";
-        $lButton .= " />";
-
-        return $lButton;
-    }
-
-    /**
-    * Retorna un componente html del tipo button
-    *
-    * @param string $pName Nombre del componente.
-    * @param mixed $pValue Valor que almacenara el componente.
-    * @param integer $pTabIndex Indica el indice de tab asignado al componente.
-    * @param string $pStyle Estilo css que utilizará el componente.
-    * @param string $pEvent Evento a ejecutarse al presionar el botón
-    * @return string cadena html para formar el button.
-    */
-    public static function Button($pName, $pValue, $pTabIndex = 0, $pStyle = "", $pEvent="") {
-        $lButton = "<input type=\"button\"";
-        $lButton .= " name = \"".$pName."\"";
-        $lButton .= " value = \"".$pValue."\"";
-        $lButton .= " tabindex = \"".$pTabIndex."\"";
-        $lButton .= " class = \"".$pStyle."\"";
-        $lButton .= " onclick = \"".$pEvent."\"";
-        $lButton .= " />";
-
-        return $lButton;
+    public function __construct($id, $value, $tabindex = 0)
+    {
+        parent::__construct($id, $value, "", $tabindex);
+        $this->type = "";
     }
 
     protected function show()
     {
+        $basic = parent::show();
+        $extra = $this->showExtra();
+        $events = $this->showEvents();
+        $own = "type=\"{$this->type}\" value = \"{$this->value}\" ";
+        $input = sprintf($basic, $own, $extra, $events);
+        $input = "<span class=\"field\"><input ".$input." /></span>";
+        return $input;
     }
 
+    public function showSubmitButton($tooltip= "", $class = "", $style = "")
+    {
+        $this->type = "submit";
+        $this->tooltip = $tooltip;
+        $this->style = $style;
+        $this->class = $class;
+        $element = $this->show();
+        return $element;
+    }
+
+    public function showResetButton($tooltip= "", $class = "", $style = "")
+    {
+        $this->type = "reset";
+        $this->tooltip = $tooltip;
+        $this->style = $style;
+        $this->class = $class;
+        $element = $this->show();
+        return $element;
+    }
+
+    public function showButton ($tooltip= "", $class = "", $style = "")
+    {
+        $this->type = "button";
+        $this->tooltip = $tooltip;
+        $this->style = $style;
+        $this->class = $class;
+        $element = $this->show();
+        return $element;
+    }
+    
 }
 ?>
