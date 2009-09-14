@@ -80,7 +80,7 @@ abstract class Lib_Html_Html {
     protected function showExtra ()
     {
         $element = "";
-        $element .= trim($this->tooltip) != ""?"tooltip = \"".$this->tooltip."\" ":"";
+        $element .= trim($this->tooltip) != ""?"title = \"".$this->tooltip."\" ":"";
         $element .= trim($this->tabindex) != ""?"tabindex = \"".$this->tabindex."\" ":"";
         $element .= trim($this->class) != ""?"class = \"".$this->class."\" ":"";
         $element .= trim($this->style) != ""?"style = \"".$this->style."\" ":"";
