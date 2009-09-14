@@ -111,6 +111,12 @@ class Helper {
         }
         return false;
     }
+
+    public static function redirect ($pieceName, $pageName)
+    {
+        $url = "/index.php?Piece=".$pieceName."&Page=".$pageName;
+        header ("Location: ".$url);
+    }
     
     public static function maskToShortMask ($pMascara) {
         $lValues = explode(".",$pMascara);

@@ -18,7 +18,7 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(LIB_PATH.'Html/Html.php');
+require_once(PATH_LIB.'Html/Html.php');
 
 /**
  * Class that represents an HTML table.
@@ -30,7 +30,7 @@ require_once(LIB_PATH.'Html/Html.php');
  * @copyright Copyright (c) 2009, Dennis Cohn
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-class Lib_Html_Table extends Html
+class Lib_Html_Table extends Lib_Html_Html
 {
     
     private $header = array();
@@ -108,28 +108,28 @@ class Lib_Html_Table extends Html
     
     public function show()
     {
-        $header  = "<thead><tr>";
+        $header  = "<thead>\n<tr>";
         foreach ($this->header as $head) {
             $header .= "<th>".$head."</th>";
         }
-        $header .= "</tr></thead>";
-        $footer  = "<tfoot><tr>";
+        $header .= "</tr>\n</thead>\n";
+        $footer  = "<tfoot>\n<tr>";
         foreach ($this->footer as $foot) {
             $header .= "<td>".$foot."</td>";
         }
-        $footer .= "</tr></tfoot>";
-        $rows  = "<tbody>";
+        $footer .= "</tr>\n</tfoot>\n";
+        $rows  = "<tbody>\n";
         foreach ($this->rows as $row) {
             $rows .= "<tr>";
             foreach ($row as $item) {
                 $rows .= "<td>".$item."</td>";
             }
-            $rows .= "</tr>";
+            $rows .= "</tr>\n";
         }
-        $rows .= "</tbody>";
-        $table = "<table id=\"{$this->id}\" class=\"{$this->class}\" style=\"{$this->style}\">";
+        $rows .= "</tbody>\n";
+        $table = "<table id=\"{$this->id}\" class=\"{$this->class}\" style=\"{$this->style}\">\n";
         $table .= $header.$rows.$footer;
-        $table .= "</table>";
+        $table .= "</table>\n";
         return $table;
     }
 }

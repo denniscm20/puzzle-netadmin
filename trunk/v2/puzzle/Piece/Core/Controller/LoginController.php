@@ -93,7 +93,11 @@ class Core_Controller_LoginController extends Base_Controller
 
     protected function login()
     {
-
+        //TODO: Validate Login
+        $user = null;
+        $_SESSION["User"] = serialize($user);
+        session_write_close();
+        Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
     }
 
     protected function logout()

@@ -12,21 +12,11 @@
 html, body {
     margin-left:auto;
     margin-right:auto;
-    min-width: 800px;
-    max-width:1024px;
-    width: 90%;
+    width:1024px;
     height: 100%;
     font-family:sans-serif;
     font-size: 14px;
     color: black;
-}
-
-#message {
-}
-
-#content {
-    min-height: 200px;
-    padding-top:20px;
 }
 
 a {
@@ -62,32 +52,64 @@ a:hover {
 
 /* Footer */
 #footer {
-    height: 30px;
-    position: relative;
+    height: 20px;
+    padding: 5px;
     background-color:#66FF66;
     border-style:dotted;
     border-width: thin;
     border-color: black;
+    text-align:center;
+}
+
+#message {
+}
+
+#content {
+    min-height: 170px;
+    padding-top:20px;
+    padding-right:5px;
+    padding-left:5px;
 }
 
 /* Forms */
 
-form {
-    width: 100%;
+.left {
+    text-align:left;
 }
 
-div.header {
-    margin-left:auto;
-    margin-right:auto;
-    width: 430px;
-    text-align: center;
-    height: 30px;
+.right {
+    text-align:right;
+}
+
+.justify {
+    text-align:justify;
+}
+
+.center {
+    text-align:center;
+}
+
+.loginform {
+    width: 400px;
+    float:right;
+    border:solid #003300 thin;
+    padding: 5px;
+}
+
+.loginintro {
+    width:580px;
+    float:left;
+    border:double #FF6600 thin;
+    padding: 5px;
+    background-color: #FFFF99;
 }
 
 div.row {
     margin-left:auto;
     margin-right:auto;
-    width: 430px;
+    float: left;
+    width: 400px;
+    height:30px;
 }
 
 span.label {
@@ -100,7 +122,7 @@ span.label {
 
 span.field {
     float: right;
-    width: 300px;
+    width: 270px;
     text-align: left;
     height:30px;
 }
@@ -108,4 +130,17 @@ span.field {
 label:after {
     text-transform: uppercase;
     content: " [" attr(accesskey) "] : ";
+}
+
+input, textarea, select {
+    
+}
+
+input[type=text].login, input[type=password].login {
+    width: 260px;
+}
+
+input[type=submit], input[type=reset] {
+    margin-left:5px;
+    margin-right:5px;
 }

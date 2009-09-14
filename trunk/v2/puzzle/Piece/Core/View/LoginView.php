@@ -19,7 +19,6 @@
  */
 
 require_once PATH_BASE.'View.php';
-require_once PATH_LIB.'Html/Input.php';
 
 /**
  * Class that implements the application Login View.
@@ -73,13 +72,17 @@ class Core_View_LoginView extends Base_View
     {
         $userName = new Lib_Html_Input("username", "", LOGIN_USER_FIELD, 1, 'u');
         $password = new Lib_Html_Input("password", "", LOGIN_PASSWORD_FIELD, 2, 'p');
+        $submitButton = new Lib_Html_Button("submit", LOGIN_SUBMIT_BUTTON, 3);
+        $resetButton = new Lib_Html_Button("reset", LOGIN_RESET_BUTTON, 4);
         ?>
-        <div>
-            <div class="header"> ---- </div>
-            <form action="/" method="post">
-                <div class="row"><?php echo $userName->showTextBox(40); ?></div>
-                <div class="row"><?php echo $password->showPassword(40); ?></div>
-                <div class="row"></div>
+        <div class="loginintro">
+            <?php echo LOREM_IPSUM; ?>
+        </div>
+        <div class="loginform">
+            <form action="/?Event=login" method="post">
+                <div class="row"><?php echo $userName->showTextBox(40, "", "login"); ?></div>
+                <div class="row"><?php echo $password->showPassword(40, "", "login"); ?></div>
+                <div class="row right"><?php echo $resetButton->showResetButton(), $submitButton->showSubmitButton(); ?></div>
             </form>
         </div>
         <?php

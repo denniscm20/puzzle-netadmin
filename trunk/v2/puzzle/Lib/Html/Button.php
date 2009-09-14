@@ -46,7 +46,7 @@ class Lib_Html_Button extends Lib_Html_Html
         $events = $this->showEvents();
         $own = "type=\"{$this->type}\" value = \"{$this->value}\" ";
         $input = sprintf($basic, $own, $extra, $events);
-        $input = "<span class=\"field\"><input ".$input." /></span>";
+        $input = "<input ".$input." />";
         return $input;
     }
 
