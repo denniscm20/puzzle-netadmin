@@ -77,7 +77,7 @@ class Lib_Html_Select extends Lib_Html_Html {
         $options .= "</option>\n";
     }
 
-    public function showComboBox($pName, $pValue, $pValueName = "0", $pText = "", $selectedID = "0", $tooltip= "", $class = "", $style = "")
+    public function showComboBox($selectedID = "0", $tooltip= "", $class = "", $style = "")
     {
         $this->type = false;
         $this->tooltip = $tooltip;
@@ -88,7 +88,7 @@ class Lib_Html_Select extends Lib_Html_Html {
         return $element;
     }
 
-    public function showItemList($pName, $pValue, $size, $pValueName, $pText, $pTabIndex = 0, $pStyle = "")
+    public function showItemList($selectedID = "0", $tooltip= "", $class = "", $style = "")
     {
         $this->type = true;
         $this->tooltip = $tooltip;
