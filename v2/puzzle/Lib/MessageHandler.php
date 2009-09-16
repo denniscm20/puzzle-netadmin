@@ -88,9 +88,12 @@ class Lib_MessagesHandler {
      */
     private function messageArea ($messageList, $type)
     {
-        echo '<div class = "', $type,'">';
-        echo join("<br/>", $messageList);
-        echo '</div>';
+        if (count($messageList) > 0) {
+            echo '<div class = "', $type,'">';
+            echo '<img src="',Helper::getImage('msg_'.$type.'.png'),'" alt="[',$type,']">';
+            echo join("<br/>", $messageList);
+            echo '</div>';
+        }
     }
 
     /**

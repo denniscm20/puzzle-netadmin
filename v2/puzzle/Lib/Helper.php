@@ -164,8 +164,7 @@ class Helper {
 
     public static function getImage($img)
     {
-        $theme = $_SESSION['Theme'];
-        $imagePath = sprintf(IMG_PATH, $theme);
+        $imagePath = sprintf(PATH_IMAGES, DEFAULT_THEME);
         $imagePath .= $img;
         return $imagePath;
     }

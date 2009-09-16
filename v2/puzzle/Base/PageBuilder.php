@@ -97,8 +97,9 @@ class PageBuilder
         <body>
             <div>
                 <?php if ($this->page == DEFAULT_LOGOUT_PAGE) { ?>
-                <div id="banner" style="background-image:url(<?php echo "'",sprintf(PATH_IMAGES,$template),"header_back.jpg'";?>)">
-                    
+                <div id="banner" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
+                    <img src="<?php echo Helper::getImage('logo.png'); ?>" alt="Logo" >
+                    <img src="<?php echo Helper::getImage('title.png'); ?>" alt="Puzzle" >
                 </div>
                 <?php } else { ?>
                 <div id="nav">
@@ -112,17 +113,17 @@ class PageBuilder
                     </ul>
                 </div>
                 <?php } ?>
-                <div id="message">
+                <div id="content">
+                    <div id="message">
                     <?php
                         $messageHandler = Lib_MessagesHandler::getInstance();
                         $messageHandler->showMessages();
                     ?>
-                </div>
-                <div id="content">
+                    </div>
                     <?php $this->view->show(); ?>
                 </div>
             </div>
-            <div id="footer" style="background-image:url(<?php echo "'",sprintf(PATH_IMAGES,$template),"footer_back.jpg'";?>)">
+            <div id="footer" style="background-image:url(<?php echo "'",Helper::getImage('footer_back.jpg'),"'";?>)">
                 <div>&copy; Dennis Stephen Cohn Muroy</div>
             </div>
         </body>
