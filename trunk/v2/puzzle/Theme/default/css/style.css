@@ -13,7 +13,6 @@ html, body {
     margin-left:auto;
     margin-right:auto;
     width:1024px;
-    height: 100%;
     font-family:sans-serif;
     font-size: 14px;
     color: black;
@@ -31,9 +30,6 @@ a:hover {
 #banner {
     text-align: center;
     height: 120px;
-    border-style:solid;
-    border-width:thin;
-    border-color:#003300;
     padding-top: 10px;
 }
 
@@ -55,20 +51,44 @@ a:hover {
     height: 20px;
     padding: 5px;
     background-color:#66FF66;
-    border-style:dotted;
-    border-width: thin;
-    border-color: black;
+    color:#003300;
     text-align:center;
 }
 
-#message {
+#message div {
+    margin-bottom:10px;
+    padding: 5px;
+    border-width: thin;
+    border-style: solid;
+    font-weight: bold;
+    text-align: center;
+}
+
+#message div.error{
+    background-color: #FF9966;
+    border-color: red;
+    color: red;
+}
+
+#message div.information{
+    background-color: #CCFFFF;
+    border-color: navy;
+    color: navy;
+}
+
+#message div.warning{
+    background-color: #FFFF99;
+    border-color: #996600;
+    color: #996600;
 }
 
 #content {
-    min-height: 170px;
+    min-height: 200px;
+    max-height: 400px;
     padding-top:20px;
     padding-right:5px;
     padding-left:5px;
+    background-color: #E6FFCC;
 }
 
 /* Forms */
