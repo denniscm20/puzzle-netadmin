@@ -19,7 +19,7 @@ html, body {
 }
 
 a {
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 a:hover {
@@ -27,23 +27,46 @@ a:hover {
 }
 
 /* Banner */
-#banner {
+#banner_out {
     text-align: center;
     height: 120px;
     padding-top: 10px;
 }
 
-/* Nav */
-#nav {
-    display:inline-block;
-    width: 100%;
+#banner_in {
+    height: 120px;
+    padding-top: 10px;
+    width:100%;
 }
 
-#nav li {
+#banner_in li {
     float: left;
     list-style: none;
+    padding-top: 6px;
+    margin-right: 3px;
+    width: 115px;
+    height:25px;
+    display:inline;
+}
+
+.banner_image {
+    float:left;
+}
+
+#banner_in ul {
+    float:right;
+    padding-top:8px;
+    display: inline-block;
+}
+
+ul.actions li {
+    text-align: right;
+    color: white;
+}
+
+ul.sections li {
+    background-color: #E6FFCC;
     text-align: center;
-    width: 20%;
 }
 
 /* Footer */
@@ -56,7 +79,6 @@ a:hover {
 }
 
 #message div {
-    margin-bottom:10px;
     padding: 5px;
     border-width: thin;
     border-style: solid;
@@ -71,7 +93,7 @@ a:hover {
 }
 
 #message div.information{
-    background-color: #CCFFFF;
+    background-color: #99CCFF;
     border-color: navy;
     color: navy;
 }
@@ -83,7 +105,7 @@ a:hover {
 }
 
 #content {
-    min-height: 200px;
+    min-height: 220px;
     max-height: 400px;
     padding-top:20px;
     padding-right:5px;
@@ -133,6 +155,7 @@ div.row {
 }
 
 span.label {
+    margin-top: 4px;
     font-weight: bold;
     float: left;
     width: 120px;
