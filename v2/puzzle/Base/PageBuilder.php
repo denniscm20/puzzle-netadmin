@@ -97,19 +97,26 @@ class PageBuilder
         <body>
             <div>
                 <?php if ($this->page == DEFAULT_LOGOUT_PAGE) { ?>
-                <div id="banner" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
+                <div id="banner_out" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
                     <img src="<?php echo Helper::getImage('logo.png'); ?>" alt="Logo" >
                     <img src="<?php echo Helper::getImage('title.png'); ?>" alt="Puzzle" >
                 </div>
                 <?php } else { ?>
-                <div id="nav">
-                    <ul>
-                        <li></li>
+                <div id="banner_in" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
+                    <img class="banner_image" src="<?php echo Helper::getImage('logo.png'); ?>" alt="Logo" >
+                    <img class="banner_image" src="<?php echo Helper::getImage('title.png'); ?>" alt="Puzzle" >
+                    <ul class="actions">
                         <li>
                             <a href="/?Page=<?php echo DEFAULT_LOGOUT_PAGE ?>&amp;Event=logout">
                                 <?php echo LOG_OUT;?>
                             </a>
                         </li>
+                    </ul>
+                    <ul class="sections">
+                        <li>Item 1</li>
+                        <li>Item 2</li>
+                        <li>Item 3</li>
+                        <li>Item 4</li>
                     </ul>
                 </div>
                 <?php } ?>
@@ -120,6 +127,7 @@ class PageBuilder
                         $messageHandler->showMessages();
                     ?>
                     </div>
+                    <br />
                     <?php $this->view->show(); ?>
                 </div>
             </div>

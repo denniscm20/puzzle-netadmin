@@ -90,7 +90,7 @@ class Lib_MessagesHandler {
     {
         if (count($messageList) > 0) {
             echo '<div class = "', $type,'">';
-            echo '<img src="',Helper::getImage('msg_'.$type.'.png'),'" alt="[',$type,']">';
+            echo '<img src="',Helper::getImage('msg_'.$type.'.png'),'" alt="[',$type,']">&nbsp;';
             echo join("<br/>", $messageList);
             echo '</div>';
         }
