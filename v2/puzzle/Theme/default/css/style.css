@@ -72,12 +72,14 @@ ul.sections li {
 /* Footer */
 #footer {
     height: 20px;
-    padding: 5px;
+    padding-top: 10px;
     background-color:#66FF66;
+    font-size: 10px;
     color:#003300;
     text-align:center;
 }
 
+/* Application Information Messages */
 #message div {
     padding: 5px;
     border-width: thin;
