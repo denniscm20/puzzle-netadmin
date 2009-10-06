@@ -4,9 +4,10 @@
     define ("DEFAULT_TITLE", "Nombre del Proyecto");
     define ("TIMEZONE", "America/Lima");
 
-    define ("DB_TYPE", "");
-    define ("DB_HOST", "");
-    define ("DB_NAME", "");
+    // DB_TYPE = Sqlite, MySQL
+    define ("DB_TYPE", "Sqlite");
+    define ("DB_HOST", "localhost");
+    define ("DB_NAME", "puzzle.sqlite");
     define ("DB_PORT", "");
     define ("DB_USER", "");
     define ("DB_PASSWORD", "");
