@@ -4,6 +4,10 @@ CREATE TABLE AccessType (
     description VARCHAR(200) NOT NULL
 );
 
+INSERT INTO AccessType Values (1, 'SUCCESS', 'The user has successfully logged in');
+INSERT INTO AccessType Values (2, 'FAILURE', 'The username and password does not match');
+INSERT INTO AccessType Values (3, 'DO NOT EXIST', 'The username does not exist');
+
 CREATE TABLE AccessLog (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(20) NOT NULL,
@@ -91,6 +95,9 @@ CREATE TABLE Role (
     description VARCHAR(200) DEFAULT "" NOT NULL
 );
 
+INSERT INTO Role (id, name, description)
+VALUES (1, 'Administrator', 'Default Role Administrator');
+
 CREATE TABLE Role_x_Task (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_task INTEGER NOT NULL,
@@ -103,10 +110,12 @@ CREATE TABLE Account (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_role INTEGER NOT NULL,
     username VARCHAR(20) NOT NULL,
+    salt VARCHAR(20) NOT NULL,
     password VARCHAR(210) NOT NULL,
+    changePassword BOOLEAN NOT NULL,
     enabled BOOLEAN NOT NULL,
-    createdDate DATE NOT NULL,
-    modifiedDate DATE NOT NULL,
+    createdDate DATETIME NOT NULL,
+    modifiedDate DATETIME NOT NULL,
     id_account_creator INTEGER NOT NULL,
     id_account_modifier INTEGER NOT NULL,
     CONSTRAINT account_modifier_account_fk FOREIGN KEY (id_account_modifier) REFERENCES Account (id),
@@ -115,6 +124,9 @@ CREATE TABLE Account (
 );
 
 CREATE UNIQUE INDEX username_idx ON Account ( username );
+
+INSERT INTO Account (id,id_role,username,password,enabled,createdDate,modifiedDate,id_account_creator,id_account_modifier,changePassword)
+VALUES ('1','1','admin','','true',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'1','1','true')
 
 CREATE TABLE Puzzle (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

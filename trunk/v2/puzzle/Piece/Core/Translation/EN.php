@@ -18,6 +18,7 @@ Duis nec ligula nibh. Ut eros nulla, posuere ut venenatis at, euismod a justo.")
 define("LOGIN_TITLE", "Login");
 define("LOGIN_LOGOUT_INFO", "You were successfully logged out");
 define("LOGIN_LOGOUT_ERROR", "There were loged out with some errors");
+define("LOGIN_LOGIN_ERROR", "The username or password were incorrect");
 define("LOGIN_USER_FIELD", "User");
 define("LOGIN_PASSWORD_FIELD", "Password");
 define("LOGIN_SUBMIT_BUTTON", "Log in");

@@ -163,7 +163,7 @@ class Lib_Validator
             if (checkdate($month, $day, $year)) {
                 return TRUE;
             }
-        }
+        } 
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError(sprintf(ERROR_DATE, $date));
         return FALSE;
@@ -199,117 +199,6 @@ class Lib_Validator
         }
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError($error);
-        return false;
-    }
- 
-    /**
-     * Validates the parameter is a valid IPv4 address.
-     * @static
-     * @access public
-     * @param string $ip Ipv4 Address to validate.
-     * @return boolean
-     */
-    public static function validateIp4($ip) {
-        $ipPattern = '/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' .
-                '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' .
-                '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' .
-                '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/';
-        return preg_match($ipPattern, $ip) > 0;
-    }
-
-    /**
-     * Validates that the parameter is a valid Short Mask
-     * @static
-     * @access public
-     * @param string $shortMask
-     * @return boolean
-     */
-    public static function validateShortMaskIpv4 ($shortMask) {
-        if (is_numeric($shortMask)) {
-            if ($shortMask >= 0 && $shortMask <= 32) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * Validates that a short mask belongs to a mask
-     * @static
-     * @access public
-     * @param string $mask pMascara Máscara en formato largo.
-     * @param string $shortMask
-     * @return boolean
-     */
-    public static function validateMaskIp4 ($mask, $shortMask) {
-        if (Lib_Validator::validateIp4($mask) && Lib_Validator::validateShortMaskIpv4($shortMask)) {
-            $values = explode(".", $mask);
-            $maskNumber = 0;
-            $count = count($values);
-            for ($i = 0; $i < $count; $i ++) {
-                $masquerade = 0x1;
-                for ($j = 0; $j < 8; $j++) {
-                    $bit = ($value[$i] >> (7 - $j)) & $masquerade;
-                    if ($bit == 1) {
-                        $maskNumber++;
-                    }
-                    if ($bit == 0 || (($j == 7) && ($i == 3))) {
-                        return $maskNumber == $shortMask;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * Validates that an Ipv4 belongs to a subnet
-     * @static
-     * @access public
-     * @param string $ip IP Address.
-     * @param string $mask Subnet Mask.
-     * @param string $subnet Subnet IP Address.
-     * @return boolean
-     */
-    public static function validateIpBelongsSubnet($ip, $mask, $subnet) {
-        $ip = explode(".",$ip);
-        $mask = explode(".",$mask);
-        $subnet = explode(".",$subnet);
-        
-        if (Lib_Validator::validateIp4($ip) && Lib_Validator::validateIp4($mask) && Lib_Validator::validateIp4($subnet)) {
-            for ($i = 0; $i < 4; $i ++ ) {
-                $masquerade = (int)$mask[$i];
-                if (($ip[$i] & $masquerade) != ($subnet[$i] & $masquerade)) {
-                    return false;
-                }
-            }
-            return true;
-        } 
-        return false;
-    }
-    
-    /**
-     * Validates the Mask parameter has a valid IPv4 format
-     * @static
-     * @access public
-     * @param string $mask
-     * @return boolean
-     */
-    public static function validateMaskIp4($mask) {
-        if (Lib_Validator::validateIp4($mask)) {
-            $mask = explode(".", $mask);
-            $oldBit = 1;
-            foreach ($mask as $element) {
-                $masquerade = 0x1;
-                for ($i = 0; $i < 8; $i++) {
-                    $bit = ((((int)$element) >> (7 - $i))) & $masquerade;
-                    if (($oldBit == 0) && ($bit == 1)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
         return false;
     }
 }

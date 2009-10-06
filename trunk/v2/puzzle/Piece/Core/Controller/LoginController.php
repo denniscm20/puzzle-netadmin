@@ -25,13 +25,14 @@ require_once PATH_BASE.'Controller.php';
  * @author Dennis Stephen Cohn Muroy
  * @version 1.0
  * @since 2009
- * @package Base
+ * @package Core
+ * @subpackage Controller
  * @copyright Copyright (c) 2009, Dennis Cohn
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 class Core_Controller_LoginController extends Base_Controller
 {
-
+    
     // --- ASSOCIATIONS ---
 
     // --- ATTRIBUTES ---
@@ -93,11 +94,17 @@ class Core_Controller_LoginController extends Base_Controller
 
     protected function login()
     {
-        //TODO: Validate Login
-        $user = null;
-        $_SESSION["User"] = serialize($user);
-        session_write_close();
-        Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
+        if ($this->validateInput() === true) {
+            $user = $this->retrieveUser();
+            $this->verifyChangePassword($user->ChangePasword);
+            $value = $this->verifyPassword($user->Password, $user->Salt);
+            if ($value === true) {
+                $this->grantAccess($user);
+                $this->log($message);
+            }
+        }
+        $this->denyAcccess();
+        $this->log($message);
     }
 
     protected function logout()
@@ -105,10 +112,12 @@ class Core_Controller_LoginController extends Base_Controller
     	if (isset($_SESSION["User"])) {
         	session_unset();
             $messageHandler = Lib_MessagesHandler::getInstance();
-            if (session_destroy() !== false)
+            if (session_destroy() !== false) {
                 $messageHandler->addInformation(LOGIN_LOGOUT_INFO);
-            else
+            } else {
                 $messageHandler->addError(LOGIN_LOGOUT_ERROR);
+            }
+            $this->log($message);
         }
     }
 
@@ -116,6 +125,64 @@ class Core_Controller_LoginController extends Base_Controller
     {
         return;
     }
+
+    private function validateInput()
+    {
+        $result = false;
+        $username = trim($_POST["username"]);
+        $password = trim($_POST["password"]);
+        $cleanUsername = Lib_Cleaner::clearString($_POST["username"]);
+        $cleanPassword = Lib_Cleaner::clearString($_POST["password"]);
+        if ($username == $cleanUsername && $password == $cleanPassword) {
+            $result = (Lib_Validator::validateString($cleanUsername, 20)) &&
+                      (Lib_Validator::validateString($cleanPassword, 210));
+        }
+        return $result;
+    }
+
+    private function retrieveUser()
+    {
+        Lib_Helper::getDao("Core", "AccountDAO");
+        $user = new Core_Model_Class_Account();
+        $user->Username = trim($_POST["username"]);
+        $user->Enabled = true;
+        $accountDAO = new Core_Model_Dao_AccountDAO($user);
+        $user = $accountDAO->selectByUsernameAndEnabled();
+        return $user;
+    }
+
+    private function verifyChangePassword($changePasword)
+    {
+        if ($changePasword === true) {
+            Lib_Helper::redirect("Core", "Account");
+        }
+    }
+
+    private function verifyPassword($password, $salt)
+    {
+        $currentpassword = $salt.trim($_POST["password"]);
+        $cypher = hash("sha512", $currentpassword);
+        return ($password == $cypher);
+    }
+
+    private function grantAccess($user)
+    {
+        $_SESSION["User"] = serialize($user);
+        session_write_close();
+        Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
+    }
+
+    private function denyAcccess()
+    {
+        $messageHandler = Lib_MessagesHandler::getInstance();
+        $messageHandler->addError(LOGIN_LOGIN_ERROR);
+    }
+
+    private function log($type, $message)
+    {
+        
+    }
+    
 }
 
 ?>
