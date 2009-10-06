@@ -18,7 +18,7 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once (LIB_PATH.'DBConnection.php');
+require_once (LIB_PATH.'Database/Connection.php');
 
 /**
  * Abstract class that implements the basic methods of the data access object class.
@@ -40,13 +40,6 @@ abstract class Base_DAO
      */
     const LIMIT_DEFAULT = 10;
     /**
-     * Short description of attribute MAX
-     *
-     * @access public
-     * @var Integer
-     */
-    const MAX = null;
-    /**
      * This attribute stores the query that will be executed against the database.
      * @var string
      * @access protected
@@ -59,12 +52,6 @@ abstract class Base_DAO
      */
     protected $parameters = array();
     /**
-     * The range of registers that will be returned from the query.
-     * @var String
-     * @access protected
-     */
-    protected $limit = "";
-    /**
      * The object that contains the information that will be stored/updated in
      * the database.
      * @var Object
@@ -74,9 +61,9 @@ abstract class Base_DAO
     /**
      * The connection to the data base.
      * @var PDO
-     * @access protected
+     * @access private
      */
-    protected $connection = null;
+    private $connection = null;
 
     /**
      * Class constructor.
@@ -86,9 +73,8 @@ abstract class Base_DAO
      */
     protected function __construct( $object ){
         $this->object = $object;
-        $this->limit = "";
-        $dbConnection = Lib_DBConnection::getInstance();
-        $this->connection = $dbConnection->getConnection();
+        eval ("\$connection = Lib_Database_".DB_TYPE."::getInstance();");
+        $this->connection = $connection->getConnection();
     }
 
     /**
@@ -104,17 +90,30 @@ abstract class Base_DAO
     }
 
     /**
+     * Limit the number of items returned by the query
+     * @access protected
+     * @final
+     * @param String $query
+     * @param Integer $start
+     * @param Integer $range
+     * @return String
+     */
+    protected final function limitQuery($start, $range = self::LIMIT_DEFAULT)
+    {
+        $this->query = $this->connection->limitQuery($this->query, $start, $range);
+    }
+
+    /**
      * Implements the select database function.
      * @access protected
+     * @final
      * @return array A list of objects.
      */
-    protected function selectQuery ( )
+    protected final function selectQuery ( )
     {
         try {
             $objects = array();
-            $this->query .= $this->limit;
-            $connection = $this->connection;
-            $statement = $connection->prepare($this->query);
+            $statement = $this->connection->prepare($this->query);
             if (count($this->parameters) > 0) {
                 $statement->execute($this->parameters);
             } else {
@@ -133,9 +132,10 @@ abstract class Base_DAO
     /**
      * Implements the insert/update/delete SQL functions
      * @access protected
+     * @final
      * @return bool The query was successfully executed.
      */
-    protected function executeQuery() {
+    protected final function executeQuery() {
         try {
             $statement = $this->connection->prepare($this->query);
             if (count($this->parameters) > 0) {
@@ -160,23 +160,16 @@ abstract class Base_DAO
         $className = get_class($this->object);
         $object = new $className();
         foreach ($result as $key => $value) {
-            if (strpos($key, '_id') === false) {
+            if (strpos($key, 'id_') === false) {
                 $setMethod = "set".ucfirst($key);
-                $object->{$setMethod}($value);
+                if (method_exists($object, $setMethod)) {
+                    $object->{$setMethod}($value);
+                }
             }
         }
         return $object;
     }
 
-    /**
-     * Sets the total amount ot records that the query will return.
-     * @access public
-     * @param integer start
-     * @param integer max
-     * @return boolean
-     */
-    public abstract function setLimits($start = 0, $max = DAO::LIMIT_DEFAULT);
-    
     /**
      * Inserts a new object in the database.
      *

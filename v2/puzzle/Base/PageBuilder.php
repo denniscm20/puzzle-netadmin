@@ -42,9 +42,9 @@ class PageBuilder
         $this->page = $page;
         $this->piece = $piece;
         $this->language = $_SESSION["Language"];
-        $this->language = Helper::getTranslation($piece, $this->language);
-        $viewClass = Helper::getView($piece, $page);
-        $controllerClass = Helper::getController($piece, $page);
+        $this->language = Lib_Helper::getTranslation($piece, $this->language);
+        $viewClass = Lib_Helper::getView($piece, $page);
+        $controllerClass = Lib_Helper::getController($piece, $page);
         if (($viewClass !== false) && ($controllerClass !== false)) {
             eval("\$this->controller = ".$controllerClass."::getInstance('".$this->piece."', '".$this->page."');");
             $this->controller->execute ($event);
@@ -97,14 +97,14 @@ class PageBuilder
         <body>
             <div>
                 <?php if ($this->page == DEFAULT_LOGOUT_PAGE) { ?>
-                <div id="banner_out" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
-                    <img src="<?php echo Helper::getImage('logo.png'); ?>" alt="Logo" >
-                    <img src="<?php echo Helper::getImage('title.png'); ?>" alt="Puzzle" >
+                <div id="banner_out" style="background-image:url(<?php echo "'",Lib_Helper::getImage('header_back.jpg'),"'";?>)">
+                    <img src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
+                    <img src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
                 </div>
                 <?php } else { ?>
                 <div id="banner_in" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
-                    <img class="banner_image" src="<?php echo Helper::getImage('logo.png'); ?>" alt="Logo" >
-                    <img class="banner_image" src="<?php echo Helper::getImage('title.png'); ?>" alt="Puzzle" >
+                    <img class="banner_image" src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
+                    <img class="banner_image" src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
                     <ul class="actions">
                         <li>
                             <a href="/?Page=<?php echo DEFAULT_LOGOUT_PAGE ?>&amp;Event=logout">
@@ -131,7 +131,7 @@ class PageBuilder
                     <?php $this->view->show(); ?>
                 </div>
             </div>
-            <div id="footer" style="background-image:url(<?php echo "'",Helper::getImage('footer_back.jpg'),"'";?>)">
+            <div id="footer" style="background-image:url(<?php echo "'",Lib_Helper::getImage('footer_back.jpg'),"'";?>)">
                 <div>&copy; Dennis Stephen Cohn Muroy</div>
             </div>
         </body>

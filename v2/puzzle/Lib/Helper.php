@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Base/Helper.php - Copyright 2009 Dennis Cohn Muroy
+ * Lib/Helper.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -20,13 +20,15 @@
  */
 
 /**
- * @package /Lib/
- * @class Helper
  * @author Dennis Stephen Cohn Muroy
  * @version 1.0
+ * @since 2009
+ * @package Lib
+ * @copyright Copyright (c) 2009, Dennis Cohn
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
- 
-class Helper {
+
+class Lib_Helper {
     
     /**
      * This method verifies if a PHP module has been installed.
@@ -116,50 +118,11 @@ class Helper {
     {
         $url = "/index.php?Piece=".$pieceName."&Page=".$pageName;
         header ("Location: ".$url);
+        exit;
     }
-    
-    public static function maskToShortMask ($pMascara) {
-        $lValues = explode(".",$pMascara);
-        $lCount = count($lValues);
 
-        if ($lCount != 4) {
-            return false;
-        }
-        
-        $lMaskNumber = 0;
-        $lZeroValue = false;
-        
-        for ($i = 0; $i < $lCount; $i++) {
-            $lValue = $lValues[$i];
-            $lMask = 0x1;
-            for ($j = 0; $j < 8; $j++) {
-                $lBit = ($lValue >> (7 - $j)) & $lMask;
-                if ($lBit) {
-                    $lMaskNumber++;
-                } else {
-                    $lZeroValue = true;
-                    break;
-                }
-            }
-            if ($lZeroValue) {
-                break;
-            }
-        }
-        return $lMaskNumber;
-    }
-    
     public static function changeDateFormat($date, $newFormat) {
         return date($newFormat,strtotime($date));
-    }
-
-    public static function getRemoteIP ()
-    {
-        $ipReals = isset($_SERVER['HTTP_X_FORWARDED_FOR'])? $_SERVER['HTTP_X_FORWARDED_FOR'] : "";
-        foreach (explode(",",$ipReals) as $ip) {
-            return $ip;
-        }
-        $ip = isset($_SERVER['REMOTE_ADDR'])? $_SERVER['REMOTE_ADDR'] : "";
-        return $ip;
     }
 
     public static function getImage($img)

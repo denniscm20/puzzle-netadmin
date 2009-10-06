@@ -1,6 +1,6 @@
 <?php
 /*
- * Base/DBConnection.php - Copyright 2009 Dennis Cohn Muroy
+ * Lib/Database/Connection.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -19,29 +19,25 @@
  */
 
 /**
- * Creates the database master and Slave connections.
+ * Creates the database connection.
  * @abstract
+ * @package Lib
+ * @subpackage Database
  * @author Dennis Cohn Muroy
  * @version 1.0
  * @copyright Copyright (c) 2009, Dennis Cohn Muroy
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-abstract class Lib_DBConnection
+abstract class Lib_Database_Connection
 {
+
     /**
-     * Indicates if a connection has been created
-     * @var boolean
+     * The database connection
+     * @var PDO
      * @access protected
      * @static
      */
-    protected static $connectionCreated = null;
-
-    /**
-     * The master or single database connection
-     * @var PDO
-     * @access protected
-     */
-    protected $dbConnection = null;
+    protected static $connection = null;
     
     /**
      * Class constructor
@@ -49,29 +45,56 @@ abstract class Lib_DBConnection
      */
     protected function __construct()
     {
-        $dns = $this->dns;
+        $dns = $this->buildDns();
         $user = DB_USER;
         $password = DB_PASSWORD;
 
-        $pdo = null;
+        self::$connection = null;
         try {
-            $pdo = new PDO ($dns, $user, $password);
+            self::$connection = new PDO ($dns, $user, $password);
         } catch (Exception $ex) {
         	throw $ex;
         }
-
-        return $pdo;
     }
 
 
     /**
      * Retrieves a DBConnection instance.
      * @abstract
-     * @static
      * @access public
      * @return DBConnection Connection instance.
      */
-    public abstract static function getInstance();
+    public static function getInstance()
+    {
+        $file = LIB_PATH.'Database/'.DB_TYPE.'.php';
+        if (file_exists($file)) {
+            require_once $file;
+            if (self::$connection == null) {
+                $className = "Lib_Database_".DB_TYPE;
+                self::$connection = new $className ();
+            }
+            return self::$connection;
+        } else {
+            throw new Exception();
+        }
+    }
+
+    /**
+     * Builds the dns needed to start the connection.
+     * @abstract
+     * @access protected
+     * @return String.
+     */
+    protected abstract function buildDns();
+
+    /**
+     * Limit the number of items returned by the query
+     * @param String $query
+     * @param Integer $start
+     * @param Integer $range
+     * @return String
+     */
+    public abstract function limitQuery($query, $start, $range);
     
     /**
      * Retrieves a Connection to a Master or a Single Data Base
@@ -79,7 +102,7 @@ abstract class Lib_DBConnection
      * @return PDO Connection to a Master or a Single Data Base
      */
     public function getConnection() {
-    	return $this->dbConnection;
+    	return self::$connection;
     }
 
     /**
@@ -88,7 +111,7 @@ abstract class Lib_DBConnection
      */
     protected function __destruct()
     {
-        unset($this->dbConnection);
+        unset(self::$connection);
     }
 }
 
