@@ -32,12 +32,19 @@ abstract class Lib_Database_Connection
 {
 
     /**
-     * The database connection
-     * @var PDO
+     * The Lib_Database_Connection object instance
+     * @var Lib_Database_Connection
      * @access protected
      * @static
      */
     protected static $connection = null;
+
+    /**
+     * The database connection
+     * @var PDO
+     * @access protected
+     */
+    protected $databaseConnection = null;
     
     /**
      * Class constructor
@@ -49,9 +56,9 @@ abstract class Lib_Database_Connection
         $user = DB_USER;
         $password = DB_PASSWORD;
 
-        self::$connection = null;
+        $this->databaseConnection = null;
         try {
-            self::$connection = new PDO ($dns, $user, $password);
+            $this->databaseConnection = new PDO ($dns, $user, $password);
         } catch (Exception $ex) {
         	throw $ex;
         }
@@ -66,7 +73,7 @@ abstract class Lib_Database_Connection
      */
     public static function getInstance()
     {
-        $file = LIB_PATH.'Database/'.DB_TYPE.'.php';
+        $file = PATH_LIB.'Database/'.DB_TYPE.'.php';
         if (file_exists($file)) {
             require_once $file;
             if (self::$connection == null) {
@@ -102,7 +109,7 @@ abstract class Lib_Database_Connection
      * @return PDO Connection to a Master or a Single Data Base
      */
     public function getConnection() {
-    	return self::$connection;
+    	return $this->databaseConnection;
     }
 
     /**
@@ -111,7 +118,8 @@ abstract class Lib_Database_Connection
      */
     protected function __destruct()
     {
-        unset(self::$connection);
+        self::$connection = null;
+        unset($this->databaseConnection);
     }
 }
 

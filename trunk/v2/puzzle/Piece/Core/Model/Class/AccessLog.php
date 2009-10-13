@@ -34,8 +34,9 @@ require_once PATH_BASE.'Class.php';
 class Core_Model_Class_AccessLog extends Base_Class {
 
     const ACCESS_TYPE_SUCCESS = 1;
-    const ACCESS_TYPE_FAILURE = 2;
-    const ACCESS_TYPE_NOT_EXIST = 3;
+    const ACCESS_TYPE_LOG_OUT = 2;
+    const ACCESS_TYPE_FAILURE = 3;
+    const ACCESS_TYPE_NOT_EXIST = 4;
 
     private $username;
     private $ip;
@@ -48,7 +49,7 @@ class Core_Model_Class_AccessLog extends Base_Class {
         $this->username = "";
         $this->ip = "";
         $this->datetime = date();
-        $this->accessType = "";
+        $this->accessType = 0;
         $this->description = "";
     }
 
@@ -56,6 +57,61 @@ class Core_Model_Class_AccessLog extends Base_Class {
         parent::__destruct();
     }
 
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    public function getDatetime()
+    {
+        return $this->datetime;
+    }
+
+    public function getAccessType()
+    {
+        return $this->accessType;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setUsername($username)
+    {
+        if (Lib_Validator::validateString($username, 20)) {
+            $this->username = $username;
+        }
+    }
+
+    public function setIp($ip)
+    {
+        if (Lib_Validator::validateString($ip, 40)) {
+            $this->ip = $ip;
+        }
+    }
+
+    public function setDatetime($datetime)
+    {
+        $this->datetime = $datetime;
+    }
+
+    public function setAccessType( $accessType )
+    {
+        if (Lib_Validator::validateInteger($accessType)) {
+            $this->accessType = $accessType;
+        }
+    }
+
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
     
 }
 ?>

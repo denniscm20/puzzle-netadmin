@@ -18,7 +18,8 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once PATH_LIB.'MessageHandler.php';
+require_once PATH_LIB.'Cleaner.php';
+require_once PATH_LIB.'Validator.php';
 
 /**
  * Abstract class that implements the basic methods of the controller class.

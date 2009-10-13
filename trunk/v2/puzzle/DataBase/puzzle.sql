@@ -5,8 +5,9 @@ CREATE TABLE AccessType (
 );
 
 INSERT INTO AccessType Values (1, 'SUCCESS', 'The user has successfully logged in');
-INSERT INTO AccessType Values (2, 'FAILURE', 'The username and password does not match');
-INSERT INTO AccessType Values (3, 'DO NOT EXIST', 'The username does not exist');
+INSERT INTO AccessType Values (2, 'LOG OUT', 'The user has successfully logged out');
+INSERT INTO AccessType Values (3, 'FAILURE', 'The username and password does not match');
+INSERT INTO AccessType Values (4, 'DO NOT EXIST', 'The username does not exist');
 
 CREATE TABLE AccessLog (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,6 +26,9 @@ CREATE TABLE ValidIp (
 );
 
 CREATE UNIQUE INDEX ip_idx ON ValidIp ( ip );
+
+INSERT INTO ValidIp VALUES (1, '127.0.0.1', 1);
+INSERT INTO ValidIp VALUES (2, '::1', 0);
 
 CREATE TABLE Service (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -126,7 +130,7 @@ CREATE TABLE Account (
 CREATE UNIQUE INDEX username_idx ON Account ( username );
 
 INSERT INTO Account (id,id_role,username,password,enabled,createdDate,modifiedDate,id_account_creator,id_account_modifier,changePassword)
-VALUES ('1','1','admin','','true',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'1','1','true')
+VALUES (1,1,'admin','',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,1,1)
 
 CREATE TABLE Puzzle (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

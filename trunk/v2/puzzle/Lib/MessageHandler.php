@@ -46,7 +46,17 @@ class Lib_MessagesHandler {
      * @access private
      */
     private function  __construct()
-    {}
+    {
+        $this->clear();
+    }
+
+    /**
+     * Class Destructor
+     * @access public
+     */
+    public function   __destruct() {
+        self::$messageHandler = null;
+    }
 
     /**
      * Clears the error messages to be displayed.
@@ -55,9 +65,9 @@ class Lib_MessagesHandler {
      */
     private function clear()
     {
-        $_SESSION[self::ERROR] = serialize(array());
-        $_SESSION[self::INFORMATION] = serialize(array());
-        $_SESSION[self::WARNING] = serialize(array());
+        unset($_SESSION[self::ERROR]);
+        unset($_SESSION[self::INFORMATION]);
+        unset($_SESSION[self::WARNING]);
         session_write_close();
     }
 
@@ -90,7 +100,7 @@ class Lib_MessagesHandler {
     {
         if (count($messageList) > 0) {
             echo '<div class = "', $type,'">';
-            echo '<img src="',Helper::getImage('msg_'.$type.'.png'),'" alt="[',$type,']">&nbsp;';
+            echo '<img src="',Lib_Helper::getImage('msg_'.$type.'.png'),'" alt="[',$type,']">&nbsp;';
             echo join("<br/>", $messageList);
             echo '</div>';
         }
@@ -116,7 +126,7 @@ class Lib_MessagesHandler {
      * @param string $msg Error message to be registered.
      */
     public function addError($msg)
-    {
+    { 
         $this->addMessage($msg, self::ERROR);
     }
 

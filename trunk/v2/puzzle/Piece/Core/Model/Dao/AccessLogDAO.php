@@ -33,7 +33,55 @@ require_once PATH_BASE.'DAO.php';
  */
 class Core_Model_Dao_AccessLogDAO extends Base_DAO {
 
+    public function  __construct($object) {
+        parent::__construct($object);
+        Lib_Helper::getClass("Core", "AccessLog");
+    }
 
+    public function  __destruct() {
+        parent::__destruct();
+    }
 
+    public function listElements($start, $range = Base_DAO::LIMIT_DEFAULT)
+    {
+        $this->query = "SELECT A.username, A.ip, A.date, A.time, B.description ".
+                       "FROM AccessLog A ".
+                       "LEFT JOIN AccessType B ".
+                       "ON (A.id_access_type = B.id)";
+        $this->parameters = array();
+        $this->limitQuery($start, $range);
+        return $this->selectQuery();
+    }
+    
+    public function delete() {
+        return false;
+    }
+    
+    public function update() {
+        return false;
+    }
+    
+    public function insert() {
+        $this->query = "INSERT INTO AccessLog (username, ip, date, time, id_access_type) ".
+                       "VALUES (?, ?, ?, ?, ?)";
+        $date = date("Y-m-d", $this->object->Datetime);
+        $time = date("H:i:s", $this->object->Datetime);
+        $this->parameters = array($this->object->Username, $this->object->Ip,
+            $this->object->Username, $date, $time, $this->object->AccessType);
+        return $this->executeQuery();
+    }
+
+    public function select() {
+    }
+
+    public function selectByAccessType() {
+    }
+
+    public function selectByUsername() {
+    }
+
+    public function selectByDate() {
+    }
+    
 }
 ?>
