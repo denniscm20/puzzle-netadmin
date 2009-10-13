@@ -24,4 +24,14 @@ define("LOGIN_PASSWORD_FIELD", "Password");
 define("LOGIN_SUBMIT_BUTTON", "Log in");
 define("LOGIN_RESET_BUTTON", "Clear");
 
+// Error 404
+define("ERROR_404_TITLE", "Error 404");
+define("ERROR_404_MESSAGE",
+    "The page you are looking for does not exist.<br />Do not modify the page url.");
+
+// Error 403
+define("ERROR_403_TITLE", "Error 403");
+define("ERROR_403_MESSAGE",
+    "You do not have permission to access the following page.");
+
 ?>

@@ -73,8 +73,8 @@ class Core_Model_Class_Account extends Base_Class {
         Lib_Helper::getClass("Core", "Role");
 
         $this->role = new Core_Model_Class_Role();
-        $this->accountCreator = new Core_Model_Class_Account();
-        $this->accountModifier = new Core_Model_Class_Account();
+        $this->accountCreator = null;
+        $this->accountModifier = null;
 
         $this->username = "";
         $this->salt = "";

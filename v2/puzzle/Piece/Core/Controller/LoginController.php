@@ -34,6 +34,7 @@ class Core_Controller_LoginController extends Base_Controller
 {
     
     // --- ASSOCIATIONS ---
+    private $user;
 
     // --- ATTRIBUTES ---
 
@@ -47,6 +48,10 @@ class Core_Controller_LoginController extends Base_Controller
     protected function __construct()
     {
         parent::__construct();
+        Lib_Helper::getClass("Core", "AccessLog");
+        Lib_Helper::getClass("Core", "Account");
+        
+        $this->user = new Core_Model_Class_Account();
     }
     
     /**
@@ -59,6 +64,7 @@ class Core_Controller_LoginController extends Base_Controller
     public function __destruct()
     {
         parent::__destruct();
+        unset($this->user);
     }
 
     /**
@@ -81,6 +87,7 @@ class Core_Controller_LoginController extends Base_Controller
      */
     public function execute( $event )
     {
+        $this->isValidIp();
         switch ($event) {
             case "load":
             case "login":
@@ -92,21 +99,36 @@ class Core_Controller_LoginController extends Base_Controller
         $this->loadElements();
     }
 
+    /**
+     * Logs the user into the system
+     * @access protected
+     */
     protected function login()
     {
-        if ($this->validateInput() === true) {
-            $user = $this->retrieveUser();
-            $this->verifyChangePassword($user->ChangePasword);
-            $value = $this->verifyPassword($user->Password, $user->Salt);
-            if ($value === true) {
-                $this->grantAccess($user);
-                $this->log($message);
+        $username = isset($_POST["username"])?$_POST["username"]:"";
+        $password = isset($_POST["password"])?$_POST["password"]:"";
+        
+        if ($this->validateInput($username, $password) === true) {
+            $this->retrieveUser($username);
+            if ($this->user == null) {
+                $this->log(Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+            } else {
+                $this->verifyChangePassword();
+                if ($this->verifyPassword($password)) {
+                    $this->log(Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
+                    $this->grantAccess();
+                } else {
+                    $this->log(Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
+                }
             }
         }
         $this->denyAcccess();
-        $this->log($message);
     }
 
+    /**
+     * Log out the user from the system
+     * @access protected
+     */
     protected function logout()
     {
     	if (isset($_SESSION["User"])) {
@@ -117,70 +139,136 @@ class Core_Controller_LoginController extends Base_Controller
             } else {
                 $messageHandler->addError(LOGIN_LOGOUT_ERROR);
             }
-            $this->log($message);
+            $this->log(Core_Model_Class_AccessLog::ACCESS_TYPE_LOG_OUT);
         }
     }
 
+    /**
+     * Loads the page information
+     * @access protected
+     */
     protected function load()
     {
         return;
     }
 
-    private function validateInput()
+    /**
+     * Validates that the user is accessing from an authorized IP address
+     * @access private
+     */
+    private function isValidIp()
+    {
+        Lib_Helper::getClass("Core", "ValidIp");
+        Lib_Helper::getDao("Core", "ValidIp");
+        $validIp = new Core_Model_Class_ValidIp();
+        $validIp->Ip = Lib_Helper::getRemoteIP();
+        $validIpDAO = new Core_Model_Dao_ValidIpDAO($validIp);
+        $validIp = $validIpDAO->selectByIp();
+        if ($validIp == null) {
+            header("HTTP/1.0 403 Forbidden");
+	        exit();
+        }
+    }
+
+    /**
+     * Validates that the user and password provided do not have strange characters.
+     * @access private
+     * @param String $username Provided text plain Username
+     * @param String $password Provided text plain Password
+     * @return Boolean True if there were no validation errors
+     */
+    private function validateInput($username, $password)
     {
         $result = false;
-        $username = trim($_POST["username"]);
-        $password = trim($_POST["password"]);
-        $cleanUsername = Lib_Cleaner::clearString($_POST["username"]);
-        $cleanPassword = Lib_Cleaner::clearString($_POST["password"]);
-        if ($username == $cleanUsername && $password == $cleanPassword) {
+        $cleanUsername = Lib_Cleaner::clearString($username);
+        $cleanPassword = Lib_Cleaner::clearString($password);
+        if ($username != "" && $username == $cleanUsername && $password == $cleanPassword) {
             $result = (Lib_Validator::validateString($cleanUsername, 20)) &&
                       (Lib_Validator::validateString($cleanPassword, 210));
         }
         return $result;
     }
 
-    private function retrieveUser()
+    /**
+     * Retrieves an account object
+     * @access private
+     * @param String $username TExt plain username
+     */
+    private function retrieveUser($username)
     {
-        Lib_Helper::getDao("Core", "AccountDAO");
-        $user = new Core_Model_Class_Account();
-        $user->Username = trim($_POST["username"]);
-        $user->Enabled = true;
-        $accountDAO = new Core_Model_Dao_AccountDAO($user);
-        $user = $accountDAO->selectByUsernameAndEnabled();
-        return $user;
+        Lib_Helper::getDao("Core", "Account");
+        $this->user->Username = $username;
+        $this->user->Enabled = true;
+        $accountDAO = new Core_Model_Dao_AccountDAO($this->user);
+        $this->user = $accountDAO->selectByUsernameAndEnabled();
     }
 
-    private function verifyChangePassword($changePasword)
+    /**
+     * Validates if the changePassword flag is active.
+     * @access private
+     */
+    private function verifyChangePassword()
     {
+        $changePasword =  $this->user->ChangePassword;
         if ($changePasword === true) {
+            $_SESSION["User"] = serialize($this->user);
+            session_write_close();
             Lib_Helper::redirect("Core", "Account");
         }
     }
 
-    private function verifyPassword($password, $salt)
+    /**
+     * Validates if the password provided matches the stored one.
+     * @access private
+     * @param String $inputPassword Text plain password
+     * @return Boolean Trus if the stored and provided password matches
+     */
+    private function verifyPassword($inputPassword)
     {
-        $currentpassword = $salt.trim($_POST["password"]);
+        $password = $this->user->Password;
+        $salt = $this->user->Salt;
+        $currentpassword = $salt.$inputPassword;
         $cypher = hash("sha512", $currentpassword);
         return ($password == $cypher);
     }
 
-    private function grantAccess($user)
+    /**
+     * Grant access to the user with the provided account values.
+     * @access private
+     */
+    private function grantAccess()
     {
-        $_SESSION["User"] = serialize($user);
+        $_SESSION["User"] = serialize($this->user);
         session_write_close();
         Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
     }
 
+    /**
+     * Deny access to the user with the provided account values.
+     * @access private
+     */
     private function denyAcccess()
     {
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError(LOGIN_LOGIN_ERROR);
     }
 
-    private function log($type, $message)
+    /**
+     * Stores the information related to the successful or unsuccessful login attempt
+     * @access private
+     * @param int $type Error type.  Possible values are
+     * Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE | ACCESS_TYPE_LOG_OUT |
+     * ACCESS_TYPE_NOT_EXIST | ACCESS_TYPE_SUCCESS
+     */
+    private function log($type)
     {
-        
+        Lib_Helper::getDao("Core", "AccessLog");
+        $accessLog = new Core_Model_Class_AccessLog();
+        $accessLog->Username = Lib_Cleaner::clearString($_POST["username"]);
+        $accessLog->Ip = Lib_Helper::getRemoteIP();
+        $accessLog->AccessType = $type;
+        $accesLogDAO = new Core_Model_Dao_AccessLogDAO($accessLog);
+        $accesLogDAO->insert();
     }
     
 }

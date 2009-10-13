@@ -18,7 +18,7 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once (LIB_PATH.'Database/Connection.php');
+require_once (PATH_LIB.'Database/'.DB_TYPE.'.php');
 
 /**
  * Abstract class that implements the basic methods of the data access object class.
@@ -60,7 +60,7 @@ abstract class Base_DAO
     protected $object = null;
     /**
      * The connection to the data base.
-     * @var PDO
+     * @var Lib_Database_Connection
      * @access private
      */
     private $connection = null;
@@ -73,8 +73,7 @@ abstract class Base_DAO
      */
     protected function __construct( $object ){
         $this->object = $object;
-        eval ("\$connection = Lib_Database_".DB_TYPE."::getInstance();");
-        $this->connection = $connection->getConnection();
+        eval ("\$this->connection = Lib_Database_".DB_TYPE."::getInstance();");
     }
 
     /**
@@ -93,7 +92,6 @@ abstract class Base_DAO
      * Limit the number of items returned by the query
      * @access protected
      * @final
-     * @param String $query
      * @param Integer $start
      * @param Integer $range
      * @return String
@@ -113,7 +111,8 @@ abstract class Base_DAO
     {
         try {
             $objects = array();
-            $statement = $this->connection->prepare($this->query);
+            $connection = $this->connection->getConnection();
+            $statement = $connection->prepare($this->query);
             if (count($this->parameters) > 0) {
                 $statement->execute($this->parameters);
             } else {
@@ -137,7 +136,8 @@ abstract class Base_DAO
      */
     protected final function executeQuery() {
         try {
-            $statement = $this->connection->prepare($this->query);
+            $connection = $this->connection->getConnection();
+            $statement = $connection->prepare($this->query);
             if (count($this->parameters) > 0) {
                 $statement->execute($this->parameters);
             } else {
@@ -216,9 +216,11 @@ abstract class Base_DAO
      * @abstract
      * @access public
      * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @param Integer $start first element of the list to retrieve
+     * @param Integer $range Number of elements to retrieve
      * @return array
      */
-    public abstract function listElements();
+    public abstract function listElements($start, $range);
 
 }
 

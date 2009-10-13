@@ -32,7 +32,7 @@ require_once (PATH_LIB.'Database/Connection.php');
  */
 class Lib_Database_Sqlite extends Lib_Database_Connection {
 
-    private function __construct ()
+    protected function __construct ()
     {
         parent::__construct();
     }
@@ -46,7 +46,7 @@ class Lib_Database_Sqlite extends Lib_Database_Connection {
     {
         if (strpos(strtoupper($query), "SELECT") == 0) {
             $str = "%s LIMIT %d, %d";
-            $end = $start + $range - 1;
+            $end = $start + $range;
             $query = sprintf($str, $query, $start, $end);
         }
         return $query;

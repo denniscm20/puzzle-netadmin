@@ -1,13 +1,13 @@
 <?php
 
     // Configurable variables    
-    define ("DEFAULT_TITLE", "Nombre del Proyecto");
+    define ("DEFAULT_TITLE", "Puzzle NetAdmin");
     define ("TIMEZONE", "America/Lima");
 
     // DB_TYPE = Sqlite, MySQL
     define ("DB_TYPE", "Sqlite");
     define ("DB_HOST", "localhost");
-    define ("DB_NAME", "puzzle.sqlite");
+    define ("DB_NAME", "puzzle_database.sqlite");
     define ("DB_PORT", "");
     define ("DB_USER", "");
     define ("DB_PASSWORD", "");

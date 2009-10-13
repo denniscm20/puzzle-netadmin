@@ -121,7 +121,8 @@ class Lib_Helper {
         exit;
     }
 
-    public static function changeDateFormat($date, $newFormat) {
+    public static function changeDateFormat($date, $newFormat)
+    {
         return date($newFormat,strtotime($date));
     }
 
@@ -130,6 +131,19 @@ class Lib_Helper {
         $imagePath = sprintf(PATH_IMAGES, DEFAULT_THEME);
         $imagePath .= $img;
         return $imagePath;
+    }
+
+    public static function getRemoteIP ()
+    {
+        $ipReals = isset($_SERVER['HTTP_X_FORWARDED_FOR'])? $_SERVER['HTTP_X_FORWARDED_FOR'] : "";
+        if ($ipReals != "") {
+            $ipReals = explode(",",$ipReals);
+            if (count($ipReals) > 0) {
+                return $ipReals[0];
+            }
+        }
+        $ip = isset($_SERVER['REMOTE_ADDR'])? $_SERVER['REMOTE_ADDR'] : "";
+        return $ip;
     }
 
 }

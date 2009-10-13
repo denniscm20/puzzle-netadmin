@@ -18,7 +18,7 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once (LIB_PATH.'MessageHandler.php');
+require_once (PATH_LIB.'MessageHandler.php');
 
 /**
  * This class contains methods that allows you to validate through different
@@ -200,5 +200,18 @@ class Lib_Validator
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError($error);
         return false;
+    }
+
+    /**
+     * Validates the parameter is a valid IP address.
+     * @static
+     * @access public
+     * @param string $ip Ip Address to validate.
+     * @return boolean
+     */
+    public static function validateIp ($ip)
+    {
+        $result = filter_var($ip, FILTER_VALIDATE_IP);
+        return ($result == $ip);
     }
 }
