@@ -19,4 +19,25 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+class Lib_Breadcrumb
+{
+    private $piece;
+    private $page;
+
+    public function  __construct($piece, $page)
+    {
+        $this->page = $page;
+        $this->piece = $piece;
+    }
+
+    public function show()
+    {
+        $homeLink = "<a href=\"\/\">".BREADCRUMB_HOME."</a>";
+        $pieceLink = $this->piece;
+        $pageLink = $this->page;
+        $breadcrumb = $homeLink.BREADCRUMB_SEPARATOR.$pieceLink.BREADCRUMB_SEPARATOR.$pageLink;
+        return $breadcrumb;
+    }
+}
+
 ?>

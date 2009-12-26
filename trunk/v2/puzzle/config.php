@@ -4,13 +4,7 @@
     define ("DEFAULT_TITLE", "Puzzle NetAdmin");
     define ("TIMEZONE", "America/Lima");
 
-    // DB_TYPE = Sqlite, MySQL
-    define ("DB_TYPE", "Sqlite");
-    define ("DB_HOST", "localhost");
     define ("DB_NAME", "puzzle_database.sqlite");
-    define ("DB_PORT", "");
-    define ("DB_USER", "");
-    define ("DB_PASSWORD", "");
     
     // Directory tree
     define ("ROOT",$_SERVER['DOCUMENT_ROOT']);

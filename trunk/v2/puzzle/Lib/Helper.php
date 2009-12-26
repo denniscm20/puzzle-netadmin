@@ -105,13 +105,21 @@ class Lib_Helper {
 
     public static function getTranslation ($pieceName, $language)
     {
-        $file = sprintf(PATH_TRANSLATION, $pieceName);
+        $file = sprintf(PATH_TRANSLATION, DEFAULT_PIECE);
         $file .= $language.".php";
-        if (file_exists($file)) {
-            require_once($file);
-            return $language;
+        require_once($file);
+
+        if ($pieceName != DEFAULT_PIECE) {
+            $file = sprintf(PATH_TRANSLATION, $pieceName);
+            $file .= $language.".php";
+            if (file_exists($file)) {
+                require_once($file);
+                return $language;
+            }
+            return false;
         }
-        return false;
+
+        return $language;
     }
 
     public static function redirect ($pieceName, $pageName)

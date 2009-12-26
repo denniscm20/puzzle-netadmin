@@ -44,7 +44,7 @@ class Core_Model_Dao_AccessLogDAO extends Base_DAO {
 
     public function listElements($start, $range = Base_DAO::LIMIT_DEFAULT)
     {
-        $this->query = "SELECT A.username, A.ip, A.date, A.time, B.description ".
+        $this->query = "SELECT A.username, A.ip, A.date || \" \" || A.time AS `Datetime`, B.description ".
                        "FROM AccessLog A ".
                        "LEFT JOIN AccessType B ".
                        "ON (A.id_access_type = B.id)";
@@ -64,8 +64,8 @@ class Core_Model_Dao_AccessLogDAO extends Base_DAO {
     public function insert() {
         $this->query = "INSERT INTO AccessLog (username, ip, date, time, id_access_type) ".
                        "VALUES (?, ?, ?, ?, ?)";
-        $date = date("Y-m-d", $this->object->Datetime);
-        $time = date("H:i:s", $this->object->Datetime);
+        $date = date("Y-m-d", strtotime($this->object->Datetime));
+        $time = date("H:i:s", strtotime($this->object->Datetime));
         $this->parameters = array($this->object->Username, $this->object->Ip,
             $this->object->Username, $date, $time, $this->object->AccessType);
         return $this->executeQuery();

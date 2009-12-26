@@ -48,7 +48,7 @@ class Core_Model_Class_AccessLog extends Base_Class {
         parent::__construct();
         $this->username = "";
         $this->ip = "";
-        $this->datetime = date();
+        $this->datetime = date("Y-m-d H:i:s");
         $this->accessType = 0;
         $this->description = "";
     }

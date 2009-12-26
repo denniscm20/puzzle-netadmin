@@ -20,6 +20,7 @@
 
 require_once PATH_LIB.'Helper.php';
 require_once PATH_LIB.'MessageHandler.php';
+require_once PATH_LIB.'Breadcrumb.php';
 
 /**
  * This class contains the methods for building the page structure.
@@ -37,6 +38,7 @@ class PageBuilder
     private $piece;
     private $page;
     private $language;
+    private $breadcrumb;
     
     public function  __construct($page, $piece, $event) {
         $this->page = $page;
@@ -49,6 +51,7 @@ class PageBuilder
             eval("\$this->controller = ".$controllerClass."::getInstance('".$this->piece."', '".$this->page."');");
             $this->controller->execute ($event);
             $this->view = new $viewClass($this->controller);
+            $this->breadcrumb = new Lib_Breadcrumb($this->piece, $this->page);
         } else {
 	        header("HTTP/1.0 404 Not Found");
 	        exit();
@@ -118,6 +121,9 @@ class PageBuilder
                         <li>Item 3</li>
                         <li>Item 4</li>
                     </ul>
+                </div>
+                <div id="breadcrumb">
+                    <?php $this->breadcrumb->show(); ?>
                 </div>
                 <?php } ?>
                 <div id="content">

@@ -136,14 +136,39 @@ abstract class Base_Controller
      *
      * @access public
      * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @param string $role Role of the user who is trying to view this page.
+     * @param String $piece
+     * @param String $page
+     * @param String $event
      * @return Boolean
      */
-    public function hasPermissions( $role )
+    public function hasPermissions($piece, $page)
     {
-        if (!in_array($role, $this->allowedRoles) === true) {
+        if ($piece != DEFAULT_PIECE && $page != DEFAULT_LOGOUT_PAGE) {
+            if (isset($_SESSION["User"]["Permissions"])) {
+                $permissions = unserialize($_SESSION["User"]["Permissions"]);
+                if (isset($permissions[$piece][$page])) {
+                    return true;
+                }
+            }
             header("HTTP/1.0 403 Forbidden");
-	        exit();
+            exit();
+        }
+        return true;
+    }
+    
+    /**
+     * This method loads the permissions of each user per page according to the
+     * role of the user.
+     *
+     * @access public
+     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     */
+    protected function loadPermissions ()
+    {
+        if (!isset($_SESSION["User"]["Permissions"])) {
+            $permissions = array();
+
+            $_SESSION["User"]["Permissions"] = serialize($permissions);
         }
     }
 

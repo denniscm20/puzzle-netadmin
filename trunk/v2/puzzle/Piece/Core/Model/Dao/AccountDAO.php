@@ -32,18 +32,28 @@ require_once PATH_BASE.'DAO.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 class Core_Model_Dao_AccountDAO extends Base_DAO {
+
+    public function  __construct($object) {
+        parent::__construct($object);
+    }
+
+    public function  __destruct() {
+        parent::__destruct();
+    }
    
     public function update()
     {
     }
     
-    public function listElements()
+    public function listElements($start, $range = self::LIMIT_DEFAULT)
     {
     }
 
     protected function loadObject($result)
     {
-        parent::loadObject($result);
+        $account = parent::loadObject($result);
+        $account->Role->Id = $result["id_role"];
+        return $account;
     }
     
     public function insert()
@@ -52,6 +62,9 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
 
     public function delete()
     {
+        $this->query = "DELETE FROM Account WHERE id = ?";
+        $this->parameters = array($this->object->Id);
+        return $this->executeQuery();
     }
     
     public function select()
