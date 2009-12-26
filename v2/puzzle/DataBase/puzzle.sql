@@ -102,12 +102,14 @@ CREATE TABLE Role (
 INSERT INTO Role (id, name, description)
 VALUES (1, 'Administrator', 'Default Role Administrator');
 
-CREATE TABLE Role_x_Task (
+CREATE TABLE Role_x_Task_x_Piece (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_task INTEGER NOT NULL,
     id_role INTEGER NOT NULL,
-    CONSTRAINT task_role_x_task_fk FOREIGN KEY (id_task) REFERENCES Task (id),
-    CONSTRAINT role_role_x_task_fk FOREIGN KEY (id_role) REFERENCES Role (id)
+    id_piece INTEGER NOT NULL,
+    CONSTRAINT task_role_x_task_x_piece_fk FOREIGN KEY (id_task) REFERENCES Task (id),
+    CONSTRAINT role_role_x_task_x_piece_fk FOREIGN KEY (id_role) REFERENCES Role (id),
+    CONSTRAINT piece_role_x_task_x_piece_fk FOREIGN KEY (id_piece) REFERENCES Piece (id)
 );
 
 CREATE TABLE Account (
