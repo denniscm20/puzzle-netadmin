@@ -18,7 +18,7 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once (PATH_LIB.'Database/'.DB_TYPE.'.php');
+require_once (PATH_LIB.'Database/Connection.php');
 
 /**
  * Abstract class that implements the basic methods of the data access object class.
@@ -73,7 +73,7 @@ abstract class Base_DAO
      */
     protected function __construct( $object ){
         $this->object = $object;
-        eval ("\$this->connection = Lib_Database_".DB_TYPE."::getInstance();");
+        $this->connection = Lib_Database_Connection::getInstance();
     }
 
     /**
@@ -99,6 +99,18 @@ abstract class Base_DAO
     protected final function limitQuery($start, $range = self::LIMIT_DEFAULT)
     {
         $this->query = $this->connection->limitQuery($this->query, $start, $range);
+    }
+
+    /**
+     * Retrieves the las inserted Id in a table of the databaseś
+     * @access protected
+     * @final
+     * @return Integer Last inserted Id in the database;
+     */
+    protected final function getLastId()
+    {
+        $pdo = $this->connection->getConnection();
+        return $pdo->lastInsertId();
     }
 
     /**
@@ -220,7 +232,7 @@ abstract class Base_DAO
      * @param Integer $range Number of elements to retrieve
      * @return array
      */
-    public abstract function listElements($start, $range);
+    public abstract function listElements($start, $range = self::LIMIT_DEFAULT);
 
 }
 

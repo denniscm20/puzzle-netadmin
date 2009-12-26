@@ -210,8 +210,8 @@ class Core_Controller_LoginController extends Base_Controller
     private function verifyChangePassword()
     {
         $changePasword =  $this->user->ChangePassword;
-        if ($changePasword === true) {
-            $_SESSION["User"] = serialize($this->user);
+        if ($changePasword == true) {
+            $_SESSION["User"]["Account"] = serialize($this->user);
             session_write_close();
             Lib_Helper::redirect("Core", "Account");
         }
@@ -238,7 +238,7 @@ class Core_Controller_LoginController extends Base_Controller
      */
     private function grantAccess()
     {
-        $_SESSION["User"] = serialize($this->user);
+        $_SESSION["User"]["Account"] = serialize($this->user);
         session_write_close();
         Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
     }

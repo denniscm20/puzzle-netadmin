@@ -69,6 +69,12 @@ ul.sections li {
     text-align: center;
 }
 
+/* Breadcrumb */
+#breadcrumb {
+    background-color: #E6FFCC;
+    text-align: left;
+}
+
 /* Footer */
 #footer {
     height: 20px;

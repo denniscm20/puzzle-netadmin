@@ -48,7 +48,7 @@ class Lib_Validator
             if (strlen($text) <= $maxLenght) {
                 return true;
             }
-        }
+        } 
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError(sprintf(ERROR_STRING, $text, $maxLenght));
         return false;

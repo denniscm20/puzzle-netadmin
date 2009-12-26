@@ -20,7 +20,6 @@
 
 /**
  * Creates the database connection.
- * @abstract
  * @package Lib
  * @subpackage Database
  * @author Dennis Cohn Muroy
@@ -28,7 +27,7 @@
  * @copyright Copyright (c) 2009, Dennis Cohn Muroy
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-abstract class Lib_Database_Connection
+class Lib_Database_Connection
 {
 
     /**
@@ -52,13 +51,11 @@ abstract class Lib_Database_Connection
      */
     protected function __construct()
     {
-        $dns = $this->buildDns();
-        $user = DB_USER;
-        $password = DB_PASSWORD;
+        $dns = "sqlite:".PATH_DATABASE.DB_NAME;
 
         $this->databaseConnection = null;
         try {
-            $this->databaseConnection = new PDO ($dns, $user, $password);
+            $this->databaseConnection = new PDO ($dns   );
         } catch (Exception $ex) {
         	throw $ex;
         }
@@ -73,26 +70,16 @@ abstract class Lib_Database_Connection
      */
     public static function getInstance()
     {
-        $file = PATH_LIB.'Database/'.DB_TYPE.'.php';
-        if (file_exists($file)) {
-            require_once $file;
+        try {
             if (self::$connection == null) {
-                $className = "Lib_Database_".DB_TYPE;
-                self::$connection = new $className ();
+                self::$connection = new Lib_Database_Connection();
             }
             return self::$connection;
-        } else {
-            throw new Exception();
+        } catch (Exception $ex) {
+            throw $ex;
         }
+        
     }
-
-    /**
-     * Builds the dns needed to start the connection.
-     * @abstract
-     * @access protected
-     * @return String.
-     */
-    protected abstract function buildDns();
 
     /**
      * Limit the number of items returned by the query
@@ -101,7 +88,15 @@ abstract class Lib_Database_Connection
      * @param Integer $range
      * @return String
      */
-    public abstract function limitQuery($query, $start, $range);
+    public function limitQuery($query, $start, $range)
+    {
+        if (strpos(strtoupper($query), "SELECT") == 0) {
+            $str = "%s LIMIT %d, %d";
+            $end = $start + $range;
+            $query = sprintf($str, $query, $start, $end);
+        }
+        return $query;
+    }
     
     /**
      * Retrieves a Connection to a Master or a Single Data Base
@@ -114,9 +109,9 @@ abstract class Lib_Database_Connection
 
     /**
      * Class destructor
-     * @access protected
+     * @access public
      */
-    protected function __destruct()
+    public function __destruct()
     {
         self::$connection = null;
         unset($this->databaseConnection);

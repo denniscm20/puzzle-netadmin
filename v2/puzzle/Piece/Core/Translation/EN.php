@@ -5,6 +5,11 @@
 // Navigation Bar
 define ("LOG_OUT", "Log out");
 
+// Breadcrumb
+define ("BREADCRUMB_HOME", "Home");
+define ("BREADCRUMB_SEPARATOR", "&nbsp;&gt;&nbsp;");
+
+// Content
 define ("LOREM_IPSUM", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque non lectus ut urna bibendum ultrices. Curabitur nec leo neque.
 Phasellus orci tortor, molestie quis pharetra at, bibendum eu tellus.

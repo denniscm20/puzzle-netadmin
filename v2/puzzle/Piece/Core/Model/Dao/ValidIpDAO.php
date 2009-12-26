@@ -56,7 +56,7 @@ class Core_Model_Dao_ValidIpDAO  extends Base_DAO
         return $this->executeQuery();
     }
 
-    public function listElements($start, $range)
+    public function listElements($start, $range  = self::LIMIT_DEFAULT)
     {
         $this->query = "SELECT id, ip, ipv4 FROM ValidIp";
         $this->limitQuery($start, $range);
