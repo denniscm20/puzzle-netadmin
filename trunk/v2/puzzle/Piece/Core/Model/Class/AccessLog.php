@@ -33,28 +33,54 @@ require_once PATH_BASE.'Class.php';
 
 class Core_Model_Class_AccessLog extends Base_Class {
 
-    const ACCESS_TYPE_SUCCESS = 1;
-    const ACCESS_TYPE_LOG_OUT = 2;
-    const ACCESS_TYPE_FAILURE = 3;
-    const ACCESS_TYPE_NOT_EXIST = 4;
-
+    /**
+     * The name of the user who triggered the event
+     * @access private
+     * @var String
+     */
     private $username;
-    private $ip;
-    private $datetime;
-    private $accessType;
-    private $description;
 
+    /**
+     * The ip from where the event was triggered
+     * @access private
+     * @var String
+     */
+    private $ip;
+
+    /**
+     * The date and time of the event
+     * @access private
+     * @var String
+     */
+    private $datetime;
+
+    /**
+     * The type of access that was performed.
+     * @access private
+     * @var Core_Model_Class_AccessType
+     */
+    private $accessType;
+
+    /**
+     * Class contructor
+     * @access public
+     */
     public function  __construct() {
         parent::__construct();
         $this->username = "";
         $this->ip = "";
         $this->datetime = date("Y-m-d H:i:s");
-        $this->accessType = 0;
-        $this->description = "";
+        $className = Lib_Helper::getClass("Core", "AccessType");
+        $this->accessType = new $className();
     }
 
+    /**
+     * Class destructor
+     * @access public
+     */
     public function  __destruct() {
         parent::__destruct();
+        unset($this->accessType);
     }
 
     public function getUsername()
@@ -75,11 +101,6 @@ class Core_Model_Class_AccessLog extends Base_Class {
     public function getAccessType()
     {
         return $this->accessType;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     public function setUsername($username)
@@ -103,15 +124,10 @@ class Core_Model_Class_AccessLog extends Base_Class {
 
     public function setAccessType( $accessType )
     {
-        if (Lib_Validator::validateInteger($accessType)) {
+        if (Lib_Validator::validateObject($accessType, "Core_Model_Class_AccessType")) {
             $this->accessType = $accessType;
         }
     }
 
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-    
 }
 ?>

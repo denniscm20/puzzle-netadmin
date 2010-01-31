@@ -80,23 +80,6 @@ class Lib_Database_Connection
         }
         
     }
-
-    /**
-     * Limit the number of items returned by the query
-     * @param String $query
-     * @param Integer $start
-     * @param Integer $range
-     * @return String
-     */
-    public function limitQuery($query, $start, $range)
-    {
-        if (strpos(strtoupper($query), "SELECT") == 0) {
-            $str = "%s LIMIT %d, %d";
-            $end = $start + $range;
-            $query = sprintf($str, $query, $start, $end);
-        }
-        return $query;
-    }
     
     /**
      * Retrieves a Connection to a Master or a Single Data Base

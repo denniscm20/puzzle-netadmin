@@ -59,6 +59,12 @@ abstract class Base_DAO
      */
     protected $object = null;
     /**
+     * The name of the object.
+     * @var String
+     * @access protected
+     */
+    protected $objectName = "";
+    /**
      * The connection to the data base.
      * @var Lib_Database_Connection
      * @access private
@@ -68,11 +74,17 @@ abstract class Base_DAO
     /**
      * Class constructor.
      * @access protected
-     * @param Object $object Object that contains the values for being
-     * inserted/updated.
+     * @param mixed $object Object name or object that contains the values
+     * for being inserted/updated.
      */
     protected function __construct( $object ){
-        $this->object = $object;
+        if (is_string($object)) {
+            $this->objectName = $object;
+            $this->object = new $this->objectName ();
+        } else {
+            $this->object = $object;
+            $this->objectName = get_class($this->object);
+        }
         $this->connection = Lib_Database_Connection::getInstance();
     }
 
@@ -98,7 +110,9 @@ abstract class Base_DAO
      */
     protected final function limitQuery($start, $range = self::LIMIT_DEFAULT)
     {
-        $this->query = $this->connection->limitQuery($this->query, $start, $range);
+        $str = "%s LIMIT %d, %d";
+        $end = $start + $range;
+        $this->query = sprintf($str, $this->query, $start, $end);
     }
 
     /**
@@ -188,7 +202,7 @@ abstract class Base_DAO
      * @abstract
      * @access public
      * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @return Boolean
+     * @return Integer Last inserted field id
      */
     public abstract function insert();
 

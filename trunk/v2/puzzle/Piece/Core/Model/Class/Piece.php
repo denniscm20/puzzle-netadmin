@@ -1,6 +1,6 @@
 <?php
 /*
- * Core/Model/Class/Role.php - Copyright 2009 Dennis Cohn Muroy
+ * Core/Model/Class/Piece.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -21,7 +21,7 @@
 require_once PATH_BASE.'Class.php';
 
 /**
- * Class that represents a role registered in the system
+ * Class that implements the core of the piece manager
  * @author Dennis Stephen Cohn Muroy
  * @version 1.0
  * @since 2009
@@ -31,44 +31,33 @@ require_once PATH_BASE.'Class.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Core_Model_Class_Role extends Base_Class
+class Core_Model_Class_Piece extends Base_Class
 {
-    /**
-     * Name of the role
-     * @access private
-     * @var String
-     */
     private $name;
 
-    /**
-     * Description of the role
-     * @access private
-     * @var String
-     */
+    private $enable;
+
     private $description;
 
-    /**
-     * List of tasks assigned to the current role.
-     * @access private
-     * @var Array
-     */
+    private $component;
+
     private $taskList;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->name = "";
+        $this->enable = false;
         $this->description = "";
+        $this->component = false;
         $this->taskList = array();
     }
 
-    public function __destruct()
-    {
+    public function  __destruct() {
         parent::__destruct();
         foreach ($this->taskList as $task) {
-            unset($task);
+            unset ($task);
         }
-        unset($this->taskList);
+        unset ($this->taskList);
     }
 
     public function getName() {
@@ -78,6 +67,16 @@ class Core_Model_Class_Role extends Base_Class
     public function setName($name) {
         if (Lib_Validator::validateString($name, 30)) {
             $this->name = $name;
+        }
+    }
+
+    public function getEnable() {
+        return $this->enable;
+    }
+
+    public function setEnable($enable) {
+        if (Lib_Validator::validateBoolean($enable)) {
+            $this->enable = $enable;
         }
     }
 
@@ -91,6 +90,16 @@ class Core_Model_Class_Role extends Base_Class
         }
     }
 
+    public function getComponent() {
+        return $this->component;
+    }
+
+    public function setComponent($component) {
+        if (Lib_Validator::validateBoolean($component)) {
+            $this->component = $component;
+        }
+    }
+
     public function getTaskList() {
         return $this->taskList;
     }
@@ -100,5 +109,6 @@ class Core_Model_Class_Role extends Base_Class
             $this->taskList = $taskList;
         }
     }
+
 }
 ?>

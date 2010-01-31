@@ -53,7 +53,7 @@ abstract class Base_Controller
      * Class constructor
      *
      * @access protected
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      */
     protected function __construct()
     {
@@ -65,7 +65,7 @@ abstract class Base_Controller
      * Class destructor.
      *
      * @access protected
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return void
      */
     protected function __destruct()
@@ -85,7 +85,7 @@ abstract class Base_Controller
      * Retrieves a Controller instance.
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return Base_Controller
      */
     public static function getInstance($piece = "", $page = "")
@@ -106,7 +106,7 @@ abstract class Base_Controller
      * Adds an element to the controller
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @param  String key
      * @param  Object value
      */
@@ -119,7 +119,7 @@ abstract class Base_Controller
      * Retrieves an element from the controller
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @param  String key
      * @return Object
      */
@@ -135,7 +135,7 @@ abstract class Base_Controller
      * This method allows to determine if the user has privileges to see this page
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @param String $piece
      * @param String $page
      * @param String $event
@@ -161,7 +161,7 @@ abstract class Base_Controller
      * role of the user.
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      */
     protected function loadPermissions ()
     {
@@ -177,7 +177,7 @@ abstract class Base_Controller
      *
      * @abstract
      * @access protected
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      */
     protected abstract function loadElements();
 
@@ -186,7 +186,7 @@ abstract class Base_Controller
      *
      * @abstract
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @param  String event
      */
     public abstract function execute( $event );
