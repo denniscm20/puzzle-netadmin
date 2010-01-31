@@ -40,11 +40,11 @@ class PageBuilder
     private $language;
     private $breadcrumb;
     
-    public function  __construct($page, $piece, $event) {
+    public function  __construct($page, $piece, $event)
+    {
         $this->page = $page;
         $this->piece = $piece;
-        $this->language = $_SESSION["Language"];
-        $this->language = Lib_Helper::getTranslation($piece, $this->language);
+        $this->language = Lib_Helper::getTranslation($piece, $_SESSION["Language"]);
         $viewClass = Lib_Helper::getView($piece, $page);
         $controllerClass = Lib_Helper::getController($piece, $page);
         if (($viewClass !== false) && ($controllerClass !== false)) {

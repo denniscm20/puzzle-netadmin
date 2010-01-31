@@ -21,11 +21,10 @@
 
 /**
  * @package /Lib/
- * @class Mail
  * @author Dennis Stephen Cohn Muroy
  * @version 1.0
  */
-class Mail {
+class Lib_Mail {
     
     private $_to = array();
     private $_subject = "";

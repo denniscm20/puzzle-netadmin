@@ -90,7 +90,9 @@ CREATE TABLE Service_x_Node (
 
 CREATE TABLE Task (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(30) NOT NULL
+    id_piece INTEGER NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    CONSTRAINT piece_piece_fk FOREIGN KEY (id_piece) REFERENCES Piece (id)
 );
 
 CREATE TABLE Role (

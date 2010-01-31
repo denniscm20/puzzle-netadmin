@@ -1,6 +1,6 @@
 <?php
 /*
- * Core/Model/Class/Role.php - Copyright 2009 Dennis Cohn Muroy
+ * Core/Model/Class/Task.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -21,54 +21,32 @@
 require_once PATH_BASE.'Class.php';
 
 /**
- * Class that represents a role registered in the system
+ * Class that represents all the actions that a user can perform
  * @author Dennis Stephen Cohn Muroy
  * @version 1.0
  * @since 2009
  * @package Core
- * @subpackage Model/Class
+ * @subpackage Model
  * @copyright Copyright (c) 2009, Dennis Cohn
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Core_Model_Class_Role extends Base_Class
+class Core_Model_Class_Task extends Base_Class
 {
     /**
-     * Name of the role
+     * The name of the task.
      * @access private
      * @var String
      */
     private $name;
 
-    /**
-     * Description of the role
-     * @access private
-     * @var String
-     */
-    private $description;
-
-    /**
-     * List of tasks assigned to the current role.
-     * @access private
-     * @var Array
-     */
-    private $taskList;
-
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->name = "";
-        $this->description = "";
-        $this->taskList = array();
     }
 
-    public function __destruct()
-    {
+    public function __destruct() {
         parent::__destruct();
-        foreach ($this->taskList as $task) {
-            unset($task);
-        }
-        unset($this->taskList);
     }
 
     public function getName() {
@@ -78,26 +56,6 @@ class Core_Model_Class_Role extends Base_Class
     public function setName($name) {
         if (Lib_Validator::validateString($name, 30)) {
             $this->name = $name;
-        }
-    }
-
-    public function getDescription() {
-        return $this->description;
-    }
-
-    public function setDescription($description) {
-        if (Lib_Validator::validateString($description, 200)) {
-            $this->description = $description;
-        }
-    }
-
-    public function getTaskList() {
-        return $this->taskList;
-    }
-
-    public function setTaskList($taskList) {
-        if (Lib_Validator::validateArray($taskList, "Core_Model_Class_Task")) {
-            $this->taskList = $taskList;
         }
     }
 }

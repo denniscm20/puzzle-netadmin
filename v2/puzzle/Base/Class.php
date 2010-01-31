@@ -20,6 +20,7 @@
 
 require_once PATH_LIB.'Validator.php';
 require_once PATH_LIB.'MessageHandler.php';
+require_once PATH_LIB.'Helper.php';
 
 /**
  * Application Base Class which contains the common methods for the application
@@ -85,7 +86,8 @@ abstract class Base_Class
         if (method_exists($this, $function)) {
             return $this->{$function}();
         } else {
-            throw new Exception($name ." is not a valid property");
+            debug_print_backtrace();
+            throw new Exception("Error property ".$name);
         }
     } // end of member function __get
 
@@ -102,7 +104,8 @@ abstract class Base_Class
         if (method_exists($this, $function)) {
             $this->{$function}($value);
         }  else {
-            throw new Exception($name . " is not a valid property");
+            debug_print_backtrace();
+            throw new Exception("Error property ".$name);
         }
     } // end of member function __set
 

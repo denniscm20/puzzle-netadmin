@@ -70,9 +70,9 @@ class Core_Model_Class_Account extends Base_Class {
     public function __construct()
     {
         parent::__construct();
-        Lib_Helper::getClass("Core", "Role");
+        $className = Lib_Helper::getClass("Core", "Role");
 
-        $this->role = new Core_Model_Class_Role();
+        $this->role = new $className();
         $this->accountCreator = null;
         $this->accountModifier = null;
 
@@ -97,10 +97,11 @@ class Core_Model_Class_Account extends Base_Class {
         unset($this->accountModifier);
     }
 
-    // TODO Generate Salt
     public function generateSalt()
     {
-        
+        $seed = time();
+        $salt = md5($seed);
+        $this->salt = substr($salt, 0, 20);
     }
 
     public function getRole()

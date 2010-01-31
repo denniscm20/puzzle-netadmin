@@ -37,7 +37,7 @@ require_once PATH_LIB.'Html/Table.php';
 abstract class Base_View
 {
     // --- ASSOCIATIONS ---
-    protected $controller;
+    private $controller;
 
     // --- ATTRIBUTES ---
 
@@ -51,7 +51,7 @@ abstract class Base_View
      * Class Constructor
      *
      * @access protected
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @param  Controller controller Page controller
      * @param  String title Page title
      * @return void
@@ -68,7 +68,7 @@ abstract class Base_View
      * Class Destructor.
      *
      * @access protected
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return void
      */
     protected function __destruct()
@@ -77,10 +77,20 @@ abstract class Base_View
     }
 
     /**
+     * Retrieves an element from the controller
+     * @param String $key Name of the element that was stored in the controller
+     * @return mixed String retrieved from the controller
+     */
+    protected function get($key)
+    {
+        return $this->controller->get($key);
+    }
+
+    /**
      * Returns the title of the displayed page.
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return string
      */
     public function getTitle()
@@ -92,7 +102,7 @@ abstract class Base_View
      * Returns the javascript file names of the displayed page.
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return array
      */
     public function getJavascript()
@@ -104,7 +114,7 @@ abstract class Base_View
      * Returns the css file names of the displayed page.
      *
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return array
      */
     public function getCss()
@@ -117,7 +127,7 @@ abstract class Base_View
      *
      * @abstract
      * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @author Dennis Cohn Muroy
      * @return void
      */
     public abstract function show();
