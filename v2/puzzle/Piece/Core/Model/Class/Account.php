@@ -56,10 +56,13 @@ class Core_Model_Class_Account extends Base_Class {
     private $accountModifier;
 
     private $username;
+    private $email;
+    private $token;
     private $salt;
     private $password;
     private $changePassword;
     private $enabled;
+    private $tokenDate;
     private $createdDate;
     private $modifiedDate;
 
@@ -77,12 +80,13 @@ class Core_Model_Class_Account extends Base_Class {
         $this->accountModifier = null;
 
         $this->username = "";
+        $this->email = "";
+        $this->token = "";
         $this->salt = "";
         $this->password = "";
         $this->changePassword = false;
         $this->enabled = true;
-        $this->createdDate = date("Y-M-D H:i:s");
-        $this->modifiedDate = date("Y-M-D H:i:s");
+        $this->tokenDate = $this->createdDate = $this->modifiedDate = date("Y-M-D H:i:s");
     }
 
     /**
@@ -95,13 +99,6 @@ class Core_Model_Class_Account extends Base_Class {
         unset($this->role);
         unset($this->accountCreator);
         unset($this->accountModifier);
-    }
-
-    public function generateSalt()
-    {
-        $seed = time();
-        $salt = md5($seed);
-        $this->salt = substr($salt, 0, 20);
     }
 
     public function getRole()
@@ -156,72 +153,147 @@ class Core_Model_Class_Account extends Base_Class {
 
     public function setRole($role)
     {
-        if (Lib_Validator::validateObject($role, "Core_Model_Class_Role")) {
-            $this->role = $role;
-        }
+        $this->role = $role;
     }
 
     public function setAccountCreator($account)
     {
-        if (Lib_Validator::validateObject($account, "Core_Model_Class_Account")) {
-            $this->accountCreator = $account;
-        }
+        $this->accountCreator = $account;
     }
 
     public function setAccountModifier($account)
     {
-        if (Lib_Validator::validateObject($account, "Core_Model_Class_Account")) {
-            $this->accountModifier = $account;
-        }
+        $this->accountModifier = $account;
     }
 
     public function setUsername($username)
     {
-        if (Lib_Validator::validateString($username, 20)) {
-            $this->username = $username;
-        }
+        $this->username = $username;
     }
 
     public function setSalt($salt)
     {
-        if (Lib_Validator::validateString($salt, 20)) {
-            $this->salt = $salt;
-        }
+        $this->salt = $salt;
     }
 
     public function setPassword($password)
     {
-        if (Lib_Validator::validateString($password, 210)) {
-            $this->password = $password;
-        }
+        $this->password = $password;
     }
 
     public function setChangePassword($changePassword)
     {
-        if (Lib_Validator::validateBoolean($changePassword)) {
-            $this->changePassword = $changePassword;
-        }
+        $this->changePassword = $changePassword;
     }
 
     public function setEnabled($enabled)
     {
-        if (Lib_Validator::validateBoolean($enabled)) {
-            $this->enabled = $enabled;
-        }
+        $this->enabled = $enabled;
     }
 
     public function setCreatedDate($createdDate)
     {
-        if (Lib_Validator::validateDate($createdDate)) {
-            $this->createdDate = $createdDate;
-        }
+        $this->createdDate = $createdDate;
     }
 
     public function setModifiedDate($modfiedDate)
     {
-        if (Lib_Validator::validateDate($modfiedDate)) {
-            $this->modifiedDate = $modfiedDate;
+        $this->modifiedDate = $modfiedDate;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function setEmail($email) {
+        $this->email = $email;
+    }
+
+    public function getToken() {
+        return $this->token;
+    }
+
+    public function setToken($token) {
+        $this->token = $token;
+    }
+
+    public function getTokenDate() {
+        return $this->tokenDate;
+    }
+
+    public function setTokenDate($tokenDate) {
+        $this->tokenDate = $tokenDate;
+    }
+    
+    /**
+     * Validates if the $password parameter matches the current account password.
+     * @access public
+     * @param $password String Password to be validated.
+     * @return Boolean True if login was success
+     */
+    public function validatePassword($password)
+    {
+        $inputPassword = $this->salt.$password;
+        $cypher = hash("sha512", $inputPassword);
+        return ($inputPassword == $this->password);
+    }
+
+    /**
+     * Validates if the $token parameter matches the current account token.
+     * @access public
+     * @param $password String Password to be validated.
+     * @return Boolean True if login was success
+     */
+    public function validateToken($token)
+    {
+        $days = Lib_Helper::diffDates($this->tokenDate, time());
+        if ($days <= DEFAULT_TOKEN_LIFETIME and $this->changePassword == true) {
+            $inputToken = $this->username.$this->salt.$token;
+            $cypher = hash("sha512", $inputToken);
         }
+        return ($inputToken == $this->token);
+    }
+
+    /**
+     * Generates the token
+     * @access public
+     * @return String Token generated
+     */
+    public function generateToken()
+    {
+        $salt = $this->generateSalt();
+        $token = hash("md5", $salt . time());
+        $inputToken = $this->username.$salt.$token;
+        $this->token = hash("sha512", $inputToken);
+        $this->tokenDate = date("Y-M-D H:i:s");
+        return $token;
+    }
+    
+    /**
+     * Generates the password and the salt for the current user
+     * @access public
+     * @return String Password generated
+     */
+    public function generatePassword()
+    {
+        $salt = $this->generateSalt();
+        $password = substring(hash("md5", $salt . time()), 0, 20);
+        $this->password = hash("sha512", $salt.$password);
+        $this->modifiedDate = date("Y-M-D H:i:s");
+        return $password;
+    }
+
+    /**
+     * Generates a random salt
+     * @access private
+     * @return String Salt generated
+     */
+    private function generateSalt()
+    {
+        if ($this->salt === "") {
+            $this->salt = substr(hash("md5", time()), 0, 20);
+        }
+        return $this->salt;
     }
 
 }
