@@ -18,8 +18,6 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once PATH_LIB.'Validator.php';
-require_once PATH_LIB.'MessageHandler.php';
 require_once PATH_LIB.'Helper.php';
 
 /**
@@ -69,9 +67,7 @@ abstract class Base_Class
      */
     public function setId( $id )
     {
-        if (Lib_Validator::validateInteger($id)) {
-            $this->id = $id;
-        }
+        $this->id = $id;
     } // end of member function setId
 
     /**
