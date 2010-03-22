@@ -11,6 +11,7 @@
 	if (isset($_SESSION["User"])) {
         session_regenerate_id();
 	    $page = (isset($_GET["Page"]))?$_GET["Page"]:DEFAULT_LOGIN_PAGE;
+        $page = ($page == DEFAULT_LOGOUT_PAGE)?DEFAULT_LOGIN_PAGE:"";
 	    $piece = (isset($_GET["Piece"]))?$_GET["Piece"]:DEFAULT_PIECE;
 	}
     $event = (isset($_GET["Event"]))?$_GET["Event"]:DEFAULT_EVENT;
