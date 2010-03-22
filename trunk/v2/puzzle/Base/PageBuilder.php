@@ -48,7 +48,9 @@ class PageBuilder
         $viewClass = Lib_Helper::getView($piece, $page);
         $controllerClass = Lib_Helper::getController($piece, $page);
         if (($viewClass !== false) && ($controllerClass !== false)) {
-            eval("\$this->controller = ".$controllerClass."::getInstance('".$this->piece."', '".$this->page."');");
+            $function = array($controllerClass, 'getInstance');
+            $parameters = array($this->piece, $this->page);
+            $this->controller = call_user_func_array($function, $parameters);
             $this->controller->execute ($event);
             $this->view = new $viewClass($this->controller);
             $this->breadcrumb = new Lib_Breadcrumb($this->piece, $this->page);

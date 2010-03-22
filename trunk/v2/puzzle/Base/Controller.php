@@ -20,6 +20,7 @@
 
 require_once PATH_LIB.'Cleaner.php';
 require_once PATH_LIB.'Validator.php';
+require_once PATH_LIB.'MessageHandler.php';
 
 /**
  * Abstract class that implements the basic methods of the controller class.
@@ -141,7 +142,7 @@ abstract class Base_Controller
      * @param String $event
      * @return Boolean
      */
-    public function hasPermissions($piece, $page)
+    protected function hasPermissions($piece, $page)
     {
         if ($piece != DEFAULT_PIECE && $page != DEFAULT_LOGOUT_PAGE) {
             if (isset($_SESSION["User"]["Permissions"])) {
@@ -173,6 +174,34 @@ abstract class Base_Controller
     }
 
     /**
+     * Orders the controller to execute the event
+     *
+     * @access public
+     * @author Dennis Cohn Muroy
+     * @param  String event
+     */
+    public function execute( $event )
+    {
+        if ($this->validateInput()) {
+            $event = $this->call($event);
+            if (method_exists($this, $event)) {
+                $this->{$event}();
+            }
+        }
+        $this->loadElements();
+    }
+
+    /**
+     * Validates the input values provided by the user
+     *
+     * @abstract
+     * @access protected
+     * @author Dennis Cohn Muroy
+     * @return Boolean True if the data was successfully cleaned and validated
+     */
+    protected abstract function validateInput();
+
+    /**
      * Adds elements to the controller that will be required by the view
      *
      * @abstract
@@ -182,14 +211,15 @@ abstract class Base_Controller
     protected abstract function loadElements();
 
     /**
-     * Indicates which is the action that will be executed.
+     * Returns the name of the method that will be executed
      *
      * @abstract
      * @access public
      * @author Dennis Cohn Muroy
      * @param  String event
+     * @return Method name to execute
      */
-    public abstract function execute( $event );
+    protected abstract function call( $event );
 }
 
 ?>
