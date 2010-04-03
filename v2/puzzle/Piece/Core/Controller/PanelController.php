@@ -71,27 +71,24 @@ class Core_Controller_PanelController extends Base_Controller
 
     }
 
-    /**
-     * Indicates which is the action that will be executed.
-     *
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @param  String event
-     */
-    public function execute( $event )
+    protected function call( $event )
     {
         switch ($event) {
             case "load":
                 break;
-            default: $event = "load";
+            default: $event = DEFAULT_EVENT;
         }
-        $this->{$event}();
-        $this->loadElements();
+        return $event;
     }
 
     protected function load()
     {
         return;
+    }
+
+    protected function validateInput()
+    {
+        return true;
     }
 }
 

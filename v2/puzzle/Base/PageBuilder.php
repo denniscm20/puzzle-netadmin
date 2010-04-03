@@ -107,7 +107,7 @@ class PageBuilder
                     <img src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
                 </div>
                 <?php } else { ?>
-                <div id="banner_in" style="background-image:url(<?php echo "'",Helper::getImage('header_back.jpg'),"'";?>)">
+                <div id="banner_in" style="background-image:url(<?php echo "'",Lib_Helper::getImage('header_back.jpg'),"'";?>)">
                     <img class="banner_image" src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
                     <img class="banner_image" src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
                     <ul class="actions">

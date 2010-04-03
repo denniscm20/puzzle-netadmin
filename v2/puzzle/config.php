@@ -5,6 +5,7 @@
     define ("TIMEZONE", "America/Lima");
 
     define ("DB_NAME", "puzzle_database.sqlite");
+    define ("EMAIL_ACCOUNT", "root@localhost.localdomain");
     
     // Directory tree
     define ("ROOT",$_SERVER['DOCUMENT_ROOT']);
@@ -40,5 +41,7 @@
     define ("DEFAULT_PIECE", "Core");
     define ("DEFAULT_LOGOUT_PAGE", "Login");
     define ("DEFAULT_LOGIN_PAGE", "Panel");
+
+    define ("DEFAULT_TOKEN_LIFETIME", "7");
     
 ?>

@@ -72,7 +72,11 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         $this->query = "SELECT id, id_role, username, password, salt, changePassword, enabled ".
                        "FROM Account WHERE id = ?";
         $this->parameters = array($this->object->Id);
-        $this->selectQuery();
+        $result = $this->selectQuery();
+        if (count($result) > 0) {
+            return $result[0];
+        }
+        return null;
     }
 
     public function selectByUsernameAndEnabled ()
@@ -80,7 +84,11 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         $this->query = "SELECT id, id_role, username, password, salt, changePassword ".
                        "FROM Account WHERE username = ? and enabled = ?";
         $this->parameters = array($this->object->Username, $this->object->Enabled);
-        $this->selectQuery();
+        $result = $this->selectQuery();
+        if (count($result) > 0) {
+            return $result[0];
+        }
+        return null;
     }
 
 }
