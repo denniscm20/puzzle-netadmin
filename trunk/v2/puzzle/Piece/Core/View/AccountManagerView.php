@@ -1,6 +1,6 @@
 <?php
 /*
- * Core/View/PanelView.php - Copyright 2009 Dennis Cohn Muroy
+ * Core/View/AccountView.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -21,7 +21,7 @@
 require_once PATH_BASE.'View.php';
 
 /**
- * Class that implements the application Panel View.
+ * Class that implements the application Account View.
  * @package Core
  * @subpackage View
  * @author Dennis Stephen Cohn Muroy
@@ -30,9 +30,10 @@ require_once PATH_BASE.'View.php';
  * @copyright Copyright (c) 2009, Dennis Cohn
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-class Core_View_PanelView extends Base_View
+class Core_View_AccountView extends Base_View
 {
     // --- ATTRIBUTES ---
+    private $user = null;
 
     // --- OPERATIONS ---
 
@@ -46,7 +47,8 @@ class Core_View_PanelView extends Base_View
      */
     public function __construct($controller)
     {
-        parent::__construct($controller, LOGIN_TITLE);
+        parent::__construct($controller, "");
+        $this->user = $this->controller->get("user");
     }
 
     /**
@@ -70,27 +72,20 @@ class Core_View_PanelView extends Base_View
      */
     public function show()
     {
+        $userName = new Lib_Html_Input("username", "", "", 1, 'u');
+        $password = new Lib_Html_Input("password", "", "", 2, 'p');
+        $validatePassword = new Lib_Html_Input("validatePassword", "", "", 3, 'v');
+        $enabled = new Lib_Html_Input("enabled", $this->user->Enabled, "", 4, 'e');
+        $submitButton = new Lib_Html_Button("submit", LOGIN_SUBMIT_BUTTON, 5);
         ?>
-        <ul id="central-panel-menu">
-            <li class="panel-item">
-                <span><?php echo PANEL_SERVER; ?></span>
-            </li>
-            <li class="panel-item">
-                <span><?php echo PANEL_PIECES; ?></span>
-            </li>
-            <li class="panel-item">
-                <span><?php echo PANEL_NETWORK; ?></span>
-            </li>
-            <li class="panel-item">
-                <span><?php echo PANEL_PERMISSION; ?></span>
-            </li>
-            <li class="panel-item">
-                <span><?php echo PANEL_ACCOUNTS; ?></span>
-            </li>
-            <li class="panel-item">
-                <span><?php echo PANEL_REPORT; ?></span>
-            </li>
-        </ul>
+        <div class="">
+            <form action="/?Page=Account&amp;Event=save" method="post">
+                <div class="row"><?php echo $userName->showTextBox(40, "", "login"); ?></div>
+                <div class="row"><?php echo $password->showPassword(40, "", "login"); ?></div>
+                <div class="row"><?php echo $enabled->showCheckBox("enabled", $this->user->Enabled); ?></div>
+                <div class="row right"><?php echo $submitButton->showSubmitButton(); ?></div>
+            </form>
+        </div>
         <?php
     }
 

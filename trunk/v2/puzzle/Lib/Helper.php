@@ -141,6 +141,19 @@ class Lib_Helper {
         return $imagePath;
     }
 
+    /**
+     * Returns the difference of two dates in day units.
+     * @param Date $date1
+     * @param Date $date2
+     * @return Float Difference of two dates
+     */
+    public static function diffDates ($date1, $date2) {
+        $date1 = (is_string($date1) ? strtotime($date1) : $date1);
+        $date2 = (is_string($date2) ? strtotime($date2) : $date2);
+        $diffSecs = abs($date2 - $date1);
+        return floor($diffSecs / (3600 * 24));
+    }
+
     public static function getRemoteIP ()
     {
         $ipReals = isset($_SERVER['HTTP_X_FORWARDED_FOR'])? $_SERVER['HTTP_X_FORWARDED_FOR'] : "";

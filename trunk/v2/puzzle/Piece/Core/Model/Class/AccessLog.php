@@ -33,6 +33,11 @@ require_once PATH_BASE.'Class.php';
 
 class Core_Model_Class_AccessLog extends Base_Class {
 
+    const ACCESS_TYPE_SUCCESS = 1;
+    const ACCESS_TYPE_LOG_OUT = 2;
+    const ACCESS_TYPE_FAILURE = 3;
+    const ACCESS_TYPE_NOT_EXIST = 4;
+
     /**
      * The name of the user who triggered the event
      * @access private
@@ -105,16 +110,12 @@ class Core_Model_Class_AccessLog extends Base_Class {
 
     public function setUsername($username)
     {
-        if (Lib_Validator::validateString($username, 20)) {
-            $this->username = $username;
-        }
+        $this->username = $username;
     }
 
     public function setIp($ip)
     {
-        if (Lib_Validator::validateString($ip, 40)) {
-            $this->ip = $ip;
-        }
+        $this->ip = $ip;
     }
 
     public function setDatetime($datetime)
@@ -124,9 +125,7 @@ class Core_Model_Class_AccessLog extends Base_Class {
 
     public function setAccessType( $accessType )
     {
-        if (Lib_Validator::validateObject($accessType, "Core_Model_Class_AccessType")) {
-            $this->accessType = $accessType;
-        }
+        $this->accessType = $accessType;
     }
 
 }

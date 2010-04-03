@@ -24,10 +24,25 @@ define("LOGIN_TITLE", "Login");
 define("LOGIN_LOGOUT_INFO", "You were successfully logged out");
 define("LOGIN_LOGOUT_ERROR", "There were loged out with some errors");
 define("LOGIN_LOGIN_ERROR", "The username or password were incorrect");
+define("LOGIN_PASSWORD_INFO", "Email was successfully sent");
+define("LOGIN_PASSWORD_ERROR", "The Email could not be sent");
 define("LOGIN_USER_FIELD", "User");
 define("LOGIN_PASSWORD_FIELD", "Password");
 define("LOGIN_SUBMIT_BUTTON", "Log in");
 define("LOGIN_RESET_BUTTON", "Clear");
+
+define("LOGIN_MAIL_SUBJECT", "");
+define("LOGIN_MAIL_BODY", "%s");
+
+define("PANEL_PIECES", "Manage Pieces");
+define("PANEL_ACCOUNTS", "Manage Accounts");
+define("PANEL_SERVER", "View Server Information");
+define("PANEL_NETWORK", "Manage Network");
+define("PANEL_PERMISSION", "Manage Permission");
+define("PANEL_REPORT", "View Reports");
+
+define("ACCOUNT_DELETE_ERROR", "");
+define("ACCOUNT_DELETE_INFO", "");
 
 // Error 404
 define("ERROR_404_TITLE", "Error 404");

@@ -192,6 +192,25 @@ abstract class Base_Controller
     }
 
     /**
+     * Stores the information related to the successful or unsuccessful login attempt
+     * @access protected
+     * @param string $username User that triggered the event.
+     * @param int $type Error type.  Possible values are
+     * Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE | ACCESS_TYPE_LOG_OUT |
+     * ACCESS_TYPE_NOT_EXIST | ACCESS_TYPE_SUCCESS
+     */
+    protected function log($username, $type)
+    {
+        Lib_Helper::getDao("Core", "AccessLog");
+        $accessLog = new Core_Model_Class_AccessLog();
+        $accessLog->Username = Lib_Cleaner::clearString($username);
+        $accessLog->Ip = Lib_Helper::getRemoteIP();
+        $accessLog->AccessType = $type;
+        $accesLogDAO = new Core_Model_Dao_AccessLogDAO($accessLog);
+        $accesLogDAO->insert();
+    }
+
+    /**
      * Validates the input values provided by the user
      *
      * @abstract
