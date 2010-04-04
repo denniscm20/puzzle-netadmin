@@ -54,9 +54,11 @@ CREATE TABLE Interface (
     name VARCHAR(10) NOT NULL,
     lan BOOLEAN NOT NULL,
     description VARCHAR(200) NOT NULL,
-    ip VARCHAR(40) NOT NULL,
+    ip4 VARCHAR(15) NOT NULL,
+    ip6 VARCHAR(40) NOT NULL,
     mac VARCHAR(17) NOT NULL,
-    mask VARCHAR(40) NOT NULL,
+    mask4 VARCHAR(15) NOT NULL,
+    mask6 VARCHAR(40) NOT NULL,
     enable BOOLEAN NOT NULL
 );
 
@@ -65,9 +67,10 @@ CREATE TABLE Subnet (
     id_interface INTEGER NOT NULL,
     name VARCHAR(30) NOT NULL,
     description VARCHAR(200) NOT NULL,
-    ip VARCHAR(40) NOT NULL,
-    mask VARCHAR(40) NOT NULL,
-    shortmask SMALLINTEGER NOT NULL,
+    ip4 VARCHAR(15) NOT NULL,
+    ip6 VARCHAR(40) NOT NULL,
+    mask4 VARCHAR(15) NOT NULL,
+    mask6 VARCHAR(40) NOT NULL,
     CONSTRAINT interface_subnet_fk FOREIGN KEY (id_interface) REFERENCES Interface (id)
 );
 
@@ -138,14 +141,6 @@ CREATE UNIQUE INDEX username_idx ON Account ( username );
 
 INSERT INTO Account (id,id_role,username,password,enabled,createdDate,modifiedDate,id_account_creator,id_account_modifier,changePassword)
 VALUES (1,1,'admin','',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,1,1)
-
-CREATE TABLE Puzzle (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    hostname VARCHAR(50) NOT NULL,
-    dns1 VARCHAR(40) NOT NULL,
-    dns2 VARCHAR(40) NOT NULL,
-    forward BOOLEAN NOT NULL
-);
 
 CREATE TABLE Piece (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

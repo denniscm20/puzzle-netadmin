@@ -167,6 +167,23 @@ class Lib_Helper {
         return $ip;
     }
 
+    /**
+     * If the $string parameter has more than on continuous blank space, this
+     * function will replace them with just one blank space.
+     * @static
+     * @access public
+     * @param String $string
+     * @return String Cleared string
+     */
+    public static function clearMiddleSpaces ($string)
+    {
+        $count = 1;
+        while ($count) {
+            $string = str_replace("  ", " ", $string, $count);
+        }
+        return $string;
+    }
+
 }
 
 ?>
