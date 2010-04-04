@@ -40,19 +40,22 @@ class Core_Model_Class_Subnet extends Base_Class
 
     private $description;
 
-    private $ip;
+    private $ip4;
 
-    private $mask;
+    private $ip6;
 
-    private $shortMask;
+    private $mask4;
+
+    private $mask6;
 
     public function __construct() {
         parent::__construct();
         $this->name = "";
         $this->description = "";
-        $this->ip = "";
-        $this->mask = "0.0.0.0";
-        $this->shortMask = 0;
+        $this->ip4 = "";
+        $this->mask4 = "0.0.0.0";
+        $this->ip6 = "";
+        $this->mask6 = ":::0";
     }
 
     public function __destruct() {
@@ -93,34 +96,36 @@ class Core_Model_Class_Subnet extends Base_Class
         }
     }
 
-    public function getIp() {
-        return $this->ip;
+    public function getIp4() {
+        return $this->ip4;
     }
 
-    public function setIp($ip) {
-        if (Lib_Validator::validateString($ip, 40)) {
-            $this->ip = $ip;
-        }
+    public function setIp4($ip4) {
+        $this->ip4 = $ip4;
     }
 
-    public function getMask() {
-        return $this->mask;
+    public function getIp6() {
+        return $this->ip6;
     }
 
-    public function setMask($mask) {
-        if (Lib_Validator::validateString($mask, 40)) {
-            $this->mask = $mask;
-        }
+    public function setIp6($ip6) {
+        $this->ip6 = $ip6;
     }
 
-    public function getShortMask() {
-        return $this->shortMask;
+    public function getMask4() {
+        return $this->mask4;
     }
 
-    public function setShortMask($shortMask) {
-        if (Lib_Validator::validateInteger($shortMask)) {
-            $this->shortMask = $shortMask;
-        }
+    public function setMask4($mask4) {
+        $this->mask4 = $mask4;
+    }
+
+    public function getMask6() {
+        return $this->mask6;
+    }
+
+    public function setMask6($mask6) {
+        $this->mask6 = $mask6;
     }
 
 }

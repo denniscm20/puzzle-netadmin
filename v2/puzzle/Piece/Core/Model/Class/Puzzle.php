@@ -18,7 +18,7 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once PATH_BASE.'Class.php';
+require_once PATH_BASE.'Command.php';
 
 /**
  * Class that implements the core of the puzzle application.
@@ -31,7 +31,7 @@ require_once PATH_BASE.'Class.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Core_Model_Class_Puzzle extends Base_Class
+class Core_Model_Class_Puzzle extends Base_Command
 {
     /**
      * The name of the host where the Puzzle Application is installed
@@ -41,18 +41,11 @@ class Core_Model_Class_Puzzle extends Base_Class
     private $hostname;
 
     /**
-     * Primary DNS Server
-     * @var String
+     * Server DNS List
+     * @var Array
      * @access private
      */
-    private $dns1;
-
-    /**
-     * Secondary DNS Server
-     * @var String
-     * @access private
-     */
-    private $dns2;
+    private $dns;
 
     /**
      * A flag that indicates if the forward has been activated.
@@ -62,16 +55,40 @@ class Core_Model_Class_Puzzle extends Base_Class
     private $forward;
 
     /**
+     * Array that stores the ammount of memory that has been allocated
+     * @var Array
+     * @access private
+     */
+    private $memory;
+
+    /**
+     * Array that stores the current use of each partition in the hard disk
+     * @var Array
+     * @access private
+     */
+    private $disk;
+
+    /**
+     * List of interfaces connected to the server where the application is
+     * installed
+     * @var Array
+     * @access private
+     */
+    private $interfaceList;
+
+    /**
      * Class constructor
      * @access public
      */
     public function __construct()
     {
         parent::__construct();
-        $this->hostname = "";
-        $this->dns1 = "";
-        $this->dns2 = "";
-        $this->forward = false;
+        $this->loadHostname();
+        $this->loadDns();
+        $this->loadForward();
+        $this->loadMemory();
+        $this->loadDisk();
+        $this->interfaceList = array();
     }
 
     /**
@@ -81,46 +98,191 @@ class Core_Model_Class_Puzzle extends Base_Class
     public function __destruct()
     {
         parent::__destruct();
+        foreach ($this->interfaceList as $interface) {
+            unset($interface);
+        }
+        unset($this->interfaceList);
+    }
+
+    private function loadHostname()
+    {
+        $this->command = "hostname";
+        $this->parameters = "";
+        $output = $this->executeCommand();
+        $this->hostname = $output[0];
+    }
+
+    private function loadDns()
+    {
+        $lines = file("/etc/resolv.conf");
+        $this->dns = array();
+        foreach ($lines as $line) {
+            if (strpos($line, "nameserver ") === 0) {
+                $this->dns[] = substr(trim($line), strlen("nameserver "));
+            }
+        }
+    }
+
+    private function loadForward()
+    {
+        $lines = file("/proc/sys/net/ipv4/ip_forward");
+        $this->forward = ($lines[0] == 1);
+    }
+
+    private function loadMemory()
+    {
+        $this->command = "free";
+        $this->parameters = "-m";
+        $lines = $this->executeCommand();
+        $result = array();
+        foreach ($lines as $line) {
+            if (strpos($line,"Mem:") !== false || strpos($line,"Swap:") !== false) {
+                $line = Lib_Helper::clearMiddleSpaces($line);
+                $line = split(" ", $line);
+                $result[] = array($line[1], $line[2]);
+            }
+        }
+        //array((ram_total", "ram_used"), (swap_total", "swap_used));
+        $this->memory = $result;
+    }    
+
+    private function loadDisk()
+    {
+        $this->command = "df";
+        $this->parameters = "-m";
+        $lines = $this->executeCommand();
+        $result = array();
+        foreach ($lines as $line) {
+            if (strpos($line,"/dev/") === 0) {
+                $line = Lib_Helper::clearMiddleSpaces($line);
+                $line = split(" ", $line);
+                $result[] = array($line[5], $line[1], $line[2]);
+            }
+        }
+        // array(array("label", "disk_total", "disk_used"));
+        $this->disk = $result;
     }
 
     public function getHostname() {
         return $this->hostname;
     }
 
-    public function setHostname($hostname) {
-        if (Lib_Validator::validateString($hostname, 50)) {
-            $this->hostname = $hostname;
-        }
-    }
-
-    public function getDns1() {
-        return $this->dns1;
-    }
-
-    public function setDns1($dns1) {
-        if (Lib_Validator::validateString($dns1, 40)) {
-            $this->dns1 = $dns1;
-        }
-    }
-
-    public function getDns2() {
-        return $this->dns2;
-    }
-
-    public function setDns2($dns2) {
-        if (Lib_Validator::validateString($dns2, 40)) {
-            $this->dns2 = $dns2;
-        }
+    public function getDns() {
+        return $this->dns;
     }
 
     public function getForward() {
         return $this->forward;
     }
 
-    public function setForward($forward) {
-        if (Lib_Validator::validateBoolean($forward)) {
-            $this->forward = $forward;
+    public function getMemory() {
+        return $this->memory;
+    }
+
+    public function getDisk() {
+        return $this->disk;
+    }
+
+    public function getInterfaceList()
+    {
+        return $this->interfaceList;
+    }
+
+    public function setInterfaceList($interfaceList)
+    {
+        $this->interfaceList = $interfaceList;
+    }
+
+    /**
+     * Scan the current configured network interfaces
+     * @access public
+     */
+    public function scanInterfaces()
+    {
+        /**
+         * @todo Apply refactoring
+         */
+        $this->command = "/sbin/ifconfig";
+        $this->parameters = "-a";
+        $lines = $this->executeCommand();
+        $className = Lib_Helper::getClass("Core", "Interface");
+
+        $counter = 0;
+        $interface = null;
+        foreach ($lines as $line) {
+            if ($counter == 0) {
+                $interface = new $className();
+            }
+            switch ( $counter ) {
+                case 0:
+                    $interface->Name = substr($line, 0, strpos($line,' '));
+                    $pos = strpos($lLinea,'HWaddr ');
+                    if ($pos !== false) {
+                        $interface->Mac = substr($line, $pos + strlen('HWaddr '));
+                    }
+                    break;
+                case 1:
+                    $pos =  strpos($line, '  Mask:');
+                    if ($pos !== false) {
+                        $offset = strlen('  Mask:');
+                        $interface->Mask4 = substr($line, $pos + $offset);
+
+                        $limit = strpos ($line,'  Bcast:');
+                        if ($limit !== false) {
+                            $limit = $pos;
+                        }
+                        $pos =  strpos($line,'inet addr:');
+                        $offset = strlen('inet addr:');
+                        $interface->Ip4 = substr($line, $pos + $offset, $limit - $pos - $offset);
+                    }
+                    break;
+                case 2:
+                    $pos =  strpos($line,'inet6 addr: ');
+                    if ($pos !== false) {
+                        $offset = strlen('inet6 addr: ');
+                        $limit = strpos($line, " Scope:");
+                        $ip_mask = substr($line, $pos + $offset, $limit - $pos - $offset);
+                        $ip_mask = split("/", $ip_mask);
+                        $interface->Ip6 = $ip_mask[0];
+                        /**
+                         * @todo Implement method to transform an IPv6 short mask
+                         * to its long mask format.
+                         */
+                        $interface->Mask6 = $ip_mask[1];
+                    }
+                    break;
+                default: 
+                    if (trim($line) == "") {
+                        $counter = 0;
+                        $this->interfaceList[] = $interface;
+                    }
+                    continue;
+            }
+            ++$counter;
         }
     }
+
+    /**
+     * Enable the forward falg in the /proc/sys/net/ipv4/ip_forward file
+     * @access public
+     */
+    public function enableForward()
+    {
+        $this->command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        $this->parameters = "";
+        $this->executeCommand();
+    }
+
+    /**
+     * Disable the forward falg in the /proc/sys/net/ipv4/ip_forward file
+     * @access public
+     */
+    public function disableForward()
+    {
+        $this->command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        $this->parameters = "";
+        $this->executeCommand();
+    }
+    
 }
 ?>

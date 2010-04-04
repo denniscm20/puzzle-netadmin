@@ -30,7 +30,8 @@ require_once PATH_BASE.'Class.php';
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-abstract class Base_Command extends Base_Class {
+abstract class Base_Command extends Base_Class
+{
 
     protected $command;
     protected $parameters;
@@ -83,12 +84,14 @@ abstract class Base_Command extends Base_Class {
 
     /**
      * Parses the output of the exectued command
-     * @abstract
      * @access protected
      * @param String $result Output to be parsed.
      * @return Array Parsed output
      */
-    abstract protected function parseOutput($result);
+    protected function parseOutput($result)
+    {
+         return split("\n", $result);
+    }
 
 }
 ?>

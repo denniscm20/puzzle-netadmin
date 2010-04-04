@@ -32,7 +32,8 @@ require_once PATH_BASE.'Command.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Nmap_Model_Class_Nmap extends Base_Command {
+class Nmap_Model_Class_Nmap extends Base_Command
+{
 
     private $scanDate = "";
     private $account = null;
@@ -86,7 +87,7 @@ class Nmap_Model_Class_Nmap extends Base_Command {
      */
     protected function parseOutput($result)
     {
-        $lines = split("\n", $result);
+        $lines = parent::parseOutput($result);
         array_pop($lines);
         array_shift($lines);
         $count = count($lines);

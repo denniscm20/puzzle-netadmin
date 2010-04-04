@@ -42,11 +42,15 @@ class Core_Model_Class_Interface extends Base_Class
     
     private $description;
     
-    private $ip;
+    private $ip4;
+
+    private $ip6;
     
     private $mac;
     
-    private $mask;
+    private $mask4;
+
+    private $mask6;
     
     private $enable;
 
@@ -102,16 +106,6 @@ class Core_Model_Class_Interface extends Base_Class
         }
     }
 
-    public function getIp() {
-        return $this->ip;
-    }
-
-    public function setIp($ip) {
-        if (Lib_Validator::validateString($ip, 40)) {
-            $this->ip = $ip;
-        }
-    }
-
     public function getMac() {
         return $this->mac;
     }
@@ -122,14 +116,36 @@ class Core_Model_Class_Interface extends Base_Class
         }
     }
 
-    public function getMask() {
-        return $this->mask;
+    public function getIp4() {
+        return $this->ip4;
     }
 
-    public function setMask($mask) {
-        if (Lib_Validator::validateString($mask, 40)) {
-            $this->mask = $mask;
-        }
+    public function setIp4($ip4) {
+        $this->ip4 = $ip4;
+    }
+
+    public function getIp6() {
+        return $this->ip6;
+    }
+
+    public function setIp6($ip6) {
+        $this->ip6 = $ip6;
+    }
+
+    public function getMask4() {
+        return $this->mask4;
+    }
+
+    public function setMask4($mask4) {
+        $this->mask4 = $mask4;
+    }
+
+    public function getMask6() {
+        return $this->mask6;
+    }
+
+    public function setMask6($mask6) {
+        $this->mask6 = $mask6;
     }
 
     public function getEnable() {
