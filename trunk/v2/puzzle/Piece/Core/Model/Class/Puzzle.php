@@ -104,65 +104,6 @@ class Core_Model_Class_Puzzle extends Base_Command
         unset($this->interfaceList);
     }
 
-    private function loadHostname()
-    {
-        $this->command = "hostname";
-        $this->parameters = "";
-        $output = $this->executeCommand();
-        $this->hostname = $output[0];
-    }
-
-    private function loadDns()
-    {
-        $lines = file("/etc/resolv.conf");
-        $this->dns = array();
-        foreach ($lines as $line) {
-            if (strpos($line, "nameserver ") === 0) {
-                $this->dns[] = substr(trim($line), strlen("nameserver "));
-            }
-        }
-    }
-
-    private function loadForward()
-    {
-        $lines = file("/proc/sys/net/ipv4/ip_forward");
-        $this->forward = ($lines[0] == 1);
-    }
-
-    private function loadMemory()
-    {
-        $this->command = "free";
-        $this->parameters = "-m";
-        $lines = $this->executeCommand();
-        $result = array();
-        foreach ($lines as $line) {
-            if (strpos($line,"Mem:") !== false || strpos($line,"Swap:") !== false) {
-                $line = Lib_Helper::clearMiddleSpaces($line);
-                $line = split(" ", $line);
-                $result[] = array($line[1], $line[2]);
-            }
-        }
-        //array((ram_total", "ram_used"), (swap_total", "swap_used));
-        $this->memory = $result;
-    }    
-
-    private function loadDisk()
-    {
-        $this->command = "df";
-        $this->parameters = "-m";
-        $lines = $this->executeCommand();
-        $result = array();
-        foreach ($lines as $line) {
-            if (strpos($line,"/dev/") === 0) {
-                $line = Lib_Helper::clearMiddleSpaces($line);
-                $line = split(" ", $line);
-                $result[] = array($line[5], $line[1], $line[2]);
-            }
-        }
-        // array(array("label", "disk_total", "disk_used"));
-        $this->disk = $result;
-    }
-
     public function getHostname() {
         return $this->hostname;
     }
@@ -194,75 +135,6 @@ class Core_Model_Class_Puzzle extends Base_Command
     }
 
     /**
-     * Scan the current configured network interfaces
-     * @access public
-     */
-    public function scanInterfaces()
-    {
-        /**
-         * @todo Apply refactoring
-         */
-        $this->command = "/sbin/ifconfig";
-        $this->parameters = "-a";
-        $lines = $this->executeCommand();
-        $className = Lib_Helper::getClass("Core", "Interface");
-
-        $counter = 0;
-        $interface = null;
-        foreach ($lines as $line) {
-            if ($counter == 0) {
-                $interface = new $className();
-            }
-            switch ( $counter ) {
-                case 0:
-                    $interface->Name = substr($line, 0, strpos($line,' '));
-                    $pos = strpos($lLinea,'HWaddr ');
-                    if ($pos !== false) {
-                        $interface->Mac = substr($line, $pos + strlen('HWaddr '));
-                    }
-                    break;
-                case 1:
-                    $pos =  strpos($line, '  Mask:');
-                    if ($pos !== false) {
-                        $offset = strlen('  Mask:');
-                        $interface->Mask4 = substr($line, $pos + $offset);
-
-                        $limit = strpos ($line,'  Bcast:');
-                        if ($limit !== false) {
-                            $limit = $pos;
-                        }
-                        $pos =  strpos($line,'inet addr:');
-                        $offset = strlen('inet addr:');
-                        $interface->Ip4 = substr($line, $pos + $offset, $limit - $pos - $offset);
-                    }
-                    break;
-                case 2:
-                    $pos =  strpos($line,'inet6 addr: ');
-                    if ($pos !== false) {
-                        $offset = strlen('inet6 addr: ');
-                        $limit = strpos($line, " Scope:");
-                        $ip_mask = substr($line, $pos + $offset, $limit - $pos - $offset);
-                        $ip_mask = split("/", $ip_mask);
-                        $interface->Ip6 = $ip_mask[0];
-                        /**
-                         * @todo Implement method to transform an IPv6 short mask
-                         * to its long mask format.
-                         */
-                        $interface->Mask6 = $ip_mask[1];
-                    }
-                    break;
-                default: 
-                    if (trim($line) == "") {
-                        $counter = 0;
-                        $this->interfaceList[] = $interface;
-                    }
-                    continue;
-            }
-            ++$counter;
-        }
-    }
-
-    /**
      * Enable the forward falg in the /proc/sys/net/ipv4/ip_forward file
      * @access public
      */
@@ -283,6 +155,211 @@ class Core_Model_Class_Puzzle extends Base_Command
         $this->parameters = "";
         $this->executeCommand();
     }
-    
+
+    /**
+     * Scan the current configured network interfaces
+     * @access public
+     */
+    public function scanInterfaces()
+    {
+        $this->command = "/sbin/ifconfig";
+        $this->parameters = "-a";
+        $lines = $this->executeCommand();
+        $className = Lib_Helper::getClass("Core", "Interface");
+
+        $counter = 0;
+        $interface = null;
+        foreach ($lines as $line) {
+            if ($counter == 0) {
+                $interface = new $className();
+            }
+            switch ( $counter ) {
+                case 0:
+                    $interface->Name = substr($line, 0, strpos($line,' '));
+                    $interface->Mac = $this->loadMacInformation($line);
+                    break;
+                case 1:
+                    $interface->Mask4 = $this->loadMask4($line);
+                    if ($interface->Mask4 != "") {
+                        $interface->Ip4 = $this->loadIp4($line); 
+                    }
+                    break;
+                case 2:
+                    $interface->Ip6 = $this->loadIp6($line);
+                    if ($interface->Mask6 != "") {
+                        $interface->Mask6 = $this->loadMask6($line);
+                    }
+                    break;
+                default: 
+                    if (trim($line) == "") {
+                        $counter = 0;
+                        $this->interfaceList[] = $interface;
+                    }
+                    continue;
+            }
+            ++$counter;
+        }
+    }
+
+    /**
+     * Parses the provided $line parameter in order to retrieve the MAC Address
+     * @param String $line ifconfig line
+     * @return String Mac Address
+     */
+    private function loadMacInformation( $line )
+    {
+        $pos = strpos($line,'HWaddr ');
+        if ($pos !== false) {
+            return substr($line, $pos + strlen('HWaddr '));
+        }
+        return "";
+    }
+
+    /**
+     * Parses the provided $line parameter in order to retrieve the Network mask
+     * @param String $line ifconfig line
+     * @return String IPv4 Mask
+     */
+    private function loadMask4 ( $line )
+    {
+        $pos = strpos($line, '  Mask:');
+        if ($pos !== false) {
+            $offset = strlen('  Mask:');
+            return substr($line, $pos + $offset);
+        }
+        return "";
+    }
+
+    /**
+     * Parses the provided $line parameter in order to retrieve the Network mask
+     * @param String $line ifconfig line
+     * @return String IPv6 Mask
+     */
+    private function loadMask6 ( $line )
+    {
+        $pos =  strpos($line,'/');
+        if ($pos !== false) {
+            $offset = strlen('/');
+            $limit = strpos($line, ' Scope:');
+            $mask = substr($line, $pos + $offset, $limit - $pos - $offset);
+            /**
+             * @todo Implement method to transform an IPv6 short mask
+             * to its long mask format.
+             */
+            return $mask;
+        }
+        return "";
+    }
+
+    /**
+     * Parses the provided $line parameter in order to retrieve the IPv4 Address
+     * @param String $line ifconfig line
+     * @return String IPv4 Address
+     */
+    private function loadIp4 ( $line )
+    {
+        $limit = strpos ($line,'  Bcast:');
+        if ($limit !== false) {
+            $limit = strpos($line, '  Mask:');
+        }
+        $pos =  strpos($line,'inet addr:');
+        $offset = strlen('inet addr:');
+        return substr($line, $pos + $offset, $limit - $pos - $offset);
+    }
+
+    /**
+     * Parses the provided $line parameter in order to retrieve the IPv6 Address
+     * @param String $line ifconfig line
+     * @return String IPv6 Address
+     */
+    private function loadIp6 ( $line )
+    {
+        $pos =  strpos($line,'inet6 addr: ');
+        if ($pos !== false) {
+            $offset = strlen('inet6 addr: ');
+            $limit = strpos($line, "/");
+            return substr($line, $pos + $offset, $limit - $pos - $offset);
+        }
+        return "";
+    }
+
+    /**
+     * Loads the Server hostname
+     * @access private
+     */
+    private function loadHostname()
+    {
+        $this->command = "hostname";
+        $this->parameters = "";
+        $output = $this->executeCommand();
+        $this->hostname = $output[0];
+    }
+
+    /**
+     * Loads the Server DNS adresses
+     * @access private
+     */
+    private function loadDns()
+    {
+        $lines = file("/etc/resolv.conf");
+        $this->dns = array();
+        foreach ($lines as $line) {
+            if (strpos($line, "nameserver ") === 0) {
+                $this->dns[] = substr(trim($line), strlen("nameserver "));
+            }
+        }
+    }
+
+    /**
+     * Loads the Server Forward Flag
+     * @access private
+     */
+    private function loadForward()
+    {
+        $lines = file("/proc/sys/net/ipv4/ip_forward");
+        $this->forward = ($lines[0] == 1);
+    }
+
+    /**
+     * Loads the Server Memory Ussage
+     * @access private
+     */
+    private function loadMemory()
+    {
+        $this->command = "free";
+        $this->parameters = "-m";
+        $lines = $this->executeCommand();
+        $result = array();
+        foreach ($lines as $line) {
+            if (strpos($line,"Mem:") !== false || strpos($line,"Swap:") !== false) {
+                $line = Lib_Helper::clearMiddleSpaces($line);
+                $line = split(" ", $line);
+                $result[] = array($line[1], $line[2]);
+            }
+        }
+        //array((ram_total", "ram_used"), (swap_total", "swap_used));
+        $this->memory = $result;
+    }
+
+    /**
+     * Loads the Server Disk Ussage
+     * @access private
+     */
+    private function loadDisk()
+    {
+        $this->command = "df";
+        $this->parameters = "-m";
+        $lines = $this->executeCommand();
+        $result = array();
+        foreach ($lines as $line) {
+            if (strpos($line,"/dev/") === 0) {
+                $line = Lib_Helper::clearMiddleSpaces($line);
+                $line = split(" ", $line);
+                $result[] = array($line[5], $line[1], $line[2]);
+            }
+        }
+        // array(array("label", "disk_total", "disk_used"));
+        $this->disk = $result;
+    }    
 }
 ?>
