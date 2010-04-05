@@ -16,7 +16,6 @@ CREATE TABLE IptablesAction (
 
 CREATE TABLE IptablesPredefinedRule (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    rule VARCHAR(100) NOT NULL,
     description VARCHAR(200) NOT NULL
 );
 
@@ -34,7 +33,7 @@ CREATE TABLE IptablesChain (
 
 CREATE TABLE Iptables (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    description VARCHAR(10) NOT NULL,
+    description VARCHAR(100) NOT NULL,
     logfile VARCHAR(100) NOT NULL,
     enable BOOLEAN NOT NULL,
     createdDate DATE NOT NULL,
@@ -48,6 +47,14 @@ CREATE TABLE Iptables (
     CONSTRAINT account_apply_iptables_fk FOREIGN KEY (id_account_apply) REFERENCES Account (id)
 );
 
+CREATE TABLE IptablesPredefinedRule_x_IptablesRule (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_iptablesPredefinedRule INTEGER NOT NULL,
+    id_iptablesRule INTEGER NOT NULL,
+    CONSTRAINT iptablespredefinedrule_iptablespredefinedrule_x_iptablesrule_fk FOREIGN KEY (id_iptablesPredefinedRule) REFERENCES IptablesPredefinedRule (id),
+    CONSTRAINT iptablesrule_iptablespredefinedrule_x_iptablesrule_fk FOREIGN KEY (id_iptablesRule) REFERENCES IptablesRule (id)
+);
+
 CREATE TABLE IptablesRule (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_iptables INTEGER NOT NULL,
@@ -59,10 +66,10 @@ CREATE TABLE IptablesRule (
     dportEnd SMALLINTEGER NOT NULL,
     sportStart SMALLINTEGER NOT NULL,
     sportEnd SMALLINTEGER NOT NULL,
-    sipStart VARCHAR(40) NOT NULL,
-    sipEnd VARCHAR(40) NOT NULL,
-    dipStart VARCHAR(40) NOT NULL,
-    dipEnd VARCHAR(40) NOT NULL,
+    sipStart VARCHAR(15) NOT NULL,
+    sipEnd VARCHAR(15) NOT NULL,
+    dipStart VARCHAR(15) NOT NULL,
+    dipEnd VARCHAR(15) NOT NULL,
     CONSTRAINT iptablesaction_iptablesrule_fk FOREIGN KEY (id_iptablesAction) REFERENCES IptablesAction (id),
     CONSTRAINT protocol_iptablesrule_fk FOREIGN KEY (id_protocol) REFERENCES Protocol (id),
     CONSTRAINT iptableschain_iptablesrule_fk FOREIGN KEY (id_iptablesChain) REFERENCES IptablesChain (id),
