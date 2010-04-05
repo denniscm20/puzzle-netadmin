@@ -53,12 +53,7 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function insert()
     {
-        $this->query = "INSERT INTO Puzzle (hostname, dns1, dns2, forward)
-            VALUES (?, ?, ?, ?)";
-        $this->parameters = array($this->object->Hostname, $this->object->Dns1,
-            $this->Dns2, $this->Forward);
-        $this->executeQuery();
-        return $this->getLastId();
+        return 0;
     }
 
     /**
@@ -70,11 +65,7 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function update()
     {
-        $this->query = "UPDATE Puzzle SET hostname = ?, dns1 = ?, dns2 = ?,
-            forward = ? WHERE id = ?";
-        $this->parameters = array($this->object->Hostname, $this->object->Dns1,
-            $this->Dns2, $this->Forward,$this->object->Id);
-        return $this->executeQuery();
+        return false;
     }
 
     /**
@@ -86,9 +77,7 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function delete()
     {
-        $this->query = "DELETE FROM Puzzle WHERE id = ?";
-        $this->parameters = array($this->object->Id);
-        return $this->executeQuery();
+        return false;
     }
 
     /**
@@ -100,10 +89,7 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function select()
     {
-        $this->query = "SELECT id, hostname, dns1, dns2, forward FROM Puzzle WHERE id = ?";
-        $this->parameters = array($this->object->Id);
-        $result = $this->selectQuery();
-        return (count($result) > 0)? $result[0] : null;
+        return $this->loadObject(null);
     }
 
     /**
@@ -117,10 +103,18 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function listElements($start, $range = self::LIMIT_DEFAULT)
     {
-        $this->query = "SELECT id, hostname, dns1, dns2, forward FROM Puzzle";
-        $this->limitQuery($start, $range);
-        $this->parameters = array();
-        return $this->selectQuery();
+        return array($this->select());
+    }
+
+    protected function loadObject($result)
+    {
+        $object = new Core_Model_Class_Puzzle();
+        
+        $interface = new Core_Model_Class_Interface();
+        $interfaceDAO = new Core_Model_Dao_Interface($interface);
+        $object->InterfaceList = $interfaceDAO->listElements(0);
+
+        return $object;
     }
 }
 ?>

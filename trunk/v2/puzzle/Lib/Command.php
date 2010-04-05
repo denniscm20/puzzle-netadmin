@@ -1,6 +1,6 @@
 <?php
 /*
- * Base/Command.php - Copyright 2009 Dennis Cohn Muroy
+ * Lib/Command.php - Copyright 2010 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -21,60 +21,54 @@
 require_once PATH_BASE.'Class.php';
 
 /**
- * Application Base Command Class which contains the common methods for
- * developing classes that makes use of system calls.
- * @abstract
+ * Application  Helper Command Class which contains the common methods
+ * that makes use of system calls.
  * @author Dennis Cohn Muroy
  * @package Base
  * @since 2010
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-abstract class Base_Command extends Base_Class
-{
+class Lib_Command {
 
-    protected $command;
-    protected $parameters;
+    /**
+     * Command to be executed
+     * @var String
+     * @access private
+     */
+    private $command;
 
-    protected function __construct()
+    /**
+     * Parameters that the command will receive
+     * @var String
+     * @access private
+     */
+    private $parameters;
+
+    /**
+     * Class Constructor
+     * @param String $command Command to be executed.
+     * @param String $parameters Optional parameter. Parameters of the command
+     * that will be executed.
+     */
+    public function __construct($command, $parameters = "")
     {
-        parent::__construct();
-        $this->command = "";
-        $this->parameters = "";
-    }
-
-    protected function __destruct()
-    {
-        parent::__destruct();
-    }
-
-    protected function getCommand()
-    {
-        return $this->command;
-    }
-
-    protected function setCommand($command)
-    {
-        $this->command = $command;
-    }
-
-    protected function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    protected function setParameters($parameters)
-    {
-        $this->parameters = $parameters;
+        if (is_string($command) && is_string($parameters)) {
+            /**
+             * @todo Filter the command and parameters values
+             */
+            $this->command = $command;
+            $this->parameters = $parameters;
+        }
     }
 
     /**
      * Executed the command defined in the $command attribute, making use of the
      * parameters set in the $parameters attribute.
-     * @access protected
+     * @access public
      * @return Array command output
      */
-    protected function executeCommand ()
+    public function execute ()
     {
         $command = $this->command." ".$this->parameters;
         $result = shell_exec($command);
@@ -92,6 +86,5 @@ abstract class Base_Command extends Base_Class
     {
          return split("\n", $result);
     }
-
 }
 ?>

@@ -37,6 +37,7 @@
     // Default values
     define ("DEFAULT_THEME", "default");
     define ("DEFAULT_LANGUAGE", "EN");
+    define ("DEFAULT_DATE_FORMAT", "");
     define ("DEFAULT_EVENT", "load");
     define ("DEFAULT_PIECE", "Core");
     define ("DEFAULT_LOGOUT_PAGE", "Login");

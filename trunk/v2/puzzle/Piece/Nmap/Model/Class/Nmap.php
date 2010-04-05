@@ -19,7 +19,8 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once PATH_BASE.'Command.php';
+require_once PATH_BASE.'Class.php';
+require_once PATH_LIB.'Command.php';
 
 /**
  * Class that implements the nmap command interface
@@ -32,24 +33,26 @@ require_once PATH_BASE.'Command.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Nmap_Model_Class_Nmap extends Base_Command
+class Nmap_Model_Class_Nmap extends Base_Class
 {
 
     private $scanDate = "";
+
     private $account = null;
-    private $address = "";
+
+    private $options = "";
 
     public function __construct() {
         parent::__construct();
-        $this->command = "nmap";
-        // The paramters of the command will be -sP and the IP Addresses to be
-        // scanned
-        $this->parameters = "-sP %s";
-        $this->address = "";
+        $this->scanDate = date(DEFAULT_DATE_FORMAT);
+        $this->options = "";
+        $accountClass = Lib_Helper::getClass("Core", "Account");
+        $this->account = new $accountClass();
     }
 
     public function __destruct() {
         parent::__destruct();
+        unset($this->account);
     }
 
     public function getScanDate() {
@@ -68,15 +71,25 @@ class Nmap_Model_Class_Nmap extends Base_Command
         $this->account = $account;
     }
 
-    public function setOptions($options)
-    {
-        $this->address = $options;
-        $this->parameters = sprintf($this->parameters, $this->address);
+    public function getOptions() {
+        return $this->options;
     }
 
-    public function getOptions()
-    {
-        return $this->address;
+    public function setOptions($options) {
+        $this->options = $options;
+    }
+
+    /**
+     * Scans the network looking for non-ping protected nodes.
+     * @access public
+     * @return Array Command output
+     */
+    public function scan() {
+        $command = "nmap";
+        $this->options = sprintf("-sP %s", $this->options);
+        $command = new Lib_Command($command, $this->options);
+        $result = $command->execute();
+        return $this->parseOutput($result);
     }
 
     /**
@@ -87,7 +100,7 @@ class Nmap_Model_Class_Nmap extends Base_Command
      */
     protected function parseOutput($result)
     {
-        $lines = parent::parseOutput($result);
+        $lines = split("\n", $result);
         array_pop($lines);
         array_shift($lines);
         $count = count($lines);
@@ -97,12 +110,8 @@ class Nmap_Model_Class_Nmap extends Base_Command
                 $end = strpos($lines[$i], ' is up') - $start + 1;
                 $lines[$i] = trim(substr($lines[$i], $start, $end));
             }
-            return $lines;
         }
-    }
-
-    public function scan() {
-        return $this->executeCommand();
+        return $lines;
     }
 }
 ?>

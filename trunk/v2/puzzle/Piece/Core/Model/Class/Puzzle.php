@@ -18,7 +18,8 @@
  * along with puzzle.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once PATH_BASE.'Command.php';
+require_once PATH_BASE.'Class.php';
+require_once PATH_LIB.'Command.php';
 
 /**
  * Class that implements the core of the puzzle application.
@@ -31,7 +32,7 @@ require_once PATH_BASE.'Command.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Core_Model_Class_Puzzle extends Base_Command
+class Core_Model_Class_Puzzle extends Base_Class
 {
     /**
      * The name of the host where the Puzzle Application is installed
@@ -140,9 +141,9 @@ class Core_Model_Class_Puzzle extends Base_Command
      */
     public function enableForward()
     {
-        $this->command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
-        $this->parameters = "";
-        $this->executeCommand();
+        $command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        $command = new Lib_Command($command);
+        $result = $command->execute();
     }
 
     /**
@@ -151,9 +152,9 @@ class Core_Model_Class_Puzzle extends Base_Command
      */
     public function disableForward()
     {
-        $this->command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
-        $this->parameters = "";
-        $this->executeCommand();
+        $command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        $command = new Lib_Command($command);
+        $result = $command->execute();
     }
 
     /**
@@ -162,9 +163,9 @@ class Core_Model_Class_Puzzle extends Base_Command
      */
     public function scanInterfaces()
     {
-        $this->command = "/sbin/ifconfig";
-        $this->parameters = "-a";
-        $lines = $this->executeCommand();
+        $command = "/sbin/ifconfig";
+        $command = new Lib_Command($command, "-a");
+        $lines = $command->execute();
         $className = Lib_Helper::getClass("Core", "Interface");
 
         $counter = 0;
@@ -289,9 +290,9 @@ class Core_Model_Class_Puzzle extends Base_Command
      */
     private function loadHostname()
     {
-        $this->command = "hostname";
-        $this->parameters = "";
-        $output = $this->executeCommand();
+        $command = "hostname";
+        $command = new Lib_Command($command);
+        $output = $command->execute();
         $this->hostname = $output[0];
     }
 
@@ -326,7 +327,7 @@ class Core_Model_Class_Puzzle extends Base_Command
      */
     private function loadMemory()
     {
-        $this->command = "free";
+        $command = "free";
         $this->parameters = "-m";
         $lines = $this->executeCommand();
         $result = array();
@@ -347,7 +348,7 @@ class Core_Model_Class_Puzzle extends Base_Command
      */
     private function loadDisk()
     {
-        $this->command = "df";
+        $command = "df";
         $this->parameters = "-m";
         $lines = $this->executeCommand();
         $result = array();
