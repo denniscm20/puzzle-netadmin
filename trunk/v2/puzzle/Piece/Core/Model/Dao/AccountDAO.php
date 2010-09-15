@@ -41,42 +41,52 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         parent::__destruct();
     }
    
-    public function update()
+    public function save()
     {
-    }
-    
-    public function listElements($start, $range = self::LIMIT_DEFAULT)
-    {
+        if ($this->object->Id > 0) {
+            $this->query = "INSERT INTO account
+                (username, email, token, salt, password, changePassword, enabled,
+                tokenDate, createdDate, modifiedDate) VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $this->parameters = array();
+        } else {
+            $this->query = "UPDATE account SET email = ?, changePassword = ?, 
+                modifiedDate = ? WHERE id = ?";
+            $this->parameters = array($this->object->Email,
+                $this->object->ChangePassword, $this->object->ModifiedDate,
+                $this->object->Id);
+        }
+        return parent::save();
     }
 
-    protected function loadObject($result)
+    public function savePassword()
     {
-        $account = parent::loadObject($result);
-        $account->Role->Id = $result["id_role"];
-        return $account;
-    }
-    
-    public function insert()
-    {
+        $this->query = "UPDATE account SET salt = ?, password = ?, modifiedDate = ? WHERE id = ?";
+        $this->parameters = array($this->object->Salt, $this->object->Password,
+                $this->object->Id);
+        return parent::save();
     }
 
-    public function delete()
+    public function saveToken()
     {
-        $this->query = "DELETE FROM Account WHERE id = ?";
-        $this->parameters = array($this->object->Id);
-        return $this->executeQuery();
+        $this->query = "UPDATE account SET token = ?, tokenDate = ? WHERE id = ?";
+        $this->parameters = array($this->object->Token, $this->object->TokenDate, $this->object->Id);
+        return parent::save();
     }
-    
-    public function select()
+
+    public function disable()
+    {
+        $this->query = "UPDATE account SET enabled = ?, modifiedDate = ? WHERE id = ?";
+        $this->parameters = array($this->object->Enabled, $this->object->ModifiedDate, $this->object->Id);
+        return parent::save();
+    }
+
+    public function load()
     {
         $this->query = "SELECT id, id_role, username, password, salt, changePassword, enabled ".
                        "FROM Account WHERE id = ?";
         $this->parameters = array($this->object->Id);
-        $result = $this->selectQuery();
-        if (count($result) > 0) {
-            return $result[0];
-        }
-        return null;
+        return parent::load();
     }
 
     public function selectByUsernameAndEnabled ()
@@ -84,11 +94,15 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         $this->query = "SELECT id, id_role, username, password, salt, changePassword ".
                        "FROM Account WHERE username = ? and enabled = ?";
         $this->parameters = array($this->object->Username, $this->object->Enabled);
-        $result = $this->selectQuery();
-        if (count($result) > 0) {
-            return $result[0];
-        }
-        return null;
+        return parent::load();
+    }
+
+    protected function loadObjectReferences($object, $result) {
+        $className = Lib_Helper::getDao("Core", "Role");
+        $object->Role->Id = $result["id_role"];
+        $roleDAO = new $className($object->Role);
+        $object->Role = $roleDAO->select();
+        return $object;
     }
 
 }
