@@ -51,6 +51,14 @@ abstract class Base_Controller
     protected static $controller = null;
 
     /**
+     * Url Identifier
+     *
+     * @access protected
+     * @var String
+     */
+    protected $identifier = null;
+
+    /**
      * Class constructor
      *
      * @access protected
@@ -178,10 +186,12 @@ abstract class Base_Controller
      *
      * @access public
      * @author Dennis Cohn Muroy
-     * @param  String event
+     * @param  String $event
+     * @param  mixed $identifier
      */
-    public function execute( $event )
+    public function execute( $event, $identifier )
     {
+        $this->identifier = $identifier;
         if ($this->validateInput()) {
             $event = $this->call($event);
             if (method_exists($this, $event)) {

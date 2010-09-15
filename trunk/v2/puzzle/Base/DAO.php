@@ -33,13 +33,6 @@ require_once (PATH_LIB.'Database/Connection.php');
 abstract class Base_DAO
 {
     /**
-     * Short description of attribute LIMIT_DEFAULT
-     *
-     * @access public
-     * @var Integer
-     */
-    const LIMIT_DEFAULT = 10;
-    /**
      * This attribute stores the query that will be executed against the database.
      * @var string
      * @access protected
@@ -101,14 +94,93 @@ abstract class Base_DAO
     }
 
     /**
-     * Limit the number of items returned by the query
-     * @access protected
+     * Executes a query, defined in the $query attribute, against the database.
+     * @final
+     * @access private
+     * @return PDO_Statement The PDO Statement for the query that has been
+     * executed.
+     */
+    private final function executeQuery()
+    {
+        $statement = $connection->prepare($this->query);
+        if (count($this->parameters) > 0) {
+            $statement->execute($this->parameters);
+        } else {
+            $statement->execute();
+        }
+        return $statement;
+    }
+
+    /**
+     * Fetched a list of objects from the database.
+     * @access private
+     * @final
+     * @return array A list of objects.
+     */
+    private final function retrieveObjectFromDatabase ( )
+    {
+        try {
+            $objects = array();
+            $statement = $this->executeQuery();
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach($result as $r) {
+                $objects[] = $this->loadObject($r);
+            }
+            return $objects;
+        } catch (PDOException $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * Modifies the information stored in a table in the database.
+     * @access private
+     * @final
+     * @return bool The query was successfully executed.
+     */
+    private final function saveObjectToDatabase ( ) {
+        try {
+            $connection = $this->connection->getConnection();
+            $this->executeQuery();
+            return true;
+        } catch (PDOException $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * Loads the object's attributes retrieved from the database.
+     * @access private
+     * @final
+     * @param ResultSet result Record from the database.
+     * @return object Object with its attributes' values loaded.
+     */
+    private final function loadObject( $result )
+    {
+        $className = get_class($this->object);
+        $object = new $className();
+        foreach ($result as $key => $value) {
+            if (strpos($key, 'id_') === false) {
+                $setMethod = "set".ucfirst($key);
+                if (method_exists($object, $setMethod)) {
+                    $object->{$setMethod}($value);
+                }
+            }
+        }
+        $object = $this->loadObjectReferences($object, $result);
+        return $object;
+    }
+
+
+    /**
+     * Limits the number of items returned by the query
+     * @access private
      * @final
      * @param Integer $start
      * @param Integer $range
      * @return String
      */
-    protected final function limitQuery($start, $range = self::LIMIT_DEFAULT)
+    private final function limitQuery($start, $range = self::LIMIT_DEFAULT)
     {
         $str = "%s LIMIT %d, %d";
         $end = $start + $range;
@@ -128,125 +200,80 @@ abstract class Base_DAO
     }
 
     /**
-     * Implements the select database function.
+     * Inserts or updates an object in the database
+     *
      * @access protected
-     * @final
-     * @return array A list of objects.
+     * @author Dennis Cohn Muroy
+     * @return Integer Last inserted/updated field id
      */
-    protected final function selectQuery ( )
+    protected function save()
     {
         try {
-            $objects = array();
-            $connection = $this->connection->getConnection();
-            $statement = $connection->prepare($this->query);
-            if (count($this->parameters) > 0) {
-                $statement->execute($this->parameters);
+            $this->saveObjectToDatabase();
+            if ($this->object->Id === 0) {
+                return $this->getLastId();
             } else {
-                $statement->execute();
+                return $this->object->Id;
             }
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            foreach($result as $r) {
-                $objects[] = $this->loadObject($r);
-            }
-            return $objects;
         } catch (PDOException $ex) {
-            throw $ex;
+            return false;
         }
     }
-
-    /**
-     * Implements the insert/update/delete SQL functions
-     * @access protected
-     * @final
-     * @return bool The query was successfully executed.
-     */
-    protected final function executeQuery() {
-        try {
-            $connection = $this->connection->getConnection();
-            $statement = $connection->prepare($this->query);
-            if (count($this->parameters) > 0) {
-                $statement->execute($this->parameters);
-            } else {
-                $statement->execute();
-            }
-            return true;
-        } catch (PDOException $ex) {
-            throw $ex;
-        }
-    }
-
-    /**
-     * Loads the object.
-     * @access protected
-     * @param ResultSet result Record from the database.
-     * @return object Object with its attributes' values loaded.
-     */
-    protected function loadObject( $result )
-    {
-        $className = get_class($this->object);
-        $object = new $className();
-        foreach ($result as $key => $value) {
-            if (strpos($key, 'id_') === false) {
-                $setMethod = "set".ucfirst($key);
-                if (method_exists($object, $setMethod)) {
-                    $object->{$setMethod}($value);
-                }
-            }
-        }
-        return $object;
-    }
-
-    /**
-     * Inserts a new object in the database.
-     *
-     * @abstract
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @return Integer Last inserted field id
-     */
-    public abstract function insert();
-
-    /**
-     * Updates an existing object in the database
-     *
-     * @abstract
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @return Boolean
-     */
-    public abstract function update();
 
     /**
      * Deletes an existing object from the database
      *
-     * @abstract
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @return Boolean
+     * @access protected
+     * @author Dennis Cohn Muroy
+     * @return Boolean True if object was successfully deleted from database
      */
-    public abstract function delete();
+    protected function delete()
+    {
+        return $this->saveObjectToDatabase();
+    }
 
     /**
-     * Selects an object from the database
+     * Loads an object from its attributes values stored in the database
      *
-     * @abstract
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
-     * @return Base_Model
+     * @access protected
+     * @author Dennis Cohn Muroy
+     * @return Base_Class null on failure
      */
-    public abstract function select();
+    protected function load()
+    {
+        $result = $this->retrieveObjectFromDatabase();
+        if (count($result) > 0) {
+            return $result[0];
+        }
+        return null;
+    }
 
     /**
      * Lists a range of elements from the database.
      *
-     * @abstract
-     * @access public
-     * @author Dennis Cohn Muroy, <dennis.cohn@pucp.edu.pe>
+     * @access protected
+     * @author Dennis Cohn Muroy
      * @param Integer $start first element of the list to retrieve
      * @param Integer $range Number of elements to retrieve
-     * @return array
+     * @return array List of elements retrieved from the database
      */
-    public abstract function listElements($start, $range = self::LIMIT_DEFAULT);
+    protected function listObjects ( $start, $range = DEFAULT_LIST_LIMIT )
+    {
+        /** @todo Add boolean flag to indicate if there will be a limit */
+        $this->limitQuery($start, $range);
+        return $this->retrieveObjectFromDatabase();
+    }
+
+    /**
+     * Loads the object's references with values from the database
+     * @abstract
+     * @access protected
+     * @param Base_Class Object which has references to be loaded.
+     * @param ResultSet $result Resultset which contains the list of values
+     * from the database.
+     * @return Base_Class
+     */
+    protected abstract function loadObjectReferences ($object, $result );
 
 }
 
