@@ -57,7 +57,7 @@ class Core_Model_Class_AccessLog extends Base_Class {
      * @access private
      * @var String
      */
-    private $datetime;
+    private $timestamp;
 
     /**
      * The type of access that was performed.
@@ -74,7 +74,7 @@ class Core_Model_Class_AccessLog extends Base_Class {
         parent::__construct();
         $this->username = "";
         $this->ip = "";
-        $this->datetime = date("Y-m-d H:i:s");
+        $this->timestamp = time();
         $className = Lib_Helper::getClass("Core", "AccessType");
         $this->accessType = new $className();
     }
@@ -98,9 +98,9 @@ class Core_Model_Class_AccessLog extends Base_Class {
         return $this->ip;
     }
 
-    public function getDatetime()
+    public function getTimestamp()
     {
-        return $this->datetime;
+        return $this->timestamp;
     }
 
     public function getAccessType()
@@ -118,9 +118,9 @@ class Core_Model_Class_AccessLog extends Base_Class {
         $this->ip = $ip;
     }
 
-    public function setDatetime($datetime)
+    public function setTimestamp($timestamp)
     {
-        $this->datetime = $datetime;
+        $this->timestamp = $timestamp;
     }
 
     public function setAccessType( $accessType )

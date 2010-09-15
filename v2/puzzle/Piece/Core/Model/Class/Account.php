@@ -86,7 +86,7 @@ class Core_Model_Class_Account extends Base_Class {
         $this->password = "";
         $this->changePassword = false;
         $this->enabled = true;
-        $this->tokenDate = $this->createdDate = $this->modifiedDate = date("Y-M-D H:i:s");
+        $this->tokenDate = $this->createdDate = $this->modifiedDate = time();
     }
 
     /**
@@ -153,52 +153,72 @@ class Core_Model_Class_Account extends Base_Class {
 
     public function setRole($role)
     {
-        $this->role = $role;
+        if (Lib_Validator::validateObject($role, 'Core_Model_Class_Role')) {
+            $this->role = $role;
+        }
     }
 
     public function setAccountCreator($account)
     {
-        $this->accountCreator = $account;
+        if (Lib_Validator::validateObject($account, 'Core_Model_Class_Account')) {
+            $this->accountCreator = $account;
+        }
     }
 
     public function setAccountModifier($account)
     {
-        $this->accountModifier = $account;
+        if (Lib_Validator::validateObject($account, 'Core_Model_Class_Account')) {
+            $this->accountModifier = $account;
+        }
     }
 
     public function setUsername($username)
     {
-        $this->username = $username;
+        if (Lib_Validator::validateString($username, 20)) {
+            $this->username = $username;
+        }
     }
 
     public function setSalt($salt)
     {
-        $this->salt = $salt;
+        if (Lib_Validator::validateString($salt, 20)) {
+            $this->salt = $salt;
+        }
     }
 
     public function setPassword($password)
     {
-        $this->password = $password;
+        if (Lib_Validator::validateString($password, 210)) {
+            $this->password = $password;
+        }
     }
 
     public function setChangePassword($changePassword)
     {
-        $this->changePassword = $changePassword;
+        if (Lib_Validator::validateBoolean($changePassword)) {
+            $this->changePassword = $changePassword;
+        }
     }
 
     public function setEnabled($enabled)
     {
-        $this->enabled = $enabled;
+        if (Lib_Validator::validateBoolean($enabled)) {
+            $this->enabled = $enabled;
+        }
     }
 
     public function setCreatedDate($createdDate)
     {
-        $this->createdDate = $createdDate;
+        if (Lib_Validator::validateInteger($createdDate, true)) {
+            $this->createdDate = $createdDate;
+        }
     }
 
     public function setModifiedDate($modfiedDate)
     {
-        $this->modifiedDate = $modfiedDate;
+        if (Lib_Validator::validateInteger($modfiedDate, true)) {
+            $this->modifiedDate = $modfiedDate;
+        }
     }
 
     public function getEmail() {
@@ -206,7 +226,9 @@ class Core_Model_Class_Account extends Base_Class {
     }
 
     public function setEmail($email) {
-        $this->email = $email;
+        if (Lib_Validator::validateEmail($email)) {
+            $this->email = $email;
+        }
     }
 
     public function getToken() {
@@ -214,7 +236,9 @@ class Core_Model_Class_Account extends Base_Class {
     }
 
     public function setToken($token) {
-        $this->token = $token;
+        if (Lib_Validator::validateString($token, 210)) {
+            $this->token = $token;
+        }
     }
 
     public function getTokenDate() {
@@ -222,7 +246,9 @@ class Core_Model_Class_Account extends Base_Class {
     }
 
     public function setTokenDate($tokenDate) {
-        $this->tokenDate = $tokenDate;
+        if (Lib_Validator::validateInteger($tokenDate, true)) {
+            $this->tokenDate = $tokenDate;
+        }
     }
     
     /**

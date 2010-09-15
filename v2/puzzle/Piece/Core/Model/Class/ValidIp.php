@@ -74,7 +74,7 @@ class Core_Model_Class_ValidIp extends Base_Class {
         if (Lib_Validator::validateIp($ip) === true)
         {
             $this->ip = $ip;
-            $this->ipv4 = (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false);
+            $this->ipv4 = Lib_Validator::validateIPv4($ip);
         }
     }
 
