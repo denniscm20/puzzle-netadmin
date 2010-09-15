@@ -42,49 +42,44 @@ class Core_Model_Dao_ValidIpDAO  extends Base_DAO
         parent::__destruct();
     }
     
-    public function insert()
+    public function save()
     {
         $this->query = "INSERT INTO ValidIp (ip, ipv4) VALUES (?, ?)";
         $this->parameters = array($this->object->Ip, $this->object->Ipv4);
-        return $this->executeQuery();
+        return parent::save();
     }
 
     public function delete()
     {
         $this->query = "DELETE FROM ValidIp WHERE id = ?";
         $this->parameters = array($this->object->Id);
-        return $this->executeQuery();
+        return parent::delete();
     }
 
-    public function listElements($start, $range  = self::LIMIT_DEFAULT)
+    public function listObjects($start, $range  = self::LIMIT_DEFAULT)
     {
         $this->query = "SELECT id, ip, ipv4 FROM ValidIp";
-        $this->limitQuery($start, $range);
         $this->parameters = array();
-        return $this->selectQuery();
+        return parent::listObjects($start, $range);
     }
 
-    public function select()
+    public function load()
     {
         $this->query = "SELECT id, ip, ipv4 FROM ValidIp WHERE id = ?";
-        $this->limitQuery(0, 1);
         $this->parameters = array($this->object->Id);
-        $result = $this->selectQuery();
-        return (count($result) > 0)?$result[0]:null;
+        return parent::load();
     }
 
     public function selectByIp()
     {
         $this->query = "SELECT id, ip, ipv4 FROM ValidIp WHERE ip = ?";
-        $this->limitQuery(0, 1);
         $this->parameters = array($this->object->Ip);
-        $result = $this->selectQuery();
-        return (count($result) > 0)?$result[0]:null;
+        return parent::load();
     }
-    
-    public function update()
+
+    protected function loadObjectReferences($object, $result)
     {
-        return false;
+        return $object;
     }
 }
 ?>

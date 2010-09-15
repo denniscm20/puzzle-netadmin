@@ -33,7 +33,7 @@ require_once PATH_BASE.'DAO.php';
 
 class Core_Model_Dao_PuzzleDAO extends Base_DAO
 {
-    
+
     public function __construct($object)
     {
         parent::__construct($object);
@@ -44,76 +44,121 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
         parent::__destruct();
     }
 
-    /**
-     * Inserts a new object in the database.
-     *
-     * @access public
-     * @author Dennis Cohn Muroy
-     * @return Boolean
-     */
-    public function insert()
+    public function load ()
     {
-        return 0;
+        $puzzle = new Core_Model_Class_Puzzle();
+        $puzzle->Hostname = $this->loadHostname();
+        $puzzle->DnsList = $this->loadDns();
+        $puzzle->Forward = $this->loadForward();
+        $puzzle->Disk = $this->loadDisk();
+        $puzzle->Memory = $this->loadMemory();
+        $puzzle = $this->loadObjectReferences($puzzle, null);
+        return $puzzle;
     }
 
     /**
-     * Updates an existing object in the database
-     *
+     * Enable the forward falg in the /proc/sys/net/ipv4/ip_forward file
      * @access public
-     * @author Dennis Cohn Muroy
-     * @return Boolean
      */
-    public function update()
+    public function enableForward()
     {
-        return false;
+        $command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        /** @todo Execute Command */
     }
 
     /**
-     * Deletes an existing object from the database
-     *
+     * Disable the forward falg in the /proc/sys/net/ipv4/ip_forward file
      * @access public
-     * @author Dennis Cohn Muroy
-     * @return Boolean
      */
-    public function delete()
+    public function disableForward()
     {
-        return false;
+        $command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        /** @todo Execute Command */
     }
 
     /**
-     * Selects an object from the database
-     *
-     * @access public
-     * @author Dennis Cohn Muroy
-     * @return Base_Model
+     * Loads the Server hostname
+     * @access private
      */
-    public function select()
+    private function loadHostname()
     {
-        return $this->loadObject(null);
+        $command = "hostname";
+        /** @todo Execute Command */
     }
 
     /**
-     * Lists a range of elements from the database.
-     *
-     * @access public
-     * @author Dennis Cohn Muroy
-     * @param Integer $start first element of the list to retrieve
-     * @param Integer $range Number of elements to retrieve
-     * @return array
+     * Loads the Server DNS adresses
+     * @access private
      */
-    public function listElements($start, $range = self::LIMIT_DEFAULT)
+    private function loadDns()
     {
-        return array($this->select());
+        $lines = file("/etc/resolv.conf");
+        $dns = array();
+        foreach ($lines as $line) {
+            if (strpos($line, "nameserver ") === 0) {
+                $dns[] = substr(trim($line), strlen("nameserver "));
+            }
+        }
+        return $dns;
     }
 
-    protected function loadObject($result)
+    /**
+     * Loads the Server Forward Flag
+     * @access private
+     */
+    private function loadForward()
     {
-        $object = new Core_Model_Class_Puzzle();
-        
+        $lines = file("/proc/sys/net/ipv4/ip_forward");
+        return ($lines[0] == 1);
+    }
+
+    /**
+     * Loads the Server Memory Ussage
+     * @access private
+     */
+    private function loadMemory()
+    {
+        $command = "free -m";
+        /** @todo Execute Command or Read /proc/meminfo file */
+        //$lines = $command->execute();
+        $result = array();
+        foreach ($lines as $line) {
+            if (strpos($line,"Mem:") !== false || strpos($line,"Swap:") !== false) {
+                $line = Lib_Helper::clearMiddleSpaces($line);
+                $line = split(" ", $line);
+                $result[] = array($line[1], $line[2]);
+            }
+        }
+        //array((ram_total", "ram_used"), (swap_total", "swap_used));
+        return $result;
+    }
+
+    /**
+     * Loads the Server Disk Ussage
+     * @access private
+     */
+    private function loadDisk()
+    {
+        $command = "df -m";
+        /** @todo Execute Command */
+        $lines = $command->execute();
+        $result = array();
+        foreach ($lines as $line) {
+            if (strpos($line,"/dev/") === 0) {
+                $line = Lib_Helper::clearMiddleSpaces($line);
+                $line = split(" ", $line);
+                $result[] = array($line[5], $line[1], $line[2]);
+            }
+        }
+        // array(array("label", "disk_total", "disk_used"));
+        return $result;
+    }
+    
+    protected function loadObjectReferences($object, $result)
+    {
         $interface = new Core_Model_Class_Interface();
         $interfaceDAO = new Core_Model_Dao_Interface($interface);
-        $object->InterfaceList = $interfaceDAO->listElements(0);
-
+        $object->InterfaceList = $interfaceDAO->listObjects();
         return $object;
     }
 }
