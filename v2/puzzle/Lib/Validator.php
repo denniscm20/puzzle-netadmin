@@ -132,6 +132,19 @@ class Lib_Validator
         $messageHandler->addError(sprintf(ERROR_OBJECT, get_class($object), $objectName));
         return false;
     }
+
+    /**
+     * Validates that the parameter is a well-formed email address
+     * @static
+     * @access public
+     * @param String Email to validate
+     * @return boolean
+     */
+    public static function validateEmail ($email)
+    {
+        $regexp = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$";
+        return eregi($regexp, $email);
+    }
     
     /**
      * Validates that the parameter is a well-formed url
@@ -212,6 +225,18 @@ class Lib_Validator
     public static function validateIp ($ip)
     {
         $result = filter_var($ip, FILTER_VALIDATE_IP);
+        return ($result == $ip);
+    }
+
+    public static function validateIPv4 ($ip)
+    {
+        $result = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+        return ($result == $ip);
+    }
+
+    public static function validateIPv6 ($ip)
+    {
+        $result = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
         return ($result == $ip);
     }
 }

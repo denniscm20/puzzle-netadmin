@@ -19,6 +19,7 @@
  */
 
 require_once PATH_LIB.'Helper.php';
+require_once PATH_LIB.'Validator.php';
 
 /**
  * Application Base Class which contains the common methods for the application
@@ -67,7 +68,11 @@ abstract class Base_Class
      */
     public function setId( $id )
     {
-        $this->id = $id;
+        if (Lib_Validator::validateInteger($id, true)) {
+            $this->id = $id;
+            return true;
+        }
+        return false;
     } // end of member function setId
 
     /**
@@ -83,7 +88,7 @@ abstract class Base_Class
             return $this->{$function}();
         } else {
             debug_print_backtrace();
-            throw new Exception("Error property ".$name);
+            throw new Exception("Error: Function ".$function." not found");
         }
     } // end of member function __get
 
@@ -101,7 +106,7 @@ abstract class Base_Class
             $this->{$function}($value);
         }  else {
             debug_print_backtrace();
-            throw new Exception("Error property ".$name);
+            throw new Exception("Error: Function ".$function." not found");
         }
     } // end of member function __set
 

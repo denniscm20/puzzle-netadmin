@@ -40,7 +40,7 @@ class PageBuilder
     private $language;
     private $breadcrumb;
     
-    public function  __construct($page, $piece, $event)
+    public function  __construct($page, $piece, $event, $identifier)
     {
         $this->page = $page;
         $this->piece = $piece;
@@ -51,13 +51,13 @@ class PageBuilder
             $function = array($controllerClass, 'getInstance');
             $parameters = array($this->piece, $this->page);
             $this->controller = call_user_func_array($function, $parameters);
-            $this->controller->execute ($event);
+            $this->controller->execute ($event, $identifier);
             $this->view = new $viewClass($this->controller);
             $this->breadcrumb = new Lib_Breadcrumb($this->piece, $this->page);
         } else {
-	        header("HTTP/1.0 404 Not Found");
-	        exit();
-	    }
+            header("HTTP/1.0 404 Not Found");
+            exit();
+        }
     }
 
     private function printAditionalCss ($template)
@@ -80,71 +80,62 @@ class PageBuilder
         }
     }
 
-    public function show()
+    public function show($is_ajax = false)
     {
-        echo '<?xml version="1.0" encoding="utf-8"?>';
-        $template = DEFAULT_THEME;
+        if ($is_ajax === false) {
+            echo '<?xml version="1.0" encoding="utf-8"?>';
+            $template = DEFAULT_THEME;
     ?>
            
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo $this->language; ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $this->language; ?>">
-        <head>
-            <title><?php echo DEFAULT_TITLE," - ",$this->view->getTitle(); ?></title>
-            <meta name="AUTHOR" content="Dennis Cohn Muroy" />
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-            <link rel="stylesheet" type="text/css" href="<?php echo sprintf(PATH_CSS, $template); ?>style.css" />
-            <?php $this->printAditionalCss($template) ?>
-            <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>jquery.js" ></script>
-            <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>events.js" ></script>
-            <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>cypher.js" ></script>
-            <?php $this->printAditionalJavascript($template) ?>
-        </head>
-        <body>
-            <div>
-                <?php if ($this->page == DEFAULT_LOGOUT_PAGE) { ?>
-                <div id="banner_out" style="background-image:url(<?php echo "'",Lib_Helper::getImage('header_back.jpg'),"'";?>)">
-                    <img src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
-                    <img src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
-                </div>
-                <?php } else { ?>
-                <div id="banner_in" style="background-image:url(<?php echo "'",Lib_Helper::getImage('header_back.jpg'),"'";?>)">
-                    <img class="banner_image" src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
-                    <img class="banner_image" src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
-                    <ul class="actions">
-                        <li>
-                            <a href="/?Page=<?php echo DEFAULT_LOGOUT_PAGE ?>&amp;Event=logout">
+            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo $this->language; ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+            <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $this->language; ?>">
+            <head>
+                <title><?php echo DEFAULT_TITLE," - ",$this->view->getTitle(); ?></title>
+                <meta name="AUTHOR" content="Dennis Cohn Muroy" />
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <link rel="stylesheet" type="text/css" href="<?php echo sprintf(PATH_CSS, $template); ?>style.css" />
+                <?php $this->printAditionalCss($template) ?>
+                <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>jquery.js" ></script>
+                <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>events.js" ></script>
+                <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>cypher.js" ></script>
+                <?php $this->printAditionalJavascript($template) ?>
+            </head>
+            <body>
+                <div>
+                    <div id="header" style="background-image:url(<?php echo "'",Lib_Helper::getImage('header_back.jpg'),"'";?>)">
+                        <img src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
+                        <img src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
+                    </div>
+                    <?php if (isset($_SESSION["User"])) { ?>
+                        <div id="breadcrumb-area">
+                            <span id="breadcrumb"><?php $this->breadcrumb->show(); ?></span>
+                            <span id="logout">
+                                <a href="/?Page=<?php echo DEFAULT_LOGOUT_PAGE ?>&amp;Event=logout">
                                 <?php echo LOG_OUT;?>
                             </a>
-                        </li>
-                    </ul>
-                    <ul class="sections">
-                        <li>Item 1</li>
-                        <li>Item 2</li>
-                        <li>Item 3</li>
-                        <li>Item 4</li>
-                    </ul>
-                </div>
-                <div id="breadcrumb">
-                    <?php $this->breadcrumb->show(); ?>
-                </div>
-                <?php } ?>
-                <div id="content">
-                    <div id="message">
-                    <?php
-                        $messageHandler = Lib_MessagesHandler::getInstance();
-                        $messageHandler->showMessages();
-                    ?>
+                            </span>
+                        </div>
+                    <?php } ?>
+                    <div id="content">
+                        <div id="message">
+                        <?php
+                            $messageHandler = Lib_MessagesHandler::getInstance();
+                            $messageHandler->showMessages();
+                        ?>
+                        </div>
+                        <br />
+                        <?php $this->view->show(); ?>
                     </div>
-                    <br />
-                    <?php $this->view->show(); ?>
                 </div>
-            </div>
-            <div id="footer" style="background-image:url(<?php echo "'",Lib_Helper::getImage('footer_back.jpg'),"'";?>)">
-                <div>&copy; Dennis Stephen Cohn Muroy</div>
-            </div>
-        </body>
-        </html>
+                <div id="footer" style="background-image:url(<?php echo "'",Lib_Helper::getImage('footer_back.jpg'),"'";?>)">
+                    <div>&copy; Dennis Stephen Cohn Muroy</div>
+                </div>
+            </body>
+            </html>
     <?php
+        } else {
+            $this->view->show();
+        }
     }
 }
 

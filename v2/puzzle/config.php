@@ -6,6 +6,7 @@
 
     define ("DB_NAME", "puzzle_database.sqlite");
     define ("EMAIL_ACCOUNT", "root@localhost.localdomain");
+    define ("FRIENDLY_URL", false);
     
     // Directory tree
     define ("ROOT",$_SERVER['DOCUMENT_ROOT']);
@@ -27,6 +28,8 @@
     define ("PATH_CSS", PATH_THEME."%s/css/");
     define ("PATH_IMAGES", PATH_THEME."%s/images/");
 
+    define ("PATH_BIN", "/home/puzzle/");
+
     //X-Fixes
     define ("VIEW_SUFFIX", "View");
     define ("CONTROLLER_SUFFIX", "Controller");
@@ -44,5 +47,7 @@
     define ("DEFAULT_LOGIN_PAGE", "Panel");
 
     define ("DEFAULT_TOKEN_LIFETIME", "7");
+    define ("DEFAULT_LIST_LIMIT", 10);
+    define ("MAX_LIST_LIMIT", 100);
     
 ?>
