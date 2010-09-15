@@ -13,8 +13,7 @@ CREATE TABLE AccessLog (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(20) NOT NULL,
     ip VARCHAR(40) NOT NULL,
-    date DATE NOT NULL,
-    time TIME NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
     id_access_type INTEGER NOT NULL,
     CONSTRAINT accesstype_accesslog_fk FOREIGN KEY (id_access_type) REFERENCES AccessType (id)
 );
@@ -36,14 +35,20 @@ CREATE TABLE Service (
 );
 
 CREATE TABLE Protocol (
-    id INTEGER NOT NULL,
-    id_service INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(5) NOT NULL,
-    CONSTRAINT service_protocol_fk FOREIGN KEY (id_service) REFERENCES Service (id)
+);
+
+CREATE TABLE Service_x_Protocol (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_service INTEGER NOT NULL,
+    id_protocol INTEGER NOT NULL,
+    CONSTRAINT service_service_x_protocol_fk FOREIGN KEY (id_service) REFERENCES Service (id),
+    CONSTRAINT protocol_service_x_protocol_fk FOREIGN KEY (id_protocol) REFERENCES Protocol (id)
 );
 
 CREATE TABLE Port (
-    id INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_service INTEGER NOT NULL,
     number SMALLINT(5) NOT NULL,
     CONSTRAINT service_port_fk FOREIGN KEY (id_service) REFERENCES Service (id)
@@ -91,10 +96,12 @@ CREATE TABLE Service_x_Node (
     CONSTRAINT node_service_x_node_fk FOREIGN KEY (id_node) REFERENCES Node (id)
 );
 
-CREATE TABLE Task (
+CREATE TABLE Privilege (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_piece INTEGER NOT NULL,
     name VARCHAR(30) NOT NULL,
+    page VARCHAR(30) NOT NULL,
+    event VARCHAR(10) NOT NULL,
     CONSTRAINT piece_piece_fk FOREIGN KEY (id_piece) REFERENCES Piece (id)
 );
 
@@ -107,14 +114,12 @@ CREATE TABLE Role (
 INSERT INTO Role (id, name, description)
 VALUES (1, 'Administrator', 'Default Role Administrator');
 
-CREATE TABLE Role_x_Task_x_Piece (
+CREATE TABLE Role_x_Privilege (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_task INTEGER NOT NULL,
+    id_privilege INTEGER NOT NULL,
     id_role INTEGER NOT NULL,
-    id_piece INTEGER NOT NULL,
-    CONSTRAINT task_role_x_task_x_piece_fk FOREIGN KEY (id_task) REFERENCES Task (id),
-    CONSTRAINT role_role_x_task_x_piece_fk FOREIGN KEY (id_role) REFERENCES Role (id),
-    CONSTRAINT piece_role_x_task_x_piece_fk FOREIGN KEY (id_piece) REFERENCES Piece (id)
+    CONSTRAINT privilege_role_x_privilege_fk FOREIGN KEY (id_privilege) REFERENCES Task (id),
+    CONSTRAINT role_role_x_privilege_fk FOREIGN KEY (id_role) REFERENCES Role (id),
 );
 
 CREATE TABLE Account (
