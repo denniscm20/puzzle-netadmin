@@ -20,7 +20,6 @@
  */
 
 require_once PATH_BASE.'Class.php';
-require_once PATH_LIB.'Command.php';
 
 /**
  * Class that implements the nmap command interface
@@ -44,10 +43,9 @@ class Nmap_Model_Class_Nmap extends Base_Class
 
     public function __construct() {
         parent::__construct();
-        $this->scanDate = date(DEFAULT_DATE_FORMAT);
+        $this->scanDate = time();
         $this->options = "";
-        $accountClass = Lib_Helper::getClass("Core", "Account");
-        $this->account = new $accountClass();
+        $this->account = $account = unserialize($_SESSION["User"]["Account"]);
     }
 
     public function __destruct() {
@@ -60,7 +58,9 @@ class Nmap_Model_Class_Nmap extends Base_Class
     }
 
     public function setScanDate($scanDate) {
-        $this->scanDate = $scanDate;
+        if (Lib_Validator::validateInteger($scanDate, true)) {
+            $this->scanDate = $scanDate;
+        }
     }
 
     public function getAccount() {
@@ -68,7 +68,9 @@ class Nmap_Model_Class_Nmap extends Base_Class
     }
 
     public function setAccount($account) {
-        $this->account = $account;
+        if (Lib_Validator::validateObject($account, "Core_Model_Class_Account")) {
+            $this->account = $account;
+        }
     }
 
     public function getOptions() {
@@ -76,7 +78,9 @@ class Nmap_Model_Class_Nmap extends Base_Class
     }
 
     public function setOptions($options) {
-        $this->options = $options;
+        if (Lib_Validator::validateString($options, 30)) {
+            $this->options = $options;
+        }
     }
 
     /**
@@ -85,10 +89,9 @@ class Nmap_Model_Class_Nmap extends Base_Class
      * @return Array Command output
      */
     public function scan() {
-        $command = "nmap";
-        $this->options = sprintf("-sP %s", $this->options);
-        $command = new Lib_Command($command, $this->options);
-        $result = $command->execute();
+        $command = sprintf("nmap -sP %s", $this->options);
+        /** @todo Execute Command */
+        // $result = $command->execute();
         return $this->parseOutput($result);
     }
 
