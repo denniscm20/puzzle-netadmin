@@ -40,9 +40,25 @@ class Core_Model_Class_Task extends Base_Class
      */
     private $name;
 
+    /**
+     * The name of the page this task is related to.
+     * @access private
+     * @var String
+     */
+    private $page;
+
+    /**
+     * The name of the event this task is related to.
+     * @access private
+     * @var String
+     */
+    private $event;
+
     public function __construct() {
         parent::__construct();
         $this->name = "";
+        $this->page = "";
+        $this->event = "";
     }
 
     public function __destruct() {
@@ -53,10 +69,31 @@ class Core_Model_Class_Task extends Base_Class
         return $this->name;
     }
 
+    public function getPage() {
+        return $this->page;
+    }
+
+    public function getEvent() {
+        return $this->event;
+    }
+
     public function setName($name) {
         if (Lib_Validator::validateString($name, 30)) {
             $this->name = $name;
         }
     }
+
+    public function setPage($page) {
+        if (Lib_Validator::validateString($page, 30)) {
+            $this->page = $page;
+        }
+    }
+
+    public function setEvent($event) {
+        if (Lib_Validator::validateString($event, 10)) {
+            $this->event = $event;
+        }
+    }
+
 }
 ?>

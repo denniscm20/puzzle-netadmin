@@ -101,7 +101,9 @@ class Core_Model_Class_Subnet extends Base_Class
     }
 
     public function setIp4($ip4) {
-        $this->ip4 = $ip4;
+        if (Lib_Validator::validateIPv4($ip4)) {
+            $this->ip4 = $ip4;
+        }
     }
 
     public function getIp6() {
@@ -109,7 +111,9 @@ class Core_Model_Class_Subnet extends Base_Class
     }
 
     public function setIp6($ip6) {
-        $this->ip6 = $ip6;
+        if (Lib_Validator::validateIPv6($ip6)) {
+            $this->ip6 = $ip6;
+        }
     }
 
     public function getMask4() {
@@ -117,7 +121,9 @@ class Core_Model_Class_Subnet extends Base_Class
     }
 
     public function setMask4($mask4) {
-        $this->mask4 = $mask4;
+        if (Lib_Validator::validateIPv4($mask4)) {
+            $this->mask4 = $mask4;
+        }
     }
 
     public function getMask6() {
@@ -125,7 +131,9 @@ class Core_Model_Class_Subnet extends Base_Class
     }
 
     public function setMask6($mask6) {
-        $this->mask6 = $mask6;
+        if (Lib_Validator::validateIPv6($mask6)) {
+            $this->mask6 = $mask6;
+        }
     }
 
 }

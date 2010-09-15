@@ -53,7 +53,9 @@ class Core_Model_Class_AccessType extends Base_Class
     }
 
     public function setName($name) {
-        $this->name = $name;
+        if (Lib_Validator::validateString($name, 30)) {
+            $this->name = $name;
+        }
     }
 
     public function getDescription() {
@@ -61,7 +63,9 @@ class Core_Model_Class_AccessType extends Base_Class
     }
 
     public function setDescription($description) {
-        $this->description = $description;
+        if (Lib_Validator::validateString($name, 200)) {
+            $this->description = $description;
+        }
     }
 
 }
