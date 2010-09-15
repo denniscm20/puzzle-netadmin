@@ -60,7 +60,8 @@ CREATE TABLE IptablesRule (
     id_iptables INTEGER NOT NULL,
     id_iptablesChain INTEGER NOT NULL,
     id_iptablesAction INTEGER NOT NULL,
-    id_interface INTEGER NOT NULL,
+    id_interfaceIn INTEGER NOT NULL,
+    id_interfaceOut INTEGER NOT NULL,
     id_protocol INTEGER NOT NULL,
     dportStart SMALLINTEGER NOT NULL,
     dportEnd SMALLINTEGER NOT NULL,
@@ -70,10 +71,12 @@ CREATE TABLE IptablesRule (
     sipEnd VARCHAR(15) NOT NULL,
     dipStart VARCHAR(15) NOT NULL,
     dipEnd VARCHAR(15) NOT NULL,
+    log BOOLEAN NOT NULL,
     CONSTRAINT iptablesaction_iptablesrule_fk FOREIGN KEY (id_iptablesAction) REFERENCES IptablesAction (id),
     CONSTRAINT protocol_iptablesrule_fk FOREIGN KEY (id_protocol) REFERENCES Protocol (id),
     CONSTRAINT iptableschain_iptablesrule_fk FOREIGN KEY (id_iptablesChain) REFERENCES IptablesChain (id),
-    CONSTRAINT interface_iptablesrule_fk FOREIGN KEY (id_interface) REFERENCES Interface (id),
+    CONSTRAINT interfacein_iptablesrule_fk FOREIGN KEY (id_interfaceIn) REFERENCES Interface (id),
+    CONSTRAINT interfaceout_iptablesrule_fk FOREIGN KEY (id_interfaceOut) REFERENCES Interface (id),
     CONSTRAINT iptables_iptablesrule_fk FOREIGN KEY (id_iptables) REFERENCES Iptables (id)
 );
 
