@@ -62,8 +62,8 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function enableForward()
     {
-        $command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
-        /** @todo Execute Command */
+        $command = sprintf(SUDO_COMMAND, "Core forward 1");
+        exec($command);
     }
 
     /**
@@ -72,8 +72,8 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     public function disableForward()
     {
-        $command = "echo 1 | sudo /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
-        /** @todo Execute Command */
+        $command = sprintf(SUDO_COMMAND, "Core forward 0");
+        exec($command);
     }
 
     /**
@@ -82,8 +82,8 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     private function loadHostname()
     {
-        $command = "hostname";
-        /** @todo Execute Command */
+        $command = sprintf(SUDO_COMMAND, "Core hostname");
+        return exec($command);
     }
 
     /**
@@ -93,13 +93,13 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
     private function loadDns()
     {
         $lines = file("/etc/resolv.conf");
-        $dns = array();
+        $dnsList = array();
         foreach ($lines as $line) {
             if (strpos($line, "nameserver ") === 0) {
-                $dns[] = substr(trim($line), strlen("nameserver "));
+                $dnsList[] = substr(trim($line), strlen("nameserver "));
             }
         }
-        return $dns;
+        return $dnsList;
     }
 
     /**
@@ -118,18 +118,13 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     private function loadMemory()
     {
-        $command = "free -m";
-        /** @todo Execute Command or Read /proc/meminfo file */
-        //$lines = $command->execute();
+        $lines = file("/proc/meminfo");
         $result = array();
-        foreach ($lines as $line) {
-            if (strpos($line,"Mem:") !== false || strpos($line,"Swap:") !== false) {
-                $line = Lib_Helper::clearMiddleSpaces($line);
-                $line = split(" ", $line);
-                $result[] = array($line[1], $line[2]);
-            }
+        if (count($lines) > 0) {
+            $total = trim(substr($lines[0], strlen("MemTotal:")));
+            $free = trim(substr($lines[0], strlen("MemFree:")));
+            $result = array($total, $free);
         }
-        //array((ram_total", "ram_used"), (swap_total", "swap_used));
         return $result;
     }
 
@@ -139,18 +134,16 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
      */
     private function loadDisk()
     {
-        $command = "df -m";
-        /** @todo Execute Command */
-        $lines = $command->execute();
+        $command = sprintf(COMMAND, "Core disk");
+        exec($command, $output);
         $result = array();
-        foreach ($lines as $line) {
+        foreach ($output as $line) {
             if (strpos($line,"/dev/") === 0) {
                 $line = Lib_Helper::clearMiddleSpaces($line);
                 $line = split(" ", $line);
-                $result[] = array($line[5], $line[1], $line[2]);
+                $result[] = array($line[5] => array($line[1], $line[2]));
             }
         }
-        // array(array("label", "disk_total", "disk_used"));
         return $result;
     }
     

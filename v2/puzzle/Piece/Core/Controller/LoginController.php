@@ -90,7 +90,7 @@ class Core_Controller_LoginController extends Base_Controller
      */
     protected function loadElements()
     {
-        
+        return;
     }
 
     /**
@@ -101,38 +101,14 @@ class Core_Controller_LoginController extends Base_Controller
     {
         $user = $this->retrieveUser();
         $username = $user->Username;
-        if ($user === null) {
-            // There were no matches in the database
-            $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+        if ($user !== null) {
+            if ($user->validatePassword($this->user->Password) === true) {
+                $this->grantAccess($username);
+            } else {
+                $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
+            }
         } else {
-            if ($user->validatePassword($this->user->Password)) {
-                $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
-                $this->grantAccess();
-            } else {
-                $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
-            }
-        }
-        $this->denyAcccess();
-    }
-
-    /**
-     * Log out the user from the system
-     * @access protected
-     */
-    protected function logout()
-    {
-    	if (isset($_SESSION["User"])) {
-            $user = unserialize($_SESSION["User"]["Account"]);
-            $username = $user->Username;
-        	session_unset();
-            $sessionDestroyed = session_destroy();
-            $messageHandler = Lib_MessagesHandler::getInstance();
-            if ($sessionDestroyed !== false) {
-                $messageHandler->addInformation(LOGIN_LOGOUT_INFO);
-            } else {
-                $messageHandler->addError(LOGIN_LOGOUT_ERROR);
-            }
-            $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_LOG_OUT);
+            $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
         }
     }
 
@@ -146,16 +122,36 @@ class Core_Controller_LoginController extends Base_Controller
         $user = $this->retrieveUser();
         $username = $user->Username;
         if ($user !== null) {
-            if ($user->validateToken ($this->user->Token)) {
-                $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
-                $_SESSION["User"]["Account"] = serialize($this->user);
-                session_write_close();
-                Lib_Helper::redirect(DEFAULT_PIECE, "Account");
+            if ($user->validateToken($this->user->Token) === true) {
+                $this->clearToken();
+                $this->grantAccess($username);
             } else {
-                $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
+                $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
             }
         } else {
-            $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+            $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+        }
+    }
+
+
+    /**
+     * Log out the user from the system
+     * @access protected
+     */
+    protected function logout()
+    {
+    	if (isset($_SESSION["User"])) {
+            $user = unserialize($_SESSION["User"]["Account"]);
+            $username = $user->Username;
+            session_unset();
+            $sessionDestroyed = session_destroy();
+            $messageHandler = Lib_MessagesHandler::getInstance();
+            if ($sessionDestroyed !== false) {
+                $messageHandler->addInformation(LOGIN_LOGOUT_INFO);
+            } else {
+                $messageHandler->addError(LOGIN_LOGOUT_ERROR);
+            }
+            $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_LOG_OUT);
         }
     }
 
@@ -191,28 +187,12 @@ class Core_Controller_LoginController extends Base_Controller
 
     protected function validateInput()
     {
-        $this->isValidIp();
-
-        $username = isset($_POST["username"])?$_POST["username"]:"";
-        $password = isset($_POST["password"])?$_POST["password"]:"";
-        $token = isset($_POST["token"])?$_POST["token"]:"";
-        
-        $username = Lib_Cleaner::clearString($username);
-        $password = Lib_Cleaner::clearString($password);
-        $token = Lib_Cleaner::clearString($token);
-
-        if (Lib_Validator::validateString($username, 20)) {
-            $this->user->Username = $username;
-            if (Lib_Validator::validateString($password, 210)) {
-                $this->user->Password = $password;
-                return true;
-            }
-            if (Lib_Validator::validateString($token, 210)) {
-                $this->user->Token = $token;
-                return true;
-            }
-        }
-        return false;
+        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+        $token = filter_input(INPUT_POST, "token", FILTER_SANITIZE_STRING);
+        $this->user->Username = $username;
+        $this->user->Password = $password;
+        $this->user->Token = $token;
     }
 
     /**
@@ -230,12 +210,20 @@ class Core_Controller_LoginController extends Base_Controller
         return $accountDAO->selectByUsernameAndEnabled();
     }
 
+    private function clearToken()
+    {
+        Lib_Helper::getDao("Core", "Account");
+        $accountDAO = new Core_Model_Dao_AccountDAO($user);
+        $accountDAO->clearToken();
+    }
+
     /**
      * Grant access to the user with the provided account values.
      * @access private
      */
-    private function grantAccess()
+    private function grantAccess($username)
     {
+        $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
         $_SESSION["User"]["Account"] = serialize($this->user);
         session_write_close();
         Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
@@ -245,30 +233,12 @@ class Core_Controller_LoginController extends Base_Controller
      * Deny access to the user with the provided account values.
      * @access private
      */
-    private function denyAcccess()
+    private function denyAcccess($username, $cause)
     {
+        $this->log($username, $cause);
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError(LOGIN_LOGIN_ERROR);
     }
-
-    /**
-     * Validates that the user is accessing from an authorized IP address
-     * @access private
-     */
-    private function isValidIp()
-    {
-        Lib_Helper::getClass("Core", "ValidIp");
-        Lib_Helper::getDao("Core", "ValidIp");
-        $validIp = new Core_Model_Class_ValidIp();
-        $validIp->Ip = Lib_Helper::getRemoteIP();
-        $validIpDAO = new Core_Model_Dao_ValidIpDAO($validIp);
-        $validIp = $validIpDAO->selectByIp();
-        if ($validIp == null) {
-            header("HTTP/1.0 403 Forbidden");
-	        exit();
-        }
-    }
-    
 }
 
 ?>

@@ -124,8 +124,8 @@ class Lib_Helper {
 
     public static function redirect ($pieceName, $pageName)
     {
-        $url = "/index.php?Piece=".$pieceName."&Page=".$pageName;
-        header ("Location: ".$url);
+        $url = new Lib_Url(FRIENDLY_URL);
+        header ("Location: ".$url->build($pieceName, $pageName));
         exit;
     }
 

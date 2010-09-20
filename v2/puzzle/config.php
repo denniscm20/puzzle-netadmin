@@ -29,6 +29,8 @@
     define ("PATH_IMAGES", PATH_THEME."%s/images/");
 
     define ("PATH_BIN", "/home/puzzle/");
+    define ("SUDO_COMMAND", "echo %s | sudo /usr/bin/php -f ".PATH_BIN."puzzle.php");
+    define ("COMMAND", "echo %s | /usr/bin/php -f ".PATH_BIN."puzzle.php");
 
     //X-Fixes
     define ("VIEW_SUFFIX", "View");
