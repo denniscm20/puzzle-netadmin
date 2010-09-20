@@ -74,6 +74,13 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         return parent::save();
     }
 
+    public function clearToken()
+    {
+        $this->query = "UPDATE account SET token = ? WHERE id = ?";
+        $this->parameters = array("", $this->object->Id);
+        return parent::save();
+    }
+
     public function disable()
     {
         $this->query = "UPDATE account SET enabled = ?, modifiedDate = ? WHERE id = ?";

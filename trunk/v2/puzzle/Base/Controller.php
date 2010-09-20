@@ -192,13 +192,32 @@ abstract class Base_Controller
     public function execute( $event, $identifier )
     {
         $this->identifier = $identifier;
-        if ($this->validateInput()) {
+        if ($this->isValidIp()) {
+            $this->filterInput();
             $event = $this->call($event);
             if (method_exists($this, $event)) {
                 $this->{$event}();
             }
+            $this->loadElements();
+        } else {
+            header("HTTP/1.0 403 Forbidden");
+            exit();
         }
-        $this->loadElements();
+    }
+
+    /**
+     * Validates that the user is accessing from an authorized IP address
+     * @access private
+     */
+    private function isValidIp()
+    {
+        Lib_Helper::getClass("Core", "ValidIp");
+        Lib_Helper::getDao("Core", "ValidIp");
+        $validIp = new Core_Model_Class_ValidIp();
+        $validIp->Ip = Lib_Helper::getRemoteIP();
+        $validIpDAO = new Core_Model_Dao_ValidIpDAO($validIp);
+        $validIp = $validIpDAO->selectByIp();
+        return ($validIp != null);
     }
 
     /**
@@ -226,9 +245,8 @@ abstract class Base_Controller
      * @abstract
      * @access protected
      * @author Dennis Cohn Muroy
-     * @return Boolean True if the data was successfully cleaned and validated
      */
-    protected abstract function validateInput();
+    protected abstract function filterInput();
 
     /**
      * Adds elements to the controller that will be required by the view
