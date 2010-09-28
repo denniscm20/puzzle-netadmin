@@ -83,10 +83,10 @@ class Core_Model_Dao_RoleDAO extends Base_DAO
 
     protected function loadObjectReferences($object, $result)
     {
-        $daoName = Lib_Helper::getDao('Core', 'Task');
-        $className = Lib_Helper::getClass('Core', 'Task');
-        $taskDAO = new $daoName($className);
-        $object->TaskList = $taskDAO->selectListByRole($object->Id);
+        $daoName = Lib_Helper::getDao('Core', 'Privilege');
+        $className = Lib_Helper::getClass('Core', 'Privilege');
+        $privilegeDAO = new $daoName($className);
+        $object->PrivilegeList = $privilegeDAO->selectListByRole($object->Id);
         return $object;
     }
 }

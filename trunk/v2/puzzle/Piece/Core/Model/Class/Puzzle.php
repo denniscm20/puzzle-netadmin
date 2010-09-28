@@ -69,6 +69,13 @@ class Core_Model_Class_Puzzle extends Base_Class
     private $disk;
 
     /**
+     * Array that stores the current load average
+     * @var Array
+     * @access private
+     */
+    private $load;
+
+    /**
      * List of interfaces connected to the server where the application is
      * installed
      * @var Array
@@ -89,6 +96,7 @@ class Core_Model_Class_Puzzle extends Base_Class
         $this->memory = array();
         $this->disk = array();
         $this->interfaceList = array();
+        $this->load = array();
     }
 
     /**
@@ -129,6 +137,10 @@ class Core_Model_Class_Puzzle extends Base_Class
         return $this->interfaceList;
     }
 
+    public function getLoad() {
+        return $this->load;
+    }
+
     public function setHostname($hostname) {
         $this->hostname = $hostname;
     }
@@ -156,6 +168,11 @@ class Core_Model_Class_Puzzle extends Base_Class
         if (Lib_Validator::validateArray($interfaceList, 'Core_Model_Class_Interface')) {
             $this->interfaceList = $interfaceList;
         }
-    }      
+    }
+
+    public function setLoad($load) {
+        $this->load = $load;
+    }
+
 }
 ?>

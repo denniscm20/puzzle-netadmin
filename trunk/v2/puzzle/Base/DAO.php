@@ -102,13 +102,20 @@ abstract class Base_DAO
      */
     private final function executeQuery()
     {
+        $connection = $this->connection->getConnection();
         $statement = $connection->prepare($this->query);
-        if (count($this->parameters) > 0) {
-            $statement->execute($this->parameters);
+        if ($statement !== FALSE) {
+            if (count($this->parameters) > 0) {
+                $statement->execute($this->parameters);
+            } else {
+                $statement->execute();
+            }
+            return $statement;
         } else {
-            $statement->execute();
+            echo "Error in Query: ".$this->query;
+            // throw new PDOException("Error in Query: ".$this->query);
+            exit;
         }
-        return $statement;
     }
 
     /**
@@ -140,7 +147,6 @@ abstract class Base_DAO
      */
     private final function saveObjectToDatabase ( ) {
         try {
-            $connection = $this->connection->getConnection();
             $this->executeQuery();
             return true;
         } catch (PDOException $ex) {

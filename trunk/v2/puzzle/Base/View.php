@@ -23,6 +23,7 @@ require_once PATH_LIB.'Html/Input.php';
 require_once PATH_LIB.'Html/Button.php';
 require_once PATH_LIB.'Html/Select.php';
 require_once PATH_LIB.'Html/Table.php';
+require_once PATH_LIB.'Url.php';
 
 /**
  * Abstract class that implements the basic methods of the view class.

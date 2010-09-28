@@ -34,6 +34,19 @@ define("LOGIN_RESET_BUTTON", "Clear");
 define("LOGIN_MAIL_SUBJECT", "");
 define("LOGIN_MAIL_BODY", "%s");
 
+define("SERVER_TITLE", "Information");
+define("SERVER_DATA_LEGEND", "Server Data");
+define("SERVER_NETWORK_LEGEND", "Network Configuration");
+define("SERVER_SUMMARY_LEGEND", "Summary");
+define("SERVER_HOSTNAME_LABEL", "Hostname");
+define("SERVER_LOAD_LABEL", "Load Average");
+define("SERVER_MEMORY_LABEL", "Memory");
+define("SERVER_DISK_LABEL", "Hard Disk");
+define("SERVER_ROUTE_LABEL", "Package Routing Status");
+define("SERVER_DNS_LABEL", "Registered DNS Servers");
+define("SERVER_PIECE_LABEL", "Piece");
+define("SERVER_SECURITY_LABEL", "Security");
+
 define("PANEL_PIECES", "Manage Pieces");
 define("PANEL_ACCOUNTS", "Manage Accounts");
 define("PANEL_SERVER", "View Server Information");

@@ -52,6 +52,7 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
         $puzzle->Forward = $this->loadForward();
         $puzzle->Disk = $this->loadDisk();
         $puzzle->Memory = $this->loadMemory();
+        $puzzle->Load = $this->loadLoad();
         $puzzle = $this->loadObjectReferences($puzzle, null);
         return $puzzle;
     }
@@ -124,6 +125,21 @@ class Core_Model_Dao_PuzzleDAO extends Base_DAO
             $total = trim(substr($lines[0], strlen("MemTotal:")));
             $free = trim(substr($lines[0], strlen("MemFree:")));
             $result = array($total, $free);
+        }
+        return $result;
+    }
+
+    /**
+     * Loads the Server Load Average
+     * @access private
+     */
+    private function loadLoad()
+    {
+        $lines = file("/proc/loadavg");
+        $result = array();
+        if (count($lines) > 0) {
+            $array = split(" ", $lines[0]);
+            $result = array($array[0], $array[1], $array[2]);
         }
         return $result;
     }

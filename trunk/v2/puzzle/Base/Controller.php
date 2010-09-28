@@ -236,7 +236,7 @@ abstract class Base_Controller
         $accessLog->Ip = Lib_Helper::getRemoteIP();
         $accessLog->AccessType = $type;
         $accesLogDAO = new Core_Model_Dao_AccessLogDAO($accessLog);
-        $accesLogDAO->insert();
+        $accesLogDAO->save();
     }
 
     /**

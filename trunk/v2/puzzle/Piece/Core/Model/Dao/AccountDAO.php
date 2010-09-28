@@ -108,7 +108,7 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         $className = Lib_Helper::getDao("Core", "Role");
         $object->Role->Id = $result["id_role"];
         $roleDAO = new $className($object->Role);
-        $object->Role = $roleDAO->select();
+        $object->Role = $roleDAO->load();
         return $object;
     }
 

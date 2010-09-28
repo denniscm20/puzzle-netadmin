@@ -70,6 +70,8 @@ class Core_View_LoginView extends Base_View
      */
     public function show()
     {
+        $url = new Lib_Url(FRIENDLY_URL);
+        $url = $url->build("Core", "Login","login");
         $userName = new Lib_Html_Input("username", "", LOGIN_USER_FIELD, 1, 'u');
         $password = new Lib_Html_Input("password", "", LOGIN_PASSWORD_FIELD, 2, 'p');
         $submitButton = new Lib_Html_Button("submit", LOGIN_SUBMIT_BUTTON, 3);
@@ -79,7 +81,7 @@ class Core_View_LoginView extends Base_View
             <?php echo LOREM_IPSUM; ?>
         </div>
         <div class="loginform">
-            <form action="/?Event=login" method="post">
+            <form action="<?php echo $url; ?>" method="post">
                 <div class="row"><?php echo $userName->showTextBox(40, "", "login"); ?></div>
                 <div class="row"><?php echo $password->showPassword(40, "", "login"); ?></div>
                 <div class="row right"><?php echo $resetButton->showResetButton(), $submitButton->showSubmitButton(); ?></div>

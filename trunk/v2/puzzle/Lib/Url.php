@@ -76,10 +76,10 @@ class Lib_Url {
                 $url .= ($this->identifier == null)?"":"/{$this->identifier}";
             }
         } else {
-            $url .= "?Piece={$this->piece}&amp;Page={$this->page}";
+            $url .= "?Piece={$this->piece}&Page={$this->page}";
             if ($this->event != null) {
-                $url .= "&amp;Event={$this->event}";
-                $url .= ($this->identifier == null)?"":"&amp;Id={$this->identifier}";
+                $url .= "&Event={$this->event}";
+                $url .= ($this->identifier == null)?"":"&Id={$this->identifier}";
             }
         }
 

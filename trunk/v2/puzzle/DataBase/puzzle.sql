@@ -36,7 +36,7 @@ CREATE TABLE Service (
 
 CREATE TABLE Protocol (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(5) NOT NULL,
+    name VARCHAR(5) NOT NULL
 );
 
 CREATE TABLE Service_x_Protocol (
@@ -119,7 +119,7 @@ CREATE TABLE Role_x_Privilege (
     id_privilege INTEGER NOT NULL,
     id_role INTEGER NOT NULL,
     CONSTRAINT privilege_role_x_privilege_fk FOREIGN KEY (id_privilege) REFERENCES Task (id),
-    CONSTRAINT role_role_x_privilege_fk FOREIGN KEY (id_role) REFERENCES Role (id),
+    CONSTRAINT role_role_x_privilege_fk FOREIGN KEY (id_role) REFERENCES Role (id)
 );
 
 CREATE TABLE Account (
@@ -129,12 +129,12 @@ CREATE TABLE Account (
     email VARCHAR(100) NOT NULL,
     token VARCHAR(210) NOT NULL,
     salt VARCHAR(20) NOT NULL,
-    password VARCHAR(210) NOT NULL,
+    password CHAR(210) NOT NULL,
     changePassword BOOLEAN NOT NULL,
     enabled BOOLEAN NOT NULL,
-    tokenDate DATETIME NOT NULL,
-    createdDate DATETIME NOT NULL,
-    modifiedDate DATETIME NOT NULL,
+    tokenDate TIMESTAMP NOT NULL,
+    createdDate TIMESTAMP NOT NULL,
+    modifiedDate TIMESTAMP NOT NULL,
     id_account_creator INTEGER NOT NULL,
     id_account_modifier INTEGER NOT NULL,
     CONSTRAINT account_modifier_account_fk FOREIGN KEY (id_account_modifier) REFERENCES Account (id),
@@ -144,8 +144,8 @@ CREATE TABLE Account (
 
 CREATE UNIQUE INDEX username_idx ON Account ( username );
 
-INSERT INTO Account (id,id_role,username,password,enabled,createdDate,modifiedDate,id_account_creator,id_account_modifier,changePassword)
-VALUES (1,1,'admin','',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,1,1)
+INSERT INTO Account (id,id_role,username,password,salt,email,token,enabled,createdDate,modifiedDate,tokenDate,id_account_creator,id_account_modifier,changePassword)
+VALUES (1,1,'admin','','','','',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,1,1);
 
 CREATE TABLE Piece (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

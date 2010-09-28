@@ -86,9 +86,7 @@ class Core_Controller_PanelController extends Base_Controller
         return;
     }
 
-    protected function validateInput()
-    {
-        return true;
+    protected function filterInput() {
     }
 }
 
