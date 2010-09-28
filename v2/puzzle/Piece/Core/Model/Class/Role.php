@@ -52,23 +52,23 @@ class Core_Model_Class_Role extends Base_Class
      * @access private
      * @var Array
      */
-    private $taskList;
+    private $privilegeList;
 
     public function __construct()
     {
         parent::__construct();
         $this->name = "";
         $this->description = "";
-        $this->taskList = array();
+        $this->privilegeList = array();
     }
 
     public function __destruct()
     {
         parent::__destruct();
-        foreach ($this->taskList as $task) {
+        foreach ($this->privilegeList as $task) {
             unset($task);
         }
-        unset($this->taskList);
+        unset($this->privilegeList);
     }
 
     public function getName() {
@@ -91,13 +91,13 @@ class Core_Model_Class_Role extends Base_Class
         }
     }
 
-    public function getTaskList() {
-        return $this->taskList;
+    public function getPrivilegeList() {
+        return $this->privilegeList;
     }
 
-    public function setTaskList($taskList) {
-        if (Lib_Validator::validateArray($taskList, "Core_Model_Class_Task")) {
-            $this->taskList = $taskList;
+    public function setPrivilegeList($privilegeList) {
+        if (Lib_Validator::validateArray($privilegeList, "Core_Model_Class_Privilege")) {
+            $this->privilegeList = $privilegeList;
         }
     }
 }

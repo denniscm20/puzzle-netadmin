@@ -55,11 +55,9 @@ class Core_Model_Dao_AccessLogDAO extends Base_DAO {
     
     public function save() {
         $this->query = "INSERT INTO AccessLog (username, ip, timestamp, id_access_type) ".
-                       "VALUES (?, ?, ?, ?, ?)";
-        $date = date("Y-m-d", strtotime($this->object->Datetime));
-        $time = date("H:i:s", strtotime($this->object->Datetime));
+                       "VALUES (?, ?, ?, ?)";
         $this->parameters = array($this->object->Username, $this->object->Ip,
-            $this->object->Username, $date, $time, $this->object->AccessType);
+            $this->object->Timestamp, $this->object->AccessType);
         return parent::save();
     }
 

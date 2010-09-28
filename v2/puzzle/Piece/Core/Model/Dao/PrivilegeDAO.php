@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Core/Model/Dao/TaskDAO.php - Copyright 2009 Dennis Cohn Muroy
+ * Core/Model/Dao/PrivilegeDAO.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -22,7 +22,7 @@
 require_once PATH_BASE.'DAO.php';
 
 /**
- * Class that implements the task database interface.
+ * Class that implements the Privilege database interface.
  * @author Dennis Stephen Cohn Muroy
  * @version 1.0
  * @since 2010
@@ -31,7 +31,7 @@ require_once PATH_BASE.'DAO.php';
  * @copyright Copyright (c) 2010, Dennis Cohn
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-class Core_Model_Dao_TaskDAO extends Base_DAO
+class Core_Model_Dao_PrivilegeDAO extends Base_DAO
 {
 
     public function  __construct($object)
@@ -46,24 +46,24 @@ class Core_Model_Dao_TaskDAO extends Base_DAO
 
     public function load()
     {
-        $this->query = "SELECT id, id_piece, name, page, event FROM Task WHERE id = ?";
+        $this->query = "SELECT id, id_piece, name, page, event FROM Privilege WHERE id = ?";
         $this->parameters = array($this->object->Id);
         return parent::load();
     }
 
     public function save()
     {
-        $this->query = "INSERT INTO Task (name, page, event) VALUES (?, ?, ?)";
+        $this->query = "INSERT INTO Privilege (name, page, event) VALUES (?, ?, ?)";
         $this->parameters = array($this->object->Name, $this->object->Page, $this->object->Event);
         return parent::save();
     }
 
     public function delete()
     {
-        $this->query = "DELETE FROM Role_x_Task WHERE id_task = ?";
+        $this->query = "DELETE FROM Role_x_Privilege WHERE id_privilege = ?";
         $this->parameters = array($this->object->Id);
         if (parent::delete() === true) {
-            $this->query = "DELETE FROM Task WHERE id = ?";
+            $this->query = "DELETE FROM Privilege WHERE id = ?";
             $this->parameters = array($this->object->Id);
             return parent::delete();
         }
@@ -72,11 +72,11 @@ class Core_Model_Dao_TaskDAO extends Base_DAO
 
     public function deleteByPiece($piece_id)
     {
-        $this->query = "DELETE FROM Role_x_Task AS A LEFT JOIN Task AS B
-            ON (A.id_task = B.id) WHERE B.id_piece = ?";
+        $this->query = "DELETE FROM Role_x_Privilege AS A LEFT JOIN Privilege AS B
+            ON (A.id_privilege = B.id) WHERE B.id_piece = ?";
         $this->parameters = array($piece);
         if (parent::delete() === true) {
-            $this->query = "DELETE FROM Task WHERE id_piece = ?";
+            $this->query = "DELETE FROM Privilege WHERE id_piece = ?";
             $this->parameters = array($piece_id);
             return parent::delete();
         }
@@ -85,31 +85,36 @@ class Core_Model_Dao_TaskDAO extends Base_DAO
 
     public function selectListByRole($role_id)
     {
-        $this->query = "SELECT a.id, a.id_piece, a.name, a.page, a.event FROM Task AS a
-            LEFT JOIN Role_x_Task AS b ON (a.id = b.id_role) WHERE b.id_role = ?";
+        $this->query = "SELECT a.id, a.id_piece, a.name, a.page, a.event FROM Privilege AS a
+            LEFT JOIN Role_x_Privilege AS b ON (a.id = b.id_role) WHERE b.id_role = ?";
         $this->parameters = array($role_id);
         return parent::listObjects(0, MAX_LIST_LIMIT);
     }
 
     public function selectListByNotRole($role_id)
     {
-        $this->query = "SELECT a.id, a.id_piece, a.name, a.page, a.event FROM Task AS a
-            LEFT JOIN Role_x_Task AS b ON (a.id = b.id_role) WHERE b.id_role <> ?";
+        $this->query = "SELECT a.id, a.id_piece, a.name, a.page, a.event FROM Privilege AS a
+            LEFT JOIN Role_x_Privilege AS b ON (a.id = b.id_role) WHERE b.id_role <> ?";
         $this->parameters = array($role_id);
         return parent::listObjects(0, MAX_LIST_LIMIT);
     }
 
     public function selectListByPiece($piece_id)
     {
-        $this->query = "SELECT id, id_piece, name, page, event FROM Task WHERE id_piece = ?";
+        $this->query = "SELECT id, id_piece, name, page, event FROM Privilege WHERE id_piece = ?";
         $this->parameters = array($piece_id);
         return parent::listObjects(0, MAX_LIST_LIMIT);
     }
 
     public function selectList($start)
     {
-        $this->query = "SELECT id, id_piece, name, page, event FROM Task";
+        $this->query = "SELECT id, id_piece, name, page, event FROM Privilege";
         return $this->listObjects($start, DEFAULT_LIST_LIMIT);
+    }
+
+    protected function loadObjectReferences($object, $result)
+    {
+        return $object;
     }
 }
 ?>

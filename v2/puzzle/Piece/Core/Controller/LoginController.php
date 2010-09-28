@@ -100,15 +100,15 @@ class Core_Controller_LoginController extends Base_Controller
     protected function login()
     {
         $user = $this->retrieveUser();
-        $username = $user->Username;
         if ($user !== null) {
+            $username = $user->Username;
             if ($user->validatePassword($this->user->Password) === true) {
                 $this->grantAccess($username);
             } else {
                 $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
             }
         } else {
-            $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+            $this->denyAcccess("", Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
         }
     }
 
@@ -120,8 +120,8 @@ class Core_Controller_LoginController extends Base_Controller
     protected function token()
     {
         $user = $this->retrieveUser();
-        $username = $user->Username;
         if ($user !== null) {
+            $username = $user->Username;
             if ($user->validateToken($this->user->Token) === true) {
                 $this->clearToken();
                 $this->grantAccess($username);
@@ -185,14 +185,14 @@ class Core_Controller_LoginController extends Base_Controller
         return;
     }
 
-    protected function validateInput()
+    protected function filterInput()
     {
         $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
         $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
         $token = filter_input(INPUT_POST, "token", FILTER_SANITIZE_STRING);
-        $this->user->Username = $username;
-        $this->user->Password = $password;
-        $this->user->Token = $token;
+        $this->user->Username = $username != null?$username:"";
+        $this->user->Password = $password != null?$password:"";
+        $this->user->Token = $token != null?$token:"";
     }
 
     /**

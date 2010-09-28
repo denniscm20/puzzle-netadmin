@@ -1,6 +1,6 @@
 <?php
 /*
- * Core/Model/Class/Task.php - Copyright 2009 Dennis Cohn Muroy
+ * Core/Model/Class/Privilege.php - Copyright 2009 Dennis Cohn Muroy
  *
  * This file is part of puzzle.
  *
@@ -31,24 +31,24 @@ require_once PATH_BASE.'Class.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class Core_Model_Class_Task extends Base_Class
+class Core_Model_Class_Privilege extends Base_Class
 {
     /**
-     * The name of the task.
+     * The name of the Privilege.
      * @access private
      * @var String
      */
     private $name;
 
     /**
-     * The name of the page this task is related to.
+     * The name of the page this Privilege is related to.
      * @access private
      * @var String
      */
     private $page;
 
     /**
-     * The name of the event this task is related to.
+     * The name of the event this Privilege is related to.
      * @access private
      * @var String
      */
