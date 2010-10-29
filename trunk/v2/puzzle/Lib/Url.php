@@ -35,7 +35,7 @@ class Lib_Url {
 
     private $event;
 
-    private $identifier;
+    private $parameters;
 
     private $friendly;
 
@@ -49,7 +49,7 @@ class Lib_Url {
         $this->page = null;
         $this->piece = null;
         $this->event = null;
-        $this->identifier = null;
+        $this->parameters = array();
     }
 
     /**
@@ -58,14 +58,14 @@ class Lib_Url {
      * @param String $piece Piece Name
      * @param String $page Page Name
      * @param Event $event Event Name
-     * @param mixed $identifier
+     * @param array $parameters Hash array containing the parameter name and its value
      * @return String Built url.
      */
-    public function build($piece, $page, $event = null, $identifier = null) {
+    public function build($piece, $page, $event = null, $parameters = array()) {
         $this->page = $page;
         $this->piece = $piece;
         $this->event = $event;
-        $this->identifier = $identifier;
+        $this->parameters = $parameters;
 
         $url = "/index.php";
 
@@ -73,13 +73,15 @@ class Lib_Url {
             $url .= "/{$this->piece}/{$this->page}";
             if ($this->event != null) {
                 $url .= "/{$this->event}";
-                $url .= ($this->identifier == null)?"":"/{$this->identifier}";
+                foreach ($this->parameters as $key => $value)
+                    $url .= "/{$key}-{$value}";
             }
         } else {
             $url .= "?Piece={$this->piece}&Page={$this->page}";
             if ($this->event != null) {
                 $url .= "&Event={$this->event}";
-                $url .= ($this->identifier == null)?"":"&Id={$this->identifier}";
+                foreach ($this->parameters as $key => $value)
+                    $url .= "&{$key}={$value}";
             }
         }
 
@@ -95,17 +97,41 @@ class Lib_Url {
             $url = $_SERVER['REQUEST_URI'];
             $parameters = substr($url, strpos($url, '/', 1) + 1);
             $parameters = explode('/', $parameters);
-            if (count($parameters) >= 2) {
-                $this->piece = $parameters[0];
-                $this->page = $parameters[1];
-                $this->event = isset($parameters[2])?$parameters[2]:null;
-                $this->identifier = isset($parameters[3])?$parameters[3]:null;
+            $count = count($parameters);
+            for ($i = 0; $i < $count; $i++) {
+                switch ($i) {
+                    case 0:
+                        $this->piece = $parameters[$i];
+                        break;
+                    case 1:
+                        $this->page = $parameters[$i];
+                        break;
+                    case 2:
+                        $this->event = $parameters[$i];
+                        break;
+                    default:
+                        $argument = explode('-', $parameters[$i]);
+                        $this->parameters[$argument[0]] = $argument[1];
+                        break;
+                }
             }
         } else {
-            $this->piece = filter_input(INPUT_GET, "Piece", FILTER_SANITIZE_STRING);
-            $this->page = filter_input(INPUT_GET, "Page", FILTER_SANITIZE_STRING);
-            $this->event = filter_input(INPUT_GET, "Event", FILTER_SANITIZE_STRING);
-            $this->identifier = filter_input(INPUT_GET, "Id", FILTER_SANITIZE_STRING);
+            $keys = array_keys($_GET);
+            foreach ($keys as $key)
+                switch ($key) {
+                    case "Piece":
+                        $this->piece = filter_input(INPUT_GET, "Piece", FILTER_SANITIZE_STRING);
+                        break;
+                    case "Page":
+                        $this->page = filter_input(INPUT_GET, "Page", FILTER_SANITIZE_STRING);
+                        break;
+                    case "Event":
+                        $this->event = filter_input(INPUT_GET, "Event", FILTER_SANITIZE_STRING);
+                        break;
+                    default:
+                        $this->parameters[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_STRING);
+                        break;
+                }
         }
     }
 
@@ -121,8 +147,10 @@ class Lib_Url {
         return $this->event;
     }
 
-    public function getIdentifier() {
-        return $this->identifier;
+    public function getParameter( $key ) {
+        if (isset($this->parameters[$key]))
+            return $this->parameters[$key];
+        return "";
     }
     
 }

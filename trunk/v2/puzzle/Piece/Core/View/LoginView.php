@@ -47,6 +47,7 @@ class Core_View_LoginView extends Base_View
     public function __construct($controller)
     {
         parent::__construct($controller, LOGIN_TITLE);
+        $this->javascript[] = "cypher.js";
     }
 
     /**
@@ -81,7 +82,7 @@ class Core_View_LoginView extends Base_View
             <?php echo LOREM_IPSUM; ?>
         </div>
         <div class="loginform">
-            <form action="<?php echo $url; ?>" method="post">
+            <form name="login-form" action="<?php echo $url; ?>" method="post">
                 <div class="row"><?php echo $userName->showTextBox(40, "", "login"); ?></div>
                 <div class="row"><?php echo $password->showPassword(40, "", "login"); ?></div>
                 <div class="row right"><?php echo $resetButton->showResetButton(), $submitButton->showSubmitButton(); ?></div>

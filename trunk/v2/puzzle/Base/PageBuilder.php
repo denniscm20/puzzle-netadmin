@@ -20,7 +20,6 @@
 
 require_once PATH_LIB.'Helper.php';
 require_once PATH_LIB.'MessageHandler.php';
-require_once PATH_LIB.'Breadcrumb.php';
 
 /**
  * This class contains the methods for building the page structure.
@@ -38,24 +37,21 @@ class PageBuilder
     private $piece;
     private $page;
     private $language;
-    private $breadcrumb;
     
-    public function  __construct($page, $piece, $event, $identifier)
+    public function  __construct($url)
     {
-        $this->page = $page;
-        $this->piece = $piece;
-        $this->language = Lib_Helper::getTranslation($piece, $_SESSION["Language"]);
-        $viewClass = Lib_Helper::getView($piece, $page);
-        $controllerClass = Lib_Helper::getController($piece, $page);
+        $this->page = $url->getPage();
+        $this->piece = $url->getPiece();
+        $this->language = Lib_Helper::getTranslation($this->piece, $_SESSION["Language"]);
+        $viewClass = Lib_Helper::getView($this->piece, $this->page);
+        $controllerClass = Lib_Helper::getController($this->piece, $this->page);
         if (($viewClass !== false) && ($controllerClass !== false)) {
             $function = array($controllerClass, 'getInstance');
-            $parameters = array($this->piece, $this->page);
-            $this->controller = call_user_func_array($function, $parameters);
-            $this->controller->execute ($event, $identifier);
+            $this->controller = call_user_func($function);
+            $this->controller->execute ($url);
             $this->view = new $viewClass($this->controller);
-            $this->breadcrumb = new Lib_Breadcrumb($this->piece, $this->page);
         } else {
-            header("HTTP/1.0 404 Not Found");
+            include(PATH_ERROR."404.php");
             exit();
         }
     }
@@ -64,8 +60,7 @@ class PageBuilder
     {
         $cssList = $this->view->getCss();
         foreach ($cssList as $css) {
-        ?>
-            <link rel="stylesheet" type="text/css" href="<?php echo sprintf(PATH_CSS, $template),$css; ?>" />
+        ?><link rel="stylesheet" type="text/css" href="<?php echo sprintf(PATH_CSS, $template),$css; ?>" />
         <?php
         }
     }
@@ -74,8 +69,7 @@ class PageBuilder
     {
         $jsList = $this->view->getJavascript();
         foreach ($jsList as $js) {
-        ?>
-            <script type="text/javascript" src="<?php echo sprintf(PATH_JS, $this->piece),$js; ?>" />
+        ?><script type="text/javascript" src="<?php echo sprintf(PATH_JS, $this->piece),$js; ?>"></script>
         <?php
         }
     }
@@ -83,12 +77,10 @@ class PageBuilder
     public function show($is_ajax = false)
     {
         if ($is_ajax === false) {
-            echo '<?xml version="1.0" encoding="utf-8"?>';
             $template = DEFAULT_THEME;
     ?>
-           
-            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo $this->language; ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-            <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $this->language; ?>">
+            <!DOCTYPE html>
+            <html>
             <head>
                 <title><?php echo DEFAULT_TITLE," - ",$this->view->getTitle(); ?></title>
                 <meta name="AUTHOR" content="Dennis Cohn Muroy" />
@@ -97,18 +89,17 @@ class PageBuilder
                 <?php $this->printAditionalCss($template) ?>
                 <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>jquery.js" ></script>
                 <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>events.js" ></script>
-                <script type="text/javascript" src="<?php echo sprintf(PATH_JS, DEFAULT_PIECE); ?>cypher.js" ></script>
                 <?php $this->printAditionalJavascript($template) ?>
+                
             </head>
             <body>
                 <div>
                     <div id="header" style="background-image:url(<?php echo "'",Lib_Helper::getImage('header_back.jpg'),"'";?>)">
-                        <img src="<?php echo Lib_Helper::getImage('logo.png'); ?>" alt="Logo" />
-                        <img src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
+                        <img id="img-title" src="<?php echo Lib_Helper::getImage('title.png'); ?>" alt="Puzzle" />
                     </div>
                     <?php if (isset($_SESSION["User"])) { ?>
                         <div id="breadcrumb-area">
-                            <span id="breadcrumb"><?php $this->breadcrumb->show(); ?></span>
+                            <span id="breadcrumb"><?php $this->view->showBreadcrumb(); ?></span>
                             <span id="logout">
                                 <a href="/?Page=<?php echo DEFAULT_LOGOUT_PAGE ?>&amp;Event=logout">
                                 <?php echo LOG_OUT;?>
@@ -116,15 +107,15 @@ class PageBuilder
                             </span>
                         </div>
                     <?php } ?>
+
                     <div id="content">
-                        <div id="message">
-                        <?php
+                        <div id="message"><?php
                             $messageHandler = Lib_MessagesHandler::getInstance();
                             $messageHandler->showMessages();
-                        ?>
-                        </div>
+                        ?></div>
                         <br />
                         <?php $this->view->show(); ?>
+                        
                     </div>
                 </div>
                 <div id="footer" style="background-image:url(<?php echo "'",Lib_Helper::getImage('footer_back.jpg'),"'";?>)">

@@ -19,6 +19,7 @@
  */
 
 require_once PATH_LIB.'MessageHandler.php';
+require_once PATH_LIB.'Breadcrumb.php';
 require_once PATH_LIB.'Html/Input.php';
 require_once PATH_LIB.'Html/Button.php';
 require_once PATH_LIB.'Html/Select.php';
@@ -39,6 +40,7 @@ abstract class Base_View
 {
     // --- ASSOCIATIONS ---
     private $controller;
+    protected $breadcrumb = null;
 
     // --- ATTRIBUTES ---
 
@@ -60,6 +62,7 @@ abstract class Base_View
     protected function __construct($controller, $title = DEFAULT_TITLE)
     {
         $this->controller = $controller;
+        $this->breadcrumb = new Lib_Breadcrumb($title);
         $this->title = $title;
         $this->javascript = array();
         $this->css = array();
@@ -121,6 +124,18 @@ abstract class Base_View
     public function getCss()
     {
         return $this->css;
+    }
+
+    /**
+     * Returns the breadcrumb text.
+     *
+     * @access public
+     * @author Dennis Cohn Muroy
+     * @return array
+     */
+    public function showBreadcrumb()
+    {
+        return $this->breadcrumb->show();
     }
 
     /**

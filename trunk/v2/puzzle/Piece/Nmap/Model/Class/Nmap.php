@@ -45,7 +45,8 @@ class Nmap_Model_Class_Nmap extends Base_Class
         parent::__construct();
         $this->scanDate = time();
         $this->options = "";
-        $this->account = $account = unserialize($_SESSION["User"]["Account"]);
+        $this->account = new Core_Model_Class_Account();
+        $this->account->Id = $_SESSION["User"]["Id"];
     }
 
     public function __destruct() {

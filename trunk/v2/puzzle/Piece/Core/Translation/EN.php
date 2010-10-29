@@ -34,6 +34,7 @@ define("LOGIN_RESET_BUTTON", "Clear");
 define("LOGIN_MAIL_SUBJECT", "");
 define("LOGIN_MAIL_BODY", "%s");
 
+// Server View
 define("SERVER_TITLE", "Information");
 define("SERVER_DATA_LEGEND", "Server Data");
 define("SERVER_NETWORK_LEGEND", "Network Configuration");
@@ -47,12 +48,25 @@ define("SERVER_DNS_LABEL", "Registered DNS Servers");
 define("SERVER_PIECE_LABEL", "Piece");
 define("SERVER_SECURITY_LABEL", "Security");
 
+// Panel View
 define("PANEL_PIECES", "Manage Pieces");
 define("PANEL_ACCOUNTS", "Manage Accounts");
 define("PANEL_SERVER", "View Server Information");
 define("PANEL_NETWORK", "Manage Network");
 define("PANEL_PERMISSION", "Manage Permission");
 define("PANEL_REPORT", "View Reports");
+
+// Node View
+define("NODE_TITLE", "Edit Node");
+define("NODE_NAME_LABEL", "Name");
+define("NODE_DESCRIPTION_LABEL", "Description");
+define("NODE_IPV4_LABEL", "IPv4");
+define("NODE_IPV6_LABEL", "IPv6");
+define("NODE_CANCEL_LINK", "Cancel");
+define("NODE_SAVE_BUTTON", "Save");
+define("NODE_ADD_BUTTON", "Add Service");
+define("NODE_REMOVE_BUTTON", "Remove Service");
+define("NODE_DATA_LEGEND", "Subnet Data");
 
 define("ACCOUNT_DELETE_ERROR", "");
 define("ACCOUNT_DELETE_INFO", "");

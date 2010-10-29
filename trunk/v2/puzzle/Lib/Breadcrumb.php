@@ -21,21 +21,26 @@
 
 class Lib_Breadcrumb
 {
-    private $piece;
-    private $page;
+    private $path;
+    private $current;
 
-    public function  __construct($piece, $page)
+    public function  __construct($current)
     {
-        $this->page = $page;
-        $this->piece = $piece;
+        $this->path = array();
+        $this->current = $current;
+    }
+
+    public function add($link, $page) {
+        $this->path[$link] = $page;
     }
 
     public function show()
     {
-        $homeLink = "<a href=\"\/\">".BREADCRUMB_HOME."</a>";
-        $pieceLink = $this->piece;
-        $pageLink = $this->page;
-        $breadcrumb = $homeLink.BREADCRUMB_SEPARATOR.$pieceLink.BREADCRUMB_SEPARATOR.$pageLink;
+        $breadcrumb = "<a href=\"\/\">".BREADCRUMB_HOME."</a>";
+        foreach ($this->path as $link => $page) {
+            $breadcrumb .= BREADCRUMB_SEPARATOR."<a href=\"".$link."\">".$page."</a>";
+        }
+        $breadcrumb .= BREADCRUMB_SEPARATOR.$this->current;
         return $breadcrumb;
     }
 }

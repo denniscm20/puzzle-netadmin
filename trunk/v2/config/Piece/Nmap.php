@@ -31,14 +31,14 @@ class Piece_Nmap
 
     public function listNodes($parameter)
     {
-        $command = "nmap -sP %s | grep 'is up' | cut -d' ' -f2"
+        $command = "nmap -sP %s | grep 'is up' | cut -d' ' -f2";
         $command = sprintf($command, $parameter);
         passthru($command);
     }
     
     public function listServicesxNodes($parameter)
     {
-        $command = "nmap %s"
+        $command = "nmap %s | grep tcp | cut -d'/' -f1";
         $command = sprintf($command, $parameter);
         passthru($command);
     }

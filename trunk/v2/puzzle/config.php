@@ -11,6 +11,7 @@
     // Directory tree
     define ("ROOT",$_SERVER['DOCUMENT_ROOT']);
     define ("PATH_BASE", ROOT."/Base/");
+    define ("PATH_ERROR", PATH_BASE."/Error/");
     define ("PATH_DATABASE", ROOT."/DataBase/");
     define ("PATH_LIB", ROOT."/Lib/");
     define ("PATH_PIECE", ROOT."/Piece/");

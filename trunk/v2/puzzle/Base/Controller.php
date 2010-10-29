@@ -38,7 +38,6 @@ abstract class Base_Controller
     // --- ASSOCIATIONS ---
 
     protected $elements = null;
-    protected $allowedRoles = null;
 
     // --- ATTRIBUTES ---
 
@@ -51,12 +50,12 @@ abstract class Base_Controller
     protected static $controller = null;
 
     /**
-     * Url Identifier
+     * Url Parameters
      *
      * @access protected
-     * @var String
+     * @var Lib_Url
      */
-    protected $identifier = null;
+    protected $url = null;
 
     /**
      * Class constructor
@@ -67,7 +66,6 @@ abstract class Base_Controller
     protected function __construct()
     {
         $this->elements = array();
-        $this->allowedRoles = array();
     }
 
     /**
@@ -83,10 +81,7 @@ abstract class Base_Controller
             unset($element);
         }
         unset($this->elements);
-        foreach ($this->allowedRoles as $role) {
-            unset($role);
-        }
-        unset($this->allowedRoles);
+        unset($this->url);
         self::$controller = null;
     }
 
@@ -97,15 +92,10 @@ abstract class Base_Controller
      * @author Dennis Cohn Muroy
      * @return Base_Controller
      */
-    public static function getInstance($piece = "", $page = "")
+    public static function getInstance()
     {
         if(!isset(self::$controller)) {
-            $controllerName = "";
-            if (!function_exists('get_called_class')) {
-                $controllerName = sprintf(PIECE_PREFFIX, $piece, "Controller").$page."Controller";
-            } else {
-                $controllerName = get_called_class();
-            }
+            $controllerName = get_called_class();
             self::$controller = new $controllerName();
         }
         return self::$controller;
@@ -141,68 +131,55 @@ abstract class Base_Controller
     }
     
     /**
-     * This method allows to determine if the user has privileges to see this page
-     *
-     * @access public
-     * @author Dennis Cohn Muroy
-     * @param String $piece
-     * @param String $page
-     * @param String $event
-     * @return Boolean
-     */
-    protected function hasPermissions($piece, $page)
-    {
-        if ($piece != DEFAULT_PIECE && $page != DEFAULT_LOGOUT_PAGE) {
-            if (isset($_SESSION["User"]["Permissions"])) {
-                $permissions = unserialize($_SESSION["User"]["Permissions"]);
-                if (isset($permissions[$piece][$page])) {
-                    return true;
-                }
-            }
-            header("HTTP/1.0 403 Forbidden");
-            exit();
-        }
-        return true;
-    }
-    
-    /**
-     * This method loads the permissions of each user per page according to the
-     * role of the user.
-     *
-     * @access public
-     * @author Dennis Cohn Muroy
-     */
-    protected function loadPermissions ()
-    {
-        if (!isset($_SESSION["User"]["Permissions"])) {
-            $permissions = array();
-
-            $_SESSION["User"]["Permissions"] = serialize($permissions);
-        }
-    }
-
-    /**
      * Orders the controller to execute the event
      *
      * @access public
      * @author Dennis Cohn Muroy
-     * @param  String $event
-     * @param  mixed $identifier
+     * @param  Lib_Url $url
      */
-    public function execute( $event, $identifier )
+    public function execute( $url )
     {
-        $this->identifier = $identifier;
-        if ($this->isValidIp()) {
+        $this->url = $url;
+        if ($this->isValidIp() && $this->hasPermissions()) {
             $this->filterInput();
+            $event = $this->url->getEvent();
             $event = $this->call($event);
             if (method_exists($this, $event)) {
                 $this->{$event}();
             }
             $this->loadElements();
         } else {
-            header("HTTP/1.0 403 Forbidden");
+            include(PATH_ERROR."403.php");
             exit();
         }
+    }
+
+    /**
+     * This method allows to determine if the user has privileges to see this page
+     *
+     * @access private
+     * @author Dennis Cohn Muroy
+     * @param String $piece
+     * @param String $page
+     * @param String $event
+     * @return Boolean
+     */
+    private function hasPermissions()
+    {
+        $piece = $this->url->getPiece();
+        $page = $this->url->getPage();
+        if ($piece != DEFAULT_PIECE && $page != DEFAULT_LOGOUT_PAGE) {
+            Lib_Helper::getClass("Core", "Privilege");
+            Lib_Helper::getDao("Core", "Privilege");
+            $privilege = new Core_Model_Class_Privilege();
+            $privilege->Page = $page;
+            $privilege->Event = $url->getEvent();
+            $privilegeDAO = new Core_Model_Dao_PrivilegeDAO($privilege);
+            $roleId = $_SESSION["User"]["Role"];
+            $privilegeList = $privilegeDAO->selectListByRoleAndPieceAndPageAndEvent($role_id, $piece);
+            return count($privilegeList) > 0;
+        }
+        return true;
     }
 
     /**

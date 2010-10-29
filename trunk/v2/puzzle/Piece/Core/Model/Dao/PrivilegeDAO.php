@@ -106,6 +106,19 @@ class Core_Model_Dao_PrivilegeDAO extends Base_DAO
         return parent::listObjects(0, MAX_LIST_LIMIT);
     }
 
+    public function selectListByRoleAndPieceAndPageAndEvent($role_id, $piece)
+    {
+        $this->query = "SELECT B.id, B.name
+            FROM Role_x_Privilege AS A
+            LEFT JOIN Privilege AS B
+            ON (A.id_privilege = B.id)
+            LEFT JOIN Pieve AS C
+            ON (C.id = B.id_piece)
+            WHERE B.name = ? AND B.page = ? AND B.event = ? AND A.id_role = ?";
+        $this->parameters = array($piece, $this->object->Page, $this->object->Event, $role_id);
+        return parent::listObjects(0, 1);
+    }
+
     public function selectList($start)
     {
         $this->query = "SELECT id, id_piece, name, page, event FROM Privilege";

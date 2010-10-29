@@ -52,7 +52,7 @@ class Core_Model_Dao_RoleDAO extends Base_DAO
 
     public function delete()
     {
-        $this->query = "DELETE FROM Role_x_Task WHERE id_role = ?";
+        $this->query = "DELETE FROM Role_x_Privilege WHERE id_role = ?";
         $this->parameters = array($this->object->Id);
         if (parent::delete() === true) {
             $this->query = "DELETE FROM Role WHERE id = ?";

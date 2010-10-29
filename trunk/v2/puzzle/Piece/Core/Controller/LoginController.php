@@ -141,8 +141,7 @@ class Core_Controller_LoginController extends Base_Controller
     protected function logout()
     {
     	if (isset($_SESSION["User"])) {
-            $user = unserialize($_SESSION["User"]["Account"]);
-            $username = $user->Username;
+            $username = $_SESSION["User"]["Account"];
             session_unset();
             $sessionDestroyed = session_destroy();
             $messageHandler = Lib_MessagesHandler::getInstance();
@@ -152,6 +151,8 @@ class Core_Controller_LoginController extends Base_Controller
                 $messageHandler->addError(LOGIN_LOGOUT_ERROR);
             }
             $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_LOG_OUT);
+        } else {
+            Lib_Helper::redirect("Core", "Login");
         }
     }
 
@@ -187,12 +188,14 @@ class Core_Controller_LoginController extends Base_Controller
 
     protected function filterInput()
     {
-        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
-        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
-        $token = filter_input(INPUT_POST, "token", FILTER_SANITIZE_STRING);
-        $this->user->Username = $username != null?$username:"";
-        $this->user->Password = $password != null?$password:"";
-        $this->user->Token = $token != null?$token:"";
+        if (filter_input(INPUT_POST, "submit") !== null) {
+            $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+            $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+            $token = filter_input(INPUT_POST, "token", FILTER_SANITIZE_STRING);
+            $this->user->Username = $username != null?$username:"";
+            $this->user->Password = $password != null?$password:"";
+            $this->user->Token = $token != null?$token:"";
+        }
     }
 
     /**
@@ -224,7 +227,9 @@ class Core_Controller_LoginController extends Base_Controller
     private function grantAccess($username)
     {
         $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
-        $_SESSION["User"]["Account"] = serialize($this->user);
+        $_SESSION["User"]["Id"] = $this->user->Id;
+        $_SESSION["User"]["Account"] = $this->user->Username;
+        $_SESSION["User"]["Role"] = $this->user->Role->Id;
         session_write_close();
         Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
     }
