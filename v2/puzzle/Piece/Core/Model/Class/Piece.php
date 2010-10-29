@@ -41,7 +41,7 @@ class Core_Model_Class_Piece extends Base_Class
 
     private $component;
 
-    private $taskList;
+    private $privilegeList;
 
     public function __construct() {
         parent::__construct();
@@ -49,15 +49,15 @@ class Core_Model_Class_Piece extends Base_Class
         $this->enable = false;
         $this->description = "";
         $this->component = false;
-        $this->taskList = array();
+        $this->privilegeList = array();
     }
 
     public function  __destruct() {
         parent::__destruct();
-        foreach ($this->taskList as $task) {
+        foreach ($this->privilegeList as $task) {
             unset ($task);
         }
-        unset ($this->taskList);
+        unset ($this->privilegeList);
     }
 
     public function getName() {
@@ -100,13 +100,13 @@ class Core_Model_Class_Piece extends Base_Class
         }
     }
 
-    public function getTaskList() {
-        return $this->taskList;
+    public function getPrivilegekList() {
+        return $this->privilegeList;
     }
 
-    public function setTaskList($taskList) {
-        if (Lib_Validator::validateArray($taskList, "Core_Model_Class_Task")) {
-            $this->taskList = $taskList;
+    public function setPrivilegeList($taskList) {
+        if (Lib_Validator::validateArray($taskList, "Core_Model_Class_Privilege")) {
+            $this->privilegeList = $taskList;
         }
     }
 

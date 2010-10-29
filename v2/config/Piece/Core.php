@@ -40,7 +40,22 @@ class Piece_Core
         passthru($command);
     }
     
+    public function forward($forward)
+    {
+        $command = "echo ".$forward." | /usr/bin/tee /proc/sys/net/ipv4/ip_forward";
+        passthru($command);
+    }
     
-
+    public function hostname()
+    {
+        $command = "hostname";
+        passthru($command);
+    }
+    
+    public function disk()
+    {
+        $command = "df -m";
+        passthru($command);
+    }        
 }
 ?>

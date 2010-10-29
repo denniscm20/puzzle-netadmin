@@ -61,6 +61,28 @@ class Core_Model_Dao_ServiceDAO extends Base_DAO
         return parent::listObjects(0, MAX_LIST_LIMIT);
     }
 
+    public function selectList()
+    {
+        $this->query = "SELECT A.id, A.name
+            FROM Service AS A";
+        $this->parameters = array();
+        return parent::listObjects(0, MAX_LIST_LIMIT);
+    }
+
+    public function addService($node_id)
+    {
+        $this->query = "INSERT INTO Service_x_Node (id_service, id_node) VALUES (?, ?)";
+        $this->parameters = array($this->object->Id, $node_id);
+        return parent::save();
+    }
+
+    public function removeService($node_id)
+    {
+        $this->query = "DELETE FROM Service_x_Node WHERE id_service = ? AND id_node = ?";
+        $this->parameters = array($this->object->Id, $node_id);
+        return parent::delete();
+    }
+
     protected function loadObjectReferences($object, $result)
     {
         $daoName = Lib_Helper::getDao("Core", "Port");

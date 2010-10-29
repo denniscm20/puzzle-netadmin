@@ -45,7 +45,7 @@ class Core_Model_Dao_NodeDAO extends Base_DAO
 
     public function load()
     {
-        $this->query = "SELECT id, name, ip4, ip6, mask4, mask6 FROM Node WHERE id = ?";
+        $this->query = "SELECT id, name, description, ip4, ip6, FROM Node WHERE id = ?";
         $this->parameters = array($this->object->Id);
         return parent::load();
     }
@@ -53,31 +53,15 @@ class Core_Model_Dao_NodeDAO extends Base_DAO
     public function save($subnet_id)
     {
         if ($this->object->Id > 0) {
-            $this->query = "INSERT INTO Node (id_subnet, name, ip4, ip6, mask4, mask6)
+            $this->query = "INSERT INTO Node (id_subnet, name, description, ip4, ip6)
                 VALUES (?,?,?,?,?,?)";
-            $this->parameters = array($subnet_id, $this->object->Name, $this->object->Ip4,
-                $this->object->Ip6, $this->object->Mask4, $this->object->Mask6);
-            $this->object->Id = parent::save();
+            $this->parameters = array($subnet_id, $this->object->Name, $this->object->Description, 
+                $this->object->Ip4, $this->object->Ip6);
+            return parent::save();
             if ($this->object->Id === false || $this->object->Id === 0) {
                 return false;
             }
-        } else {
-            $this->query = "DELETE FROM Service_x_Node WHERE id_node = ?";
-            $this->parameters = array($this->object->Id);
-            if (parent::delete() === false) {
-                return false;
-            }
         }
-        $this->query = "INSERT INTO Service_x_Node (id_service, id_node) VALUES";
-        $this->parameters = array();
-        $count = count($this->object->ServiceList);
-        for ($i = 0; $i < $count; $i++) {
-            $service = $this->object->ServiceList[$i];
-            $this->query .= $i == 0?" (?, ?)":", (?, ?)";
-            $this->parameters[] = $service->Id;
-            $this->parameters[] = $this->object->Id;
-        }
-        return parent::save();
     }
 
     public function delete()
@@ -94,7 +78,7 @@ class Core_Model_Dao_NodeDAO extends Base_DAO
 
     public function selectListByService($service_id)
     {
-        $this->query = "SELECT A.id, A.name, A.ip4, A.ip6, A.mask4, mask6
+        $this->query = "SELECT A.id, A.name, A.description, A.ip4, A.ip6
             FROM Node AS A
             LEFT JOIN Service_x_Node AS B 
             ON (A.id = B.id_node)
@@ -105,7 +89,7 @@ class Core_Model_Dao_NodeDAO extends Base_DAO
 
     public function selectListBySubnet($subnet_id, $start)
     {
-        $this->query = "SELECT id, name, ip4, ip6, mask4, mask6 FROM Node 
+        $this->query = "SELECT id, name, description, ip4, ip6 FROM Node
             WHERE id_subnet = ?";
         $this->parameters = array($subnet_id);
         return parent::listObjects($start, DEFAULT_LIST_LIMIT);

@@ -27,36 +27,11 @@ a:hover {
 }
 
 /* Banner */
-#banner_out {
+#header {
     text-align: center;
     height: 120px;
     padding-top: 10px;
-}
-
-#banner_in {
-    height: 120px;
-    padding-top: 10px;
     width:100%;
-}
-
-#banner_in li {
-    float: left;
-    list-style: none;
-    padding-top: 6px;
-    margin-right: 3px;
-    width: 115px;
-    height:25px;
-    display:inline;
-}
-
-.banner_image {
-    float:left;
-}
-
-#banner_in ul {
-    float:right;
-    padding-top:8px;
-    display: inline-block;
 }
 
 ul.actions li {

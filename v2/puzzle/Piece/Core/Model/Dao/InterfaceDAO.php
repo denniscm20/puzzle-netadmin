@@ -55,6 +55,13 @@ class Core_Model_Dao_InterfaceDAO extends Base_DAO
 
     }
 
+    public function selectList()
+    {
+        $this->query = "SELECT id, name FROM Interface WHERE enable = ?";
+        $this->parameters = array(true);
+        return parent::listObjects(0, MAX_LIST_LIMIT);
+    }
+
     /**
      * Scan the current configured network interfaces
      * @access public

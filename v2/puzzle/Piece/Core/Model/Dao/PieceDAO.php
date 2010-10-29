@@ -76,14 +76,14 @@ class Core_Model_Dao_PieceDAO extends Base_DAO
         return false;
     }
 
-    public function selectListByTask($task_id)
+    public function selectListByTask($privilege_id)
     {
         $this->query = "SELECT A.id, A.name, A.enable, A.description, A.component
             FROM Piece AS A
             Left JOIN Task AS B
             ON (A.id = B.id_piece)
             WHERE B.id = ?";
-        $this->parameters = array($task_id);
+        $this->parameters = array($privilege_id);
         return parent::listObjects(0, MAX_LIST_LIMIT);
     }
 
@@ -91,7 +91,7 @@ class Core_Model_Dao_PieceDAO extends Base_DAO
     {
         $daoName = Lib_Helper::getDao('Core', 'Task');
         $taskDAO = new $daoName('Core_Model_Class_Task');
-        $object->TaskList = $taskDAO->selectListByPiece($this->object->Id);
+        $object->PrivilegeList = $taskDAO->selectListByPiece($this->object->Id);
         return $object;
     }
 

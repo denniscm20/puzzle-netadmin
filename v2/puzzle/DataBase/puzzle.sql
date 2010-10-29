@@ -24,7 +24,7 @@ CREATE TABLE ValidIp (
     ipv4 BOOLEAN NOT NULL
 );
 
-CREATE UNIQUE INDEX ip_idx ON ValidIp ( ip );
+CREATE UNIQUE INDEX valid_ip_idx ON ValidIp ( ip );
 
 INSERT INTO ValidIp VALUES (1, '127.0.0.1', 1);
 INSERT INTO ValidIp VALUES (2, '::1', 0);
@@ -67,6 +67,8 @@ CREATE TABLE Interface (
     enable BOOLEAN NOT NULL
 );
 
+CREATE UNIQUE INDEX interface_name_idx ON Account ( name );
+
 CREATE TABLE Subnet (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_interface INTEGER NOT NULL,
@@ -79,14 +81,19 @@ CREATE TABLE Subnet (
     CONSTRAINT interface_subnet_fk FOREIGN KEY (id_interface) REFERENCES Interface (id)
 );
 
+CREATE UNIQUE INDEX subnet_name_idx ON Account ( name );
+
 CREATE TABLE Node (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_subnet INTEGER NOT NULL,
     name VARCHAR(30) NOT NULL,
-    ip VARCHAR(40) NOT NULL,
-    mask VARCHAR(40) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    ip4 VARCHAR(15) NOT NULL,
+    ip6 VARCHAR(40) NOT NULL,
     CONSTRAINT subnet_node_fk FOREIGN KEY (id_subnet) REFERENCES Subnet (id)
 );
+
+CREATE UNIQUE INDEX node_name_idx ON Account ( name );
 
 CREATE TABLE Service_x_Node (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -142,7 +149,7 @@ CREATE TABLE Account (
     CONSTRAINT account_creator_account_fk FOREIGN KEY (id_account_creator) REFERENCES Account (id)
 );
 
-CREATE UNIQUE INDEX username_idx ON Account ( username );
+CREATE UNIQUE INDEX account_username_idx ON Account ( username );
 
 INSERT INTO Account (id,id_role,username,password,salt,email,token,enabled,createdDate,modifiedDate,tokenDate,id_account_creator,id_account_modifier,changePassword)
 VALUES (1,1,'admin','','','','',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,1,1);
