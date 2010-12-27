@@ -45,9 +45,21 @@ ul.sections li {
 }
 
 /* Breadcrumb */
-#breadcrumb {
+#breadcrumb-area {
     background-color: #E6FFCC;
     text-align: left;
+    width: 100%;
+    display: inline-block;
+    padding-top: 5px;
+}
+
+#breadcrumb-area #breadcrumb {
+    padding-left: 5px;
+}
+
+#breadcrumb-area #logout {
+    padding-right: 5px;
+    float: right;
 }
 
 /* Footer */
@@ -90,10 +102,42 @@ ul.sections li {
 #content {
     min-height: 220px;
     max-height: 400px;
-    padding-top:20px;
+    padding-top:10px;
     padding-right:5px;
     padding-left:5px;
     background-color: #E6FFCC;
+}
+
+/* Panel */
+
+#central-panel-menu {
+    display: inline-block;
+}
+
+.panel-item {
+    text-align: center;
+    border: thin solid #003300;
+    width: 150px;
+    height: 150px;
+    margin-left: 120px;
+    margin-bottom: 40px;
+    list-style-type: none;
+    float: left;
+}
+
+.panel-item:hover {
+    background-color: #99FF66;
+}
+
+.panel-item a {
+    text-decoration: none;
+    width: 100%;
+}
+
+.panel-item a img {
+    border: none;
+    margin-top: 30px;
+    margin-bottom: 10px;
 }
 
 /* Forms */

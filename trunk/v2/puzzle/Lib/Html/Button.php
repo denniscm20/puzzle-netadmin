@@ -31,53 +31,34 @@ require_once PATH_LIB.'Html/Html.php';
 class Lib_Html_Button extends Lib_Html_Html
 {
 
+    public const TYPE_SUBMIT = 0;
+    public const TYPE_RESET = 1;
+    public const TYPE_GENERAL = 2;
+
     private $type = "";
 
-    public function __construct($id, $value, $tabindex = 0)
+    public function __construct($id, $value, $type, $tabindex = 0)
     {
         parent::__construct($id, $value, "", $tabindex);
-        $this->type = "";
+        switch ($type) {
+            case 0: $this->type = "submit"; break;
+            case 1: $this->type = "reset"; break;
+            case 2:
+            default: $this->type = "button"; break;
+        }
     }
 
-    protected function show()
+    public function show()
     {
-        $basic = parent::show();
-        $extra = $this->showExtra();
-        $events = $this->showEvents();
+        $basic = $this->getBasic();
+        $events = $this->getEvents();
         $own = "type=\"{$this->type}\" value = \"{$this->value}\" ";
-        $input = sprintf($basic, $own, $extra, $events);
-        $input = "<input ".$input." />";
-        return $input;
+        return "<input ".sprintf($basic, $own, $extra, $events)." />";
     }
 
-    public function showSubmitButton($tooltip= "", $class = "", $style = "")
+    public function onClick($code)
     {
-        $this->type = "submit";
-        $this->tooltip = $tooltip;
-        $this->style = $style;
-        $this->class = $class;
-        $element = $this->show();
-        return $element;
-    }
-
-    public function showResetButton($tooltip= "", $class = "", $style = "")
-    {
-        $this->type = "reset";
-        $this->tooltip = $tooltip;
-        $this->style = $style;
-        $this->class = $class;
-        $element = $this->show();
-        return $element;
-    }
-
-    public function showButton ($tooltip= "", $class = "", $style = "")
-    {
-        $this->type = "button";
-        $this->tooltip = $tooltip;
-        $this->style = $style;
-        $this->class = $class;
-        $element = $this->show();
-        return $element;
+        $this->events["onclick"] = $code;
     }
     
 }

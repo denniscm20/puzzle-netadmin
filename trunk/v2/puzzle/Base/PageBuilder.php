@@ -99,7 +99,7 @@ class PageBuilder
                     </div>
                     <?php if (isset($_SESSION["User"])) { ?>
                         <div id="breadcrumb-area">
-                            <span id="breadcrumb"><?php $this->view->showBreadcrumb(); ?></span>
+                            <span id="breadcrumb"><?php echo $this->view->showBreadcrumb(); ?></span>
                             <span id="logout">
                                 <a href="/?Page=<?php echo DEFAULT_LOGOUT_PAGE ?>&amp;Event=logout">
                                 <?php echo LOG_OUT;?>

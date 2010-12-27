@@ -35,18 +35,8 @@ abstract class Lib_Html_Html {
     protected $tabindex = "";
     protected $label = "";
     protected $value = "";
-
-    protected $class = "";
-    protected $style = "";
-
-    protected $blurFunction = "";
-    protected $changeFunction = "";
-    protected $clickFunction = "";
-    protected $focusFunction = "";
-    protected $mouseoutFunction = "";
-    protected $mouseoverFunction = "";
-    protected $keypressFunction = "";
-    protected $selectFunction = "";
+    
+    protected $events = array("onblur" => "", "onchange" => "", "onfocus" => "", "onkeypress" =>  "", "onselect" => "");
 
     protected function __construct($id, $value, $label = "", $tabindex = 0, $accessKey = "")
     {
@@ -63,13 +53,9 @@ abstract class Lib_Html_Html {
 
     }
     
-    protected function show ()
-    {
-        $html = "id=\"".$this->id."\" name=\"".$this->name."\" %s %s %s ";
-        return $html;
-    }
+    public abstract function show ();
 
-    protected function showLabel ()
+    protected function getLabel ()
     {
         $label = "<label for=\"".$this->id."\" ";
         $label .= trim($this->accessKey) != ""?"accesskey=\"".$this->accessKey."\" ":"";
@@ -77,34 +63,22 @@ abstract class Lib_Html_Html {
         return $label;
     }
 
-    protected function showExtra ()
+    protected function getBasic ()
     {
-        $element = "";
+        $element = "id=\"".$this->id."\" name=\"".$this->name."\" %s %s ";
         $element .= trim($this->tooltip) != ""?"title = \"".$this->tooltip."\" ":"";
         $element .= trim($this->tabindex) != ""?"tabindex = \"".$this->tabindex."\" ":"";
-        $element .= trim($this->class) != ""?"class = \"".$this->class."\" ":"";
-        $element .= trim($this->style) != ""?"style = \"".$this->style."\" ":"";
         return $element;
     }
 
-    protected function showEvents ()
+    protected function getEvents ()
     {
         $element = "";
-        $element .= trim($this->blurFunction) != ""?"onblur = \".$this->blurFunction.\" ":"";
-        $element .= trim($this->changeFunction) != ""?"onchange = \".$this->changeFunction.\" ":"";
-        $element .= trim($this->focusFunction) != ""?"onfocus = \".$this->focusFunction.\" ":"";
-        $element .= trim($this->mouseoutFunction) != ""?"onmouseout = \".$this->mouseoutFunction.\" ":"";
-        $element .= trim($this->mouseoverFunction) != ""?"onmouseover = \".$this->mouseoverFunction.\" ":"";
-        $element .= trim($this->keypressFunction) != ""?"onkeypress = \".$this->keypressFunction.\" ":"";
-        $element .= trim($this->selectFunction) != ""?"onselect = \".$this->selectFunction.\" ":"";
+        foreach ($this->events as $key => $value)
+            $element .= $key." = \"".$value."\""
         return $element;
     }
 
-    public function getTooltip ()
-    {
-        return $this->tooltip;
-    }
-    
     public function setTooltip ($tooltip) 
     {
         $this->tooltip = $tooltip;
@@ -120,24 +94,9 @@ abstract class Lib_Html_Html {
         $this->changeFunction = $code;
     }
 
-    public function onClick($code)
-    {
-        $this->clickFunction = $code;
-    }
-
     public function onFocus($code)
     {
         $this->focusFunction = $code;
-    }
-
-    public function onMouseOut($code)
-    {
-        $this->mouseoutFunction = $code;
-    }
-
-    public function onMouseOver($code)
-    {
-        $this->mouseoverFunction = $code;
     }
 
     public function onKeyPress($code)

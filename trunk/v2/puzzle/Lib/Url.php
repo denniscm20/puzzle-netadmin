@@ -46,9 +46,9 @@ class Lib_Url {
      */
     public function __construct($friendly) {
         $this->friendly = $friendly;
-        $this->page = null;
-        $this->piece = null;
-        $this->event = null;
+        $this->page = DEFAULT_PAGE;
+        $this->piece = DEFAULT_PIECE;
+        $this->event = DEFAULT_EVENT;
         $this->parameters = array();
     }
 

@@ -231,7 +231,7 @@ class Core_Controller_LoginController extends Base_Controller
         $_SESSION["User"]["Account"] = $this->user->Username;
         $_SESSION["User"]["Role"] = $this->user->Role->Id;
         session_write_close();
-        Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_LOGIN_PAGE);
+        Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_PAGE);
     }
 
     /**

@@ -47,7 +47,7 @@
     define ("DEFAULT_EVENT", "load");
     define ("DEFAULT_PIECE", "Core");
     define ("DEFAULT_LOGOUT_PAGE", "Login");
-    define ("DEFAULT_LOGIN_PAGE", "Panel");
+    define ("DEFAULT_PAGE", "Panel");
 
     define ("DEFAULT_TOKEN_LIFETIME", "7");
     define ("DEFAULT_LIST_LIMIT", 10);

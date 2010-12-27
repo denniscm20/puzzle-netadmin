@@ -36,7 +36,7 @@ class Lib_Breadcrumb
 
     public function show()
     {
-        $breadcrumb = "<a href=\"\/\">".BREADCRUMB_HOME."</a>";
+        $breadcrumb = "<a href=\"/\">".BREADCRUMB_HOME."</a>";
         foreach ($this->path as $link => $page) {
             $breadcrumb .= BREADCRUMB_SEPARATOR."<a href=\"".$link."\">".$page."</a>";
         }
