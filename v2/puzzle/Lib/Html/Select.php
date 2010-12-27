@@ -43,11 +43,10 @@ class Lib_Html_Select extends Lib_Html_Html {
         $this->attributeId = $attributeId;
     }
 
-    protected function show()
+    public function show()
     {
-        $basic = parent::show();
-        $extra = $this->showExtra();
-        $events = $this->showEvents();
+        $basic = $this->getBasic();
+        $events = $this->getEvents();
         $label = "<span class=\"label\">".$this->showLabel()."</span>";
         $own = $this->multiple===true?"multiple=\"yes\" size=\"".$this->size."\"":"";
         $select = sprintf($basic, $own, $extra, $events);

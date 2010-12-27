@@ -73,22 +73,46 @@ class Core_View_PanelView extends Base_View
         ?>
         <ul id="central-panel-menu">
             <li class="panel-item">
-                <span><?php echo PANEL_SERVER; ?></span>
+                <a href="">
+                    <img src="<?php echo Lib_Helper::getImage("boton/server_info.png") ?>" alt="[SERVER INFO]" />
+                    <br />
+                    <span><?php echo PANEL_SERVER; ?></span>
+                </a>
             </li>
             <li class="panel-item">
-                <span><?php echo PANEL_PIECES; ?></span>
+                <a href="">
+                    <img src="<?php echo Lib_Helper::getImage("boton/module.png") ?>" alt="[SERVER INFO]" />
+                    <br />
+                    <span><?php echo PANEL_PIECES; ?></span>
+                </a>
             </li>
             <li class="panel-item">
-                <span><?php echo PANEL_NETWORK; ?></span>
+                <a href="">
+                    <img src="<?php echo Lib_Helper::getImage("boton/network.png") ?>" alt="[SERVER INFO]" />
+                    <br />
+                    <span><?php echo PANEL_NETWORK; ?></span>
+                </a>
             </li>
             <li class="panel-item">
-                <span><?php echo PANEL_PERMISSION; ?></span>
+                <a href="">
+                    <img src="<?php echo Lib_Helper::getImage("boton/security.png") ?>" alt="[SERVER INFO]" />
+                    <br />
+                    <span><?php echo PANEL_PERMISSION; ?></span>
+                </a>
             </li>
             <li class="panel-item">
-                <span><?php echo PANEL_ACCOUNTS; ?></span>
+                <a href="">
+                    <img src="<?php echo Lib_Helper::getImage("boton/users.png") ?>" alt="[SERVER INFO]" />
+                    <br />
+                    <span><?php echo PANEL_ACCOUNTS; ?></span>
+                </a>
             </li>
             <li class="panel-item">
-                <span><?php echo PANEL_REPORT; ?></span>
+                <a href="">
+                    <img src="<?php echo Lib_Helper::getImage("boton/reports.png") ?>" alt="[SERVER INFO]" />
+                    <br />
+                    <span><?php echo PANEL_REPORT; ?></span>
+                </a>
             </li>
         </ul>
         <?php

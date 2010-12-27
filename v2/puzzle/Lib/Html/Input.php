@@ -40,12 +40,11 @@ class Lib_Html_Input extends Lib_Html_Html {
         $this->type = "";
     }
     
-    protected function show()
+    public function show()
     {
-        $basic = parent::show();
-        $extra = $this->showExtra();
-        $events = $this->showEvents();
-        $label = "<span class=\"label\">".$this->showLabel()."</span>";
+        $basic = $this->getBasic();
+        $events = $this->getEvents();
+        $label = "<span class=\"label\">".$this->getLabel()."</span>";
         $own = "type=\"{$this->type}\" value = \"{$this->value}\" ";
         $own .= $this->maxlength != 0?"maxlength=\"{$this->maxlength}\" ":"";
         $own .= $this->checked != false?"checked=\"checked\" ":"";
