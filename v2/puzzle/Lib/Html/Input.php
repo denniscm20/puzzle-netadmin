@@ -44,12 +44,12 @@ class Lib_Html_Input extends Lib_Html_Html {
     {
         $basic = $this->getBasic();
         $events = $this->getEvents();
-        $label = "<span class=\"label\">".$this->getLabel()."</span>";
+        $label = $this->getLabel();
         $own = "type=\"{$this->type}\" value = \"{$this->value}\" ";
         $own .= $this->maxlength != 0?"maxlength=\"{$this->maxlength}\" ":"";
         $own .= $this->checked != false?"checked=\"checked\" ":"";
-        $input = sprintf($basic, $own, $extra, $events);
-        $input = "<span class=\"field\"><input ".$input." /></span>";
+        $input = sprintf($basic, $own, $events);
+        $input = "<input ".$input." />";
         return $label.$input;
     }
     

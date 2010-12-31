@@ -30,10 +30,10 @@ require_once PATH_LIB.'Html/Html.php';
  */
 class Lib_Html_Button extends Lib_Html_Html
 {
-
-    public const TYPE_SUBMIT = 0;
-    public const TYPE_RESET = 1;
-    public const TYPE_GENERAL = 2;
+    
+    const TYPE_SUBMIT = 0;
+    const TYPE_RESET = 1;
+    const TYPE_GENERAL = 2;
 
     private $type = "";
 
@@ -51,9 +51,12 @@ class Lib_Html_Button extends Lib_Html_Html
     public function show()
     {
         $basic = $this->getBasic();
-        $events = $this->getEvents();
+        $events = "";
+        if ($this->type === self::TYPE_GENERAL) {
+            $events = $this->getEvents();
+        }
         $own = "type=\"{$this->type}\" value = \"{$this->value}\" ";
-        return "<input ".sprintf($basic, $own, $extra, $events)." />";
+        return "<input ".sprintf($basic, $own, $events)." />";
     }
 
     public function onClick($code)
