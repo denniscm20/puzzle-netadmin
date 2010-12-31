@@ -49,7 +49,7 @@ class Lib_Html_Select extends Lib_Html_Html {
         $events = $this->getEvents();
         $label = "<span class=\"label\">".$this->showLabel()."</span>";
         $own = $this->multiple===true?"multiple=\"yes\" size=\"".$this->size."\"":"";
-        $select = sprintf($basic, $own, $extra, $events);
+        $select = sprintf($basic, $own, $events);
         $select = "<span class=\"field\"><select ".$select." >\n%s</select>\n</span>";
         return $label.$select;
     }

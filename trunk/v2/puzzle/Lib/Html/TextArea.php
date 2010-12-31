@@ -49,7 +49,7 @@ class Lib_Html_TextArea extends Lib_Html_Html {
         $own  = "rows = \"".$this->rows."\" ";
         $own .= "cols = \"".$this->cols."\" ";
         $own .= "wrap = \"".$this->wrap === true?"on":"off"."\" ";
-        $textarea = sprintf($basic, $own, $extra, $events);
+        $textarea = sprintf($basic, $own, $events);
         $textarea = "<span class=\"field\"><textarea ".$textarea." >".$this->value."</textarea></span>";
 
         return $label.$textarea;

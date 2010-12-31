@@ -35,7 +35,9 @@ abstract class Lib_Html_Html {
     protected $tabindex = "";
     protected $label = "";
     protected $value = "";
-    
+    protected $class = "";
+    protected $style = "";
+
     protected $events = array("onblur" => "", "onchange" => "", "onfocus" => "", "onkeypress" =>  "", "onselect" => "");
 
     protected function __construct($id, $value, $label = "", $tabindex = 0, $accessKey = "")
@@ -57,9 +59,12 @@ abstract class Lib_Html_Html {
 
     protected function getLabel ()
     {
-        $label = "<label for=\"".$this->id."\" ";
-        $label .= trim($this->accessKey) != ""?"accesskey=\"".$this->accessKey."\" ":"";
-        $label .= ">".$this->label."</label>";
+        $label = "";
+        if ($this->label != "") {
+            $label = "<label for=\"".$this->id."\" ";
+            $label .= trim($this->accessKey) != ""?"accesskey=\"".$this->accessKey."\" ":"";
+            $label .= ">".$this->label."</label>";
+        }
         return $label;
     }
 
@@ -68,6 +73,8 @@ abstract class Lib_Html_Html {
         $element = "id=\"".$this->id."\" name=\"".$this->name."\" %s %s ";
         $element .= trim($this->tooltip) != ""?"title = \"".$this->tooltip."\" ":"";
         $element .= trim($this->tabindex) != ""?"tabindex = \"".$this->tabindex."\" ":"";
+        $element .= trim($this->class) != ""?"class = \"".$this->class."\" ":"";
+        $element .= trim($this->style) != ""?"style = \"".$this->style."\" ":"";
         return $element;
     }
 
@@ -75,7 +82,7 @@ abstract class Lib_Html_Html {
     {
         $element = "";
         foreach ($this->events as $key => $value)
-            $element .= $key." = \"".$value."\""
+            $element .= $key." = \"".$value."\"";
         return $element;
     }
 
