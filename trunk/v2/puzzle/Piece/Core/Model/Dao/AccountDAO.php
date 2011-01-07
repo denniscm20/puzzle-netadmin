@@ -67,6 +67,13 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
         return parent::save();
     }
 
+    public function saveLastLogin()
+    {
+        $this->query = "UPDATE account SET lastLogin = ? WHERE id = ?";
+        $this->parameters = array($this->object->LastLogin, $this->object->Id);
+        return parent::save();
+    }
+
     public function saveToken()
     {
         $this->query = "UPDATE account SET token = ?, tokenDate = ? WHERE id = ?";
@@ -90,7 +97,7 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
 
     public function load()
     {
-        $this->query = "SELECT id, id_role, username, password, salt, changePassword, enabled ".
+        $this->query = "SELECT id, id_role, username, password, salt, changePassword, enabled, lastLogin ".
                        "FROM Account WHERE id = ?";
         $this->parameters = array($this->object->Id);
         return parent::load();
@@ -98,10 +105,26 @@ class Core_Model_Dao_AccountDAO extends Base_DAO {
 
     public function selectByUsernameAndEnabled ()
     {
-        $this->query = "SELECT id, id_role, username, password, salt, changePassword ".
+        $this->query = "SELECT id, id_role, username, password, salt, changePassword, lastLogin ".
                        "FROM Account WHERE username = ? and enabled = ?";
         $this->parameters = array($this->object->Username, $this->object->Enabled);
         return parent::load();
+    }
+
+    public function listObjectsByUsernameAndEnabled ($start)
+    {
+        $this->query = "SELECT id, id_role, username, password, salt, changePassword, lastLogin ".
+                       "FROM Account WHERE username LIKE '%?' and enabled = ?";
+        $this->parameters = array($this->object->Username, $this->object->Enabled);
+        return parent::listObjects($start, DEFAULT_LIST_LIMIT);
+    }
+
+    public function listObjectsByEnabled ($start)
+    {
+        $this->query = "SELECT id, id_role, username, password, salt, changePassword, lastLogin ".
+                       "FROM Account WHERE enabled = ?";
+        $this->parameters = array($this->object->Enabled);
+        return parent::listObjects($start, DEFAULT_LIST_LIMIT);
     }
 
     protected function loadObjectReferences($object, $result) {

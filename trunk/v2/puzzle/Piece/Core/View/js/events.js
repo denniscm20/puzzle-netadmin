@@ -31,10 +31,20 @@ function showHide(id)
     return false;
 }
 
-function submit(formid)
+function evtSubmit(formId, eventValue, idValue)
 {
-    form = document.getElementById(formid);
+    form = document.getElementById(formId);
+    $("#id").val(idValue);
+    $("#event").val(eventValue);
     form.submit();
+}
+
+function evtSearch(formId) {
+    evtSubmit(formId, "search", "");
+}
+
+function evtDelete(formId) {
+    evtSubmit(formId, "delete", "");
 }
 
 function next()

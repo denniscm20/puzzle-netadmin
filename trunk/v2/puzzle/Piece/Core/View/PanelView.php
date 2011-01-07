@@ -19,6 +19,7 @@
  */
 
 require_once PATH_BASE.'View.php';
+require_once PATH_LIB.'Url.php';
 
 /**
  * Class that implements the application Panel View.
@@ -34,6 +35,8 @@ class Core_View_PanelView extends Base_View
 {
     // --- ATTRIBUTES ---
 
+    private $url;
+
     // --- OPERATIONS ---
 
     /**
@@ -47,6 +50,7 @@ class Core_View_PanelView extends Base_View
     public function __construct($controller)
     {
         parent::__construct($controller, LOGIN_TITLE);
+        $this->url = new Lib_Url(FRIENDLY_URL);
     }
 
     /**
@@ -73,45 +77,39 @@ class Core_View_PanelView extends Base_View
         ?>
         <ul id="central-panel-menu">
             <li class="panel-item">
-                <a href="">
-                    <img src="<?php echo Lib_Helper::getImage("boton/server_info.png") ?>" alt="[SERVER INFO]" />
-                    <br />
-                    <span><?php echo PANEL_SERVER; ?></span>
+                <img src="<?php echo Lib_Helper::getImage("boton/server_info.png") ?>" alt="[SERVER INFO]" />
+                <a href="<?php echo $this->url->build("Core", "Server"); ?>">
+                    <?php echo PANEL_SERVER; ?>
                 </a>
             </li>
             <li class="panel-item">
-                <a href="">
-                    <img src="<?php echo Lib_Helper::getImage("boton/module.png") ?>" alt="[SERVER INFO]" />
-                    <br />
-                    <span><?php echo PANEL_PIECES; ?></span>
+                <img src="<?php echo Lib_Helper::getImage("boton/module.png") ?>" alt="[SERVER INFO]" />
+                <a href="<?php echo $this->url->build("Core", "Piece"); ?>">
+                    <?php echo PANEL_PIECES; ?>
                 </a>
             </li>
             <li class="panel-item">
-                <a href="">
-                    <img src="<?php echo Lib_Helper::getImage("boton/network.png") ?>" alt="[SERVER INFO]" />
-                    <br />
-                    <span><?php echo PANEL_NETWORK; ?></span>
+                <img src="<?php echo Lib_Helper::getImage("boton/network.png") ?>" alt="[SERVER INFO]" />
+                <a href="<?php echo $this->url->build("Core", "NetworkManager"); ?>">
+                    <?php echo PANEL_NETWORK; ?>
                 </a>
             </li>
             <li class="panel-item">
-                <a href="">
-                    <img src="<?php echo Lib_Helper::getImage("boton/security.png") ?>" alt="[SERVER INFO]" />
-                    <br />
-                    <span><?php echo PANEL_PERMISSION; ?></span>
+                <img src="<?php echo Lib_Helper::getImage("boton/security.png") ?>" alt="[SERVER INFO]" />
+                <a href="<?php echo $this->url->build("Core", "PermissionManager"); ?>">
+                    <?php echo PANEL_PERMISSION; ?>
                 </a>
             </li>
             <li class="panel-item">
-                <a href="">
-                    <img src="<?php echo Lib_Helper::getImage("boton/users.png") ?>" alt="[SERVER INFO]" />
-                    <br />
-                    <span><?php echo PANEL_ACCOUNTS; ?></span>
+                <img src="<?php echo Lib_Helper::getImage("boton/users.png") ?>" alt="[SERVER INFO]" />
+                <a href="<?php echo $this->url->build("Core", "AccountManager"); ?>">
+                    <?php echo PANEL_ACCOUNTS; ?>
                 </a>
             </li>
             <li class="panel-item">
-                <a href="">
-                    <img src="<?php echo Lib_Helper::getImage("boton/reports.png") ?>" alt="[SERVER INFO]" />
-                    <br />
-                    <span><?php echo PANEL_REPORT; ?></span>
+                <img src="<?php echo Lib_Helper::getImage("boton/reports.png") ?>" alt="[SERVER INFO]" />
+                <a href="<?php echo $this->url->build("Core", "Report"); ?>">
+                    <?php echo PANEL_REPORT; ?>
                 </a>
             </li>
         </ul>

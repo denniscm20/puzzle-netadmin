@@ -65,6 +65,7 @@ class Core_Model_Class_Account extends Base_Class {
     private $tokenDate;
     private $createdDate;
     private $modifiedDate;
+    private $lastLogin;
 
     /**
      * Class Constructor
@@ -86,7 +87,7 @@ class Core_Model_Class_Account extends Base_Class {
         $this->password = "";
         $this->changePassword = false;
         $this->enabled = true;
-        $this->tokenDate = $this->createdDate = $this->modifiedDate = time();
+        $this->tokenDate = $this->createdDate = $this->modifiedDate = $this->lastLogin = time();
     }
 
     /**
@@ -248,6 +249,16 @@ class Core_Model_Class_Account extends Base_Class {
     public function setTokenDate($tokenDate) {
         if (Lib_Validator::validateInteger($tokenDate, true)) {
             $this->tokenDate = $tokenDate;
+        }
+    }
+
+    public function getLastLogin() {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin($lastLogin) {
+        if (Lib_Validator::validateInteger($lastLogin, true)) {
+            $this->lastLogin = $lastLogin;
         }
     }
     
