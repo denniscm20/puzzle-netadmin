@@ -142,6 +142,7 @@ CREATE TABLE Account (
     tokenDate TIMESTAMP NOT NULL,
     createdDate TIMESTAMP NOT NULL,
     modifiedDate TIMESTAMP NOT NULL,
+    lastLoginDate TIMESTAMP NOT NULL,
     id_account_creator INTEGER NOT NULL,
     id_account_modifier INTEGER NOT NULL,
     CONSTRAINT account_modifier_account_fk FOREIGN KEY (id_account_modifier) REFERENCES Account (id),
