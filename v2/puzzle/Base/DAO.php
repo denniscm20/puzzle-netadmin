@@ -105,12 +105,17 @@ abstract class Base_DAO
         $connection = $this->connection->getConnection();
         $statement = $connection->prepare($this->query);
         if ($statement !== FALSE) {
+            $result = FALSE;
             if (count($this->parameters) > 0) {
-                $statement->execute($this->parameters);
+                $result = $statement->execute($this->parameters);
             } else {
-                $statement->execute();
+                $result = $statement->execute();
             }
-            return $statement;
+            if ($result !== FALSE) {
+                return $statement;
+            } else {
+                return $result;
+            }
         } else {
             echo "Error in Query: ".$this->query;
             // throw new PDOException("Error in Query: ".$this->query);
@@ -129,9 +134,11 @@ abstract class Base_DAO
         try {
             $objects = array();
             $statement = $this->executeQuery();
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            foreach($result as $r) {
-                $objects[] = $this->loadObject($r);
+            if (!is_bool($statement)) {
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                foreach($result as $r) {
+                    $objects[] = $this->loadObject($r);
+                }
             }
             return $objects;
         } catch (PDOException $ex) {
@@ -147,8 +154,7 @@ abstract class Base_DAO
      */
     private final function saveObjectToDatabase ( ) {
         try {
-            $this->executeQuery();
-            return true;
+            return $this->executeQuery();
         } catch (PDOException $ex) {
             throw $ex;
         }
@@ -215,11 +221,14 @@ abstract class Base_DAO
     protected function save()
     {
         try {
-            $this->saveObjectToDatabase();
-            if ($this->object->Id === 0) {
-                return $this->getLastId();
+            if ($this->saveObjectToDatabase() !== FALSE) {
+                if ($this->object->Id === 0) {
+                    return $this->getLastId();
+                } else {
+                    return $this->object->Id;
+                }
             } else {
-                return $this->object->Id;
+                return FALSE;
             }
         } catch (PDOException $ex) {
             return false;
