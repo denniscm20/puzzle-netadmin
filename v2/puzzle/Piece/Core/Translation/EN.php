@@ -18,6 +18,7 @@ Duis non purus ante, quis sollicitudin justo. Integer vel libero lorem.
 Cras ligula tortor, egestas interdum vehicula nec, blandit non mi.
 Nulla ultrices, orci sit amet egestas venenatis, quam leo viverra eros, nec fermentum felis tortor a risus.
 Duis nec ligula nibh. Ut eros nulla, posuere ut venenatis at, euismod a justo.");
+define ("MORE_INFORMATION", "More Information");
 
 // Login View
 define("LOGIN_TITLE", "Login");
@@ -35,7 +36,7 @@ define("LOGIN_MAIL_SUBJECT", "");
 define("LOGIN_MAIL_BODY", "%s");
 
 // Server View
-define("SERVER_TITLE", "Information");
+define("SERVER_TITLE", "Server Information");
 define("SERVER_DATA_LEGEND", "Server Data");
 define("SERVER_NETWORK_LEGEND", "Network Configuration");
 define("SERVER_SUMMARY_LEGEND", "Summary");
@@ -47,6 +48,10 @@ define("SERVER_ROUTE_LABEL", "Package Routing Status");
 define("SERVER_DNS_LABEL", "Registered DNS Servers");
 define("SERVER_PIECE_LABEL", "Piece");
 define("SERVER_SECURITY_LABEL", "Security");
+define("SERVER_NETWORK_LABEL", "Network Interface");
+define("SERVER_MAC_LABEL", "MAC Address");
+define("SERVER_IPV4_LABEL", "IPv6");
+define("SERVER_IPV6_LABEL", "IPv4");
 
 // Panel View
 define("PANEL_PIECES", "Manage Pieces");
@@ -55,6 +60,15 @@ define("PANEL_SERVER", "View Server Information");
 define("PANEL_NETWORK", "Manage Network");
 define("PANEL_PERMISSION", "Manage Permission");
 define("PANEL_REPORT", "View Reports");
+
+// Account Manager View
+define("ACCOUNT_MANAGER_TITLE", "Manage Accounts");
+define("ACCOUNT_MANAGER_USER_LABEL", "User Name");
+define("ACCOUNT_MANAGER_STATUS_LABEL", "Status");
+define("ACCOUNT_MANAGER_ROLE_LABEL", "Role");
+define("ACCOUNT_MANAGER_ACCESS_LABEL", "Last Access");
+define("ACCOUNT_MANAGER_DELETE_LABEL", "Delete User");
+define("ACCOUNT_MANAGER_NEW_LABEL", "New User");
 
 // Node View
 define("NODE_TITLE", "Edit Node");

@@ -37,6 +37,8 @@ class Core_Controller_AccountManagerController extends Base_Controller
 
     private $accountList;
 
+    private $current;
+
     // --- ATTRIBUTES ---
 
     /**
@@ -52,6 +54,7 @@ class Core_Controller_AccountManagerController extends Base_Controller
         Lib_Helper::getClass("Core", "Account");
         $this->user = new Core_Model_Class_Account();
         $this->accountList = array();
+        $this->current = 0;
     }
 
     /**
@@ -79,7 +82,11 @@ class Core_Controller_AccountManagerController extends Base_Controller
      */
     protected function loadElements()
     {
+        $this->add("user", $this->user);
+        $this->add("accountList", $this->accountList);
 
+        $statusList = array("Enable", "Disable");
+        $this->add("statusList", $statusList);
     }
 
     /**
@@ -97,6 +104,8 @@ class Core_Controller_AccountManagerController extends Base_Controller
             case "load":
             case "search":
             case "delete":
+            case "next":
+            case "prev":
                 break;
             default: $event = DEFAULT_EVENT;
         }
@@ -109,6 +118,33 @@ class Core_Controller_AccountManagerController extends Base_Controller
      */
     protected function load()
     {
+        Lib_Helper::getDao("Core", "Account");
+        $accountDAO = new Core_Model_Dao_AccountDAO($this->user);
+        if ($this->user->Username === "") {
+            $this->accountList = $accountDAO->listObjectsByEnabled($this->current);
+        } else {
+            $this->accountList = $accountDAO->listObjectsByUsernameAndEnabled($this->current);
+        }
+        return;
+    }
+
+    /**
+     * Loads the next elements of the table
+     * @access protected
+     */
+    protected function next()
+    {
+        $this->current ++;
+        return;
+    }
+
+    /**
+     * Loads the previous elements of the table
+     * @access protected
+     */
+    protected function prev()
+    {
+        $this->current --;
         return;
     }
 
@@ -118,7 +154,7 @@ class Core_Controller_AccountManagerController extends Base_Controller
      */
     protected function search()
     {
-        
+        $this->current = 0;
         $this->load();
     }
 
@@ -140,28 +176,27 @@ class Core_Controller_AccountManagerController extends Base_Controller
         $this->load();
     }
 
-    protected function validateInput()
+    protected function filterInput()
     {
-        $id = isset($_GET["id"])?$_GET["id"]:0;
-        $username = isset($_POST["username"])?$_POST["username"]:"";
-        $status = isset($_POST["status"])?$_POST["status"]:0;
-        $role = isset($_POST["role"])?$_POST["role"]:true;
+        $username = "";
+        $status = "";
+        if (!isset($_POST["search"])) {
+            $username = isset($_POST["username"])?$_POST["username"]:"";
+            if ($username === ACCOUNT_MANAGER_USER_LABEL) {
+                $username = "";
+            }
+            $status = isset($_POST["status"])?$_POST["status"]:true;
+        } else {
+            $username = isset($_POST["username-search"])?$_POST["username-search"]:"";
+            $status = isset($_POST["status-search"])?$_POST["status-search"]:true;
+        }
 
         $username = Lib_Cleaner::clearString($username);
 
-        if (Lib_Validator::validateInteger($id)) {
-            $this->user->Id = $id;
-        }
-
-        if (Lib_Validator::validateString($username, 20)) {
+        if (Lib_Validator::validateString($username, 50)) {
             $this->user->Username = $username;
-            if (Lib_Validator::validateInteger($role)) {
-                $this->user->Role->Id = $role;
-                if (Lib_Validator::validateBoolean($status)) {
-                    $this->user->Enabled = $status;
-                    return true;
-                }
-            }
+            $this->user->Enabled = ($status !== 0);
+            return true;
         }
         return false;
     }

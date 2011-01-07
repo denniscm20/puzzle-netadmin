@@ -65,7 +65,6 @@ class Core_Controller_LoginController extends Base_Controller
     {
         parent::__destruct();
         unset($this->user);
-        unset($this->storedUser);
     }
 
     protected function call($event)
@@ -99,16 +98,16 @@ class Core_Controller_LoginController extends Base_Controller
      */
     protected function login()
     {
-        $user = $this->retrieveUser();
-        if ($user !== null) {
-            $username = $user->Username;
-            if ($user->validatePassword($this->user->Password) === true) {
-                $this->grantAccess($username);
+        $password = $this->user->Password;
+        $this->user = $this->retrieveUser();
+        if ($this->user !== null) {
+            if ($this->user->validatePassword($password) === true) {
+                $this->grantAccess();
             } else {
-                $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
+                $this->denyAcccess(Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
             }
         } else {
-            $this->denyAcccess("", Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+            $this->denyAcccess(Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
         }
     }
 
@@ -119,17 +118,17 @@ class Core_Controller_LoginController extends Base_Controller
      */
     protected function token()
     {
-        $user = $this->retrieveUser();
-        if ($user !== null) {
-            $username = $user->Username;
-            if ($user->validateToken($this->user->Token) === true) {
+        $token = $this->user->Token;
+        $this->user = $this->retrieveUser();
+        if ($this->user !== null) {
+            if ($this->user->validateToken($token) === true) {
                 $this->clearToken();
-                $this->grantAccess($username);
+                $this->grantAccess();
             } else {
-                $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
+                $this->denyAcccess(Core_Model_Class_AccessLog::ACCESS_TYPE_FAILURE);
             }
         } else {
-            $this->denyAcccess($username, Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
+            $this->denyAcccess(Core_Model_Class_AccessLog::ACCESS_TYPE_NOT_EXIST);
         }
     }
 
@@ -163,10 +162,10 @@ class Core_Controller_LoginController extends Base_Controller
      */
     protected function password()
     {
-        $user = $this->retrieveUser();
-        if ($user !== null) {
-            $token = $user->generateToken();
-            $mail = new Lib_Mail(array($user->Email), LOGIN_MAIL_SUBJECT,
+        $this->user = $this->retrieveUser();
+        if ($this->user !== null) {
+            $token = $this->user->generateToken();
+            $mail = new Lib_Mail(array($this->user->Email), LOGIN_MAIL_SUBJECT,
                     sprintf(LOGIN_MAIL_BODY, $token), EMAIL_ACCOUNT, 1);
             $messageHandler = Lib_MessagesHandler::getInstance();
             if ($mail->send() == 1) {
@@ -224,12 +223,17 @@ class Core_Controller_LoginController extends Base_Controller
      * Grant access to the user with the provided account values.
      * @access private
      */
-    private function grantAccess($username)
+    private function grantAccess()
     {
-        $this->log($username, Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
         $_SESSION["User"]["Id"] = $this->user->Id;
         $_SESSION["User"]["Account"] = $this->user->Username;
+        $_SESSION["User"]["LastLogin"] = $this->user->LastLogin;
         $_SESSION["User"]["Role"] = $this->user->Role->Id;
+        Lib_Helper::getDao("Core", "Account");
+        $this->user->LastLogin = time();
+        $accountDAO = new Core_Model_Dao_AccountDAO($this->user);
+        $accountDAO->saveLastLogin();
+        $this->log($this->user->Username, Core_Model_Class_AccessLog::ACCESS_TYPE_SUCCESS);
         session_write_close();
         Lib_Helper::redirect(DEFAULT_PIECE, DEFAULT_PAGE);
     }
@@ -238,8 +242,9 @@ class Core_Controller_LoginController extends Base_Controller
      * Deny access to the user with the provided account values.
      * @access private
      */
-    private function denyAcccess($username, $cause)
+    private function denyAcccess($cause)
     {
+        $username = ($this->user != null)?$this->user->Username:"Unknown";
         $this->log($username, $cause);
         $messageHandler = Lib_MessagesHandler::getInstance();
         $messageHandler->addError(LOGIN_LOGIN_ERROR);
