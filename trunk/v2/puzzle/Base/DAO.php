@@ -192,7 +192,7 @@ abstract class Base_DAO
      * @param Integer $range
      * @return String
      */
-    private final function limitQuery($start, $range = self::LIMIT_DEFAULT)
+    private final function limitQuery($start, $range)
     {
         $str = "%s LIMIT %d, %d";
         $end = $start + $range;
@@ -269,13 +269,16 @@ abstract class Base_DAO
      * @access protected
      * @author Dennis Cohn Muroy
      * @param Integer $start first element of the list to retrieve
-     * @param Integer $range Number of elements to retrieve
+     * @param Integer|Boolean $range Number of elements to retrieve. If this
+     * variable is set to "false" then there will be no limit to the number of
+     * returned values.
      * @return array List of elements retrieved from the database
      */
     protected function listObjects ( $start, $range = DEFAULT_LIST_LIMIT )
     {
-        /** @todo Add boolean flag to indicate if there will be a limit */
-        $this->limitQuery($start, $range);
+        if ($range !== false && Lib_Validator::validateInteger($range)) {
+            $this->limitQuery($start, $range);
+        }
         return $this->retrieveObjectFromDatabase();
     }
 
