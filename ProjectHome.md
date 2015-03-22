@@ -8,11 +8,3 @@
 dentro de una red local.</p>
 
 <p align='center'><img src='http://lh4.ggpht.com/_VHerrooK0kU/ScsZCZFDq_I/AAAAAAAAAL8/yBdpOWDBOpc/logo.png' alt='[logo]' /></p>
-
-
-
-&lt;hr /&gt;
-
-
-
-<p align='justify'>El presente proyecto busca continuar mejorando las funcionalidades de la primera versión de Puzzle, desarrollada como proyecto de tesis.</p>
